@@ -2,7 +2,7 @@
 | --- | --- | --- |
 | 19 | Michael Kulas | Scrum Master |
 | 14 | Thawng Hmung | Developer |
-| | |
+| 18 | Ryan Klemm | Developer |
 | | |
 | | |
 | | |
