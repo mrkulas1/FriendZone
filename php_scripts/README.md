@@ -1,0 +1,1 @@
+`php_scripts` folder holds all PHP files that will be hosted on the webserver

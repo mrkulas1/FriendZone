@@ -1,0 +1,1 @@
+`db_comm` will hold all files related to interacting with the MySQL database 
