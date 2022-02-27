@@ -7,9 +7,34 @@
     //Initializes database
   }
 
+  function authenticate(char(40) email, char(50) password){
+    //Authenticates User for login function
+    
+    $dbh = connectDB();
+    $statement = $dbh->prepare("sha2(:password, 256)");
+    $statement->bindParam(":password", password);
+    $encPassword = $statement->execute();
+    
+    $statement = $dbh->prepare("select count(*) from User where Email = :email and Password = :encPassword");
+    $statement->bindParam(":email", email);
+    $statement->bindParam(":encPassword", $encPassword);
+    $result = $statement->execute();
+    
+    if($result == 1){
+      return true;
+    }
+    return false;
+  }
+
   function getFriends(){
    //Returns list of friends with desired information
    //such as name, email, registered events with the exception of password
+    
+    $dbh = connectDB();
+    $statement = $dbh->prepare("Select Email, Name, Introduction, Additional_Contact from User");
+    $return = $statement->execute();
+    return $return;
+    
   }
 
   function getEvents(){
@@ -24,10 +49,35 @@
 
   function getEventsDay(timestamp day){
     //Returns events on given day
+    //Trevor may need a bit of extra work to figure this out, will come back to it
   }
 
-  function signupEvents(int id, char(40) email){
-    // No return, signs up user for desired event
+  function signupEvents(int id, char(40) email, text, comment){
+    // Signs up user for desired event
+    
+    $dbh = connectDB();
+    $statement = $dbh->prepare("Select count(*) from Joins where Id = :id and Email = :email");
+    $statement->bindParam(":id", id);
+    $statement->bindParam(":email", email);
+    $result = $statement->execute();
+    
+    if($result > 0){
+      $statement = $dbh->prepare("Update Joins where Id = :id and Email = :email set Comment = :comment");
+      $statement->bindParam(":id", id);
+      $statement->bindParam(":email", email);  
+      $statement->bindParam(":comment", comment);
+      $statement->execute
+      return "Updated Event Comment"; 
+    }
+    else {
+      $statement = $dbh->prepare("Insert into Joins values(:id, :email, :comment)");
+      $statement->bindParam(":id", id);
+      $statement->bindParam(":email", email);  
+      $statement->bindParam(":comment", comment);
+      $statement->execute
+      return "Event Joined"; 
+    }
+    
   }
 
   function createFriend(char(40) email, char(100) password, char(100) name, text intro, char(40) contact, tinyint(1) admin){
@@ -40,7 +90,8 @@
        return "Friend Already Exists";
     }
   
-    $statement = $dbh->preare("sha2(password, 256)");
+    $statement = $dbh->preare("sha2(:password, 256)");
+    $statement->bindParam(":password", password);
     $result = $statement->execute();
     $encPassword = $result;
     
