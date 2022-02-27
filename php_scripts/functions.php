@@ -13,7 +13,12 @@
   }
 
   function getEvents(){
+    
     //returns list of events  
+    $dbh = connectDB();
+    $statement = $dbh->prepare("Select * from Events");
+    $return = $statement->execute();
+    return $return
     
   }
 
