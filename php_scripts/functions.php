@@ -30,26 +30,39 @@
     $dbh = connectDB();
     $statement = $dbh->prepare("SELECT count(*) from User where Email = email");
     $result = $statement->execute();
+    
     if($result > 0){
        return "Friend Already Exists";
     }
-    
+  
     $statement = $dbh->preare("sha2(password, 256)");
     $result = $statement->execute();
-    char(256) encPassword = $result;
+    $encPassword = $result;
+    
     $statement = $dbh->prepare("Insert into User values(:email, :encPassword, :name, :intro, :contact, :admin)");
     $statement->bindParam(":email", email);
-    $statement->bindParam(":endPassword", encPassword);
+    $statement->bindParam(":endPassword", $encPassword);
     $statement->bindParam(":name", name);
     $statement->bindParam(":intro", intro);
     $statement->bindParam(":admin", admin);
     $result = $statement->execute();
-    return "Friend Created Successfully"
+    return "Friend Created Successfully";
   }
 
   function createEvent(char(40) email, char(100) title, text description, int slots, int category, tinyint(1) reported, timestamp date_created){
    //creates event 
     $dbh = connectDB();
-    $statement = $dbh->prepare("Insert into Event values()");
+    $statement = $dbh->prepare("SELECT count(*) from Event);
+    $eventID = $statement->execute();
+    $statement = $dbh->prepare("Insert into Event values(:eventID, :title, :description, :slots, :category, :reported, :date_created)");
+    $statement->bindParam(":eventID", $eventID);
+    $statement->bindParam(":title", title);
+    $statement->bindParam(":description", description);
+    $statement->bindParam(":slots", slots);
+    $statement->bindParam(":category", category);
+    $statement->bindParam(":reported", reported);
+    $statement->bindParam(":date_created", date_created);
+    $result = $statement->execute();
+    return "Event Created Successfully";
   }
 ?>
