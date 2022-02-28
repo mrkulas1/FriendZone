@@ -5,6 +5,12 @@
 
   function connectDB(){
     //Initializes database
+    //Find .ini file or hardcode the dbname, username, password
+    //$config = parse_ini_file("db.ini");
+	  //$dbh = new PDO($config['dsn'], $config['username'], $config['password']);
+    $dbh = new PDO("team3_frien", "team3_frien_rw", "3141*Database");
+	  $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	  return $dbh;
   }
 
   function Auth(String email, String password){
@@ -21,9 +27,14 @@
     $result = $statement->execute();
     
     if($result == 1){
-      return true;
+      $statement = $dbh->prepare("select Email, Name, Introduction, Additional_Contact, Admin from User where Email = :email");
+      $statement->bindParam(":email", email);
+      $result = $statement->execute();
+      return $result;
+      //return true;
     }
-    return false;
+    return null;
+    //return false
   }
 
   function getFriends(){
@@ -135,15 +146,26 @@
     $statement->bindParam(":endPassword", $encPassword);
     $statement->bindParam(":name", name);
     $statement->bindParam(":intro", intro);
+    $statement->bindParam(":contact", contact);
     $statement->bindParam(":admin", admin);
     $result = $statement->execute();
     return "Friend Created Successfully";
   }
 
-  function Create_Event(String email, String title, String description, int slots, int category, int reported, String date_created){
+  function Get_User(String email){
+    //Returns a given user
+    $dbh = connectDB();
+    $statement = $dbh->prepare("Select Email, Name, Intro, Contact from User where Email = :email");
+    $statement->bindParam(":email", email);
+    $result = $statement->execute();
+    return $result;
+
+  }
+
+  function Create_Event(String email, String title, String description, int slots, int category, int reported, String date_created) {
    //creates event 
     $dbh = connectDB();
-    $statement = $dbh->prepare("SELECT count(*) from Event);
+    $statement = $dbh->prepare("SELECT count(*) from Event");
     $eventID = $statement->execute();
     $statement = $dbh->prepare("Insert into Event values(:eventID, :title, :description, :slots, :category, :reported, :date_created)");
     $statement->bindParam(":eventID", $eventID);
