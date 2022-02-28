@@ -7,7 +7,7 @@
     //Initializes database
   }
 
-  function Auth(char(40) email, char(50) password){
+  function Auth(String email, String password){
     //Authenticates User for login function
     
     $dbh = connectDB();
@@ -60,12 +60,12 @@
     
   }
 
-  function getEventsDay(timestamp day){
+  function getEventsDay(String day){
     //Returns events on given day
     //Trevor may need a bit of extra work to figure this out, will come back to it
   }
 
-  function Join_Event(int id, char(40) email, text, comment){
+  function Join_Event(int id, String email, String comment){
     // Signs up user for desired event
     
     $dbh = connectDB();
@@ -115,7 +115,7 @@
     
   }
 
-  function Create_User(char(40) email, char(100) password, char(100) name, text intro, char(40) contact, tinyint(1) admin){
+  function Create_User(String email, String password, String) name, String intro, String contact, int admin){
     //creates user in DB 
     $dbh = connectDB();
     $statement = $dbh->prepare("SELECT count(*) from User where Email = email");
@@ -140,7 +140,7 @@
     return "Friend Created Successfully";
   }
 
-  function Create_Event(char(40) email, char(100) title, text description, int slots, int category, tinyint(1) reported, timestamp date_created){
+  function Create_Event(String email, String title, String description, int slots, int category, int reported, String date_created){
    //creates event 
     $dbh = connectDB();
     $statement = $dbh->prepare("SELECT count(*) from Event);
