@@ -109,7 +109,7 @@
    //Returns list of attendees of particular event
     $dbh = connectDB();
     $statement = $dbh->prepare("Select * from Joins where Id = :Id");
-    $statement->bindParam(":Id", id);
+    $statement->bindParam(":Id", Id);
     $result = $statement->execute();
     return $result;
     
