@@ -21,13 +21,13 @@
     $statement->bindParam(":password", password);
     $encPassword = $statement->execute();
     
-    $statement = $dbh->prepare("select count(*) from User where Email = :email and Password = :encPassword");
+    $statement = $dbh->prepare("select count(*) from User where email = :email and password = :encPassword");
     $statement->bindParam(":email", email);
     $statement->bindParam(":encPassword", $encPassword);
     $result = $statement->execute();
     
     if($result == 1){
-      $statement = $dbh->prepare("select Email, Name, Introduction, Additional_Contact, Admin from User where Email = :email");
+      $statement = $dbh->prepare("select email, name, introduction, additional_contact, admin from User where email = :email");
       $statement->bindParam(":email", email);
       $result = $statement->execute();
       return $result;
@@ -42,7 +42,7 @@
    //such as name, email, registered events with the exception of password
     
     $dbh = connectDB();
-    $statement = $dbh->prepare("Select Email, Name, Introduction, Additional_Contact from User");
+    $statement = $dbh->prepare("Select email, name, introduction, additional_contact from User");
     $return = $statement->execute();
     return $return;
     
@@ -59,13 +59,13 @@
     
   }
 
-  function Get_Detailed_Event(int Id){
+  function Get_Detailed_Event(int id){
     
     //Returns detailed information from specific event
     
     $dbh = connectDB();
-    $statement = $dbh->prepare("Select * from Events where Id = :Id");
-    $statement->bindParam(":Id", Id);
+    $statement = $dbh->prepare("Select * from Events where id = :id");
+    $statement->bindParam(":id", id);
     $result = $statement->execute();
     return $result;
     
@@ -81,11 +81,11 @@
     
     $dbh = connectDB();
     
-    $statement = $dbh->prepare("Select count(*) from Joins where Id = :id");
+    $statement = $dbh->prepare("Select count(*) from Joins where id = :id");
     $statement->bindParam(":id", id);
     $result1 = $statment->execute();
     
-    $statement = $dbh->prepare("Select Slots from Event where Id = :id");
+    $statement = $dbh->prepare("Select slots from Event where id = :id");
     $statement->bindParam(":id", id);
     $result2 = $statement->execute();
     
@@ -93,7 +93,7 @@
       return "Event has no remaining slots";
     }
     
-    $statement = $dbh->prepare("Select count(*) from Joins where Id = :id and Email = :email");
+    $statement = $dbh->prepare("Select count(*) from Joins where id = :id and email = :email");
     $statement->bindParam(":id", id);
     $statement->bindParam(":email", email);
     $result = $statement->execute();
@@ -116,20 +116,21 @@
     }
   }
 
-  function Get_Event_Attendees(int Id){
+  function Get_Event_Attendees(int id){
    //Returns list of attendees of particular event
     $dbh = connectDB();
-    $statement = $dbh->prepare("Select * from Joins where Id = :Id");
-    $statement->bindParam(":Id", Id);
+    $statement = $dbh->prepare("Select * from Joins where id = :id");
+    $statement->bindParam(":ud", id);
     $result = $statement->execute();
     return $result;
     
   }
 
-  function Create_User(String email, String password, String) name, String intro, String contact, int admin){
+  function Create_User(String email, String password, String name, String intro, String contact, int admin){
     //creates user in DB 
     $dbh = connectDB();
-    $statement = $dbh->prepare("SELECT count(*) from User where Email = email");
+    $statement = $dbh->prepare("SELECT count(*) from User where email = :email");
+    $statement->bindParam(":email", email);
     $result = $statement->execute();
     
     if($result > 0){
@@ -149,13 +150,18 @@
     $statement->bindParam(":contact", contact);
     $statement->bindParam(":admin", admin);
     $result = $statement->execute();
-    return "Friend Created Successfully";
+
+    $statement = $dbh->prepare("Select email, name, intro, contact, admin from User where email = :email");
+    $statement->bindParam(":email", email);
+    $result = $statement->execute();
+    return $result;
+    //return "Friend Created Successfully";
   }
 
   function Get_User(String email){
     //Returns a given user
     $dbh = connectDB();
-    $statement = $dbh->prepare("Select Email, Name, Intro, Contact from User where Email = :email");
+    $statement = $dbh->prepare("Select email, name, intro, contact from User where email = :email");
     $statement->bindParam(":email", email);
     $result = $statement->execute();
     return $result;
