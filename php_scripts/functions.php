@@ -7,7 +7,7 @@
     //Initializes database
   }
 
-  function authenticate(char(40) email, char(50) password){
+  function Auth(char(40) email, char(50) password){
     //Authenticates User for login function
     
     $dbh = connectDB();
@@ -37,13 +37,26 @@
     
   }
 
-  function getEvents(){
+  function Get_All_Events(){
     
     //returns list of events  
+    
     $dbh = connectDB();
     $statement = $dbh->prepare("Select * from Events");
     $return = $statement->execute();
     return $return
+    
+  }
+
+  function Get_Detailed_Event(int Id){
+    
+    //Returns detailed information from specific event
+    
+    $dbh = connectDB();
+    $statement = $dbh->prepare("Select * from Events where Id = :Id");
+    $statement->bindParam(":Id", Id);
+    $result = $statement->execute();
+    return $result;
     
   }
 
@@ -52,7 +65,7 @@
     //Trevor may need a bit of extra work to figure this out, will come back to it
   }
 
-  function signupEvents(int id, char(40) email, text, comment){
+  function Join_Event(int id, char(40) email, text, comment){
     // Signs up user for desired event
     
     $dbh = connectDB();
@@ -92,7 +105,7 @@
     }
   }
 
-  function getAttendees(int Id){
+  function Get_Event_Attendees(int Id){
    //Returns list of attendees of particular event
     $dbh = connectDB();
     $statement = $dbh->prepare("Select * from Joins where Id = :Id");
@@ -102,7 +115,7 @@
     
   }
 
-  function createFriend(char(40) email, char(100) password, char(100) name, text intro, char(40) contact, tinyint(1) admin){
+  function Create_User(char(40) email, char(100) password, char(100) name, text intro, char(40) contact, tinyint(1) admin){
     //creates user in DB 
     $dbh = connectDB();
     $statement = $dbh->prepare("SELECT count(*) from User where Email = email");
@@ -127,7 +140,7 @@
     return "Friend Created Successfully";
   }
 
-  function createEvent(char(40) email, char(100) title, text description, int slots, int category, tinyint(1) reported, timestamp date_created){
+  function Create_Event(char(40) email, char(100) title, text description, int slots, int category, tinyint(1) reported, timestamp date_created){
    //creates event 
     $dbh = connectDB();
     $statement = $dbh->prepare("SELECT count(*) from Event);
