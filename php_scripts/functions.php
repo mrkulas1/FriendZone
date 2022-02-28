@@ -198,7 +198,7 @@ function Update_Event(int id, String param, String newVal){
 
 }
 
-function Update_Event(String param, int newVal){
+function Update_Event(int id, String param, int newVal){
 //Updates Event parameter param, sets to newVal, same funcation, just takes input int
 //rather than string for value
   $dbh = connectDB();
