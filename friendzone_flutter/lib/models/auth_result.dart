@@ -43,7 +43,7 @@ class AuthResult {
         return "Invalid email/password combination";
       case AuthStatus.lockedOut:
         return """Your account is locked out due to too many failed login 
-        attempts Contact an administrator to unlock your account""";
+        attempts. Contact an administrator to unlock your account""";
       case AuthStatus.internalError:
         return """An internal error occured. Check your internet connection 
         and try again.""";

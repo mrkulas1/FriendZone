@@ -5,6 +5,10 @@
 
   function connectDB(){
     //Initializes database
+    $config = parse_ini_file("db.ini");
+    $dbh = new PDO($config["dsn"], $config["username"], $config["password"]);
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    return $dbh;
   }
 
   function authenticate(char(40) email, char(50) password){
@@ -66,7 +70,7 @@
       $statement->bindParam(":id", id);
       $statement->bindParam(":email", email);  
       $statement->bindParam(":comment", comment);
-      $statement->execute
+      $statement->execute();
       return "Updated Event Comment"; 
     }
     else {
@@ -74,7 +78,7 @@
       $statement->bindParam(":id", id);
       $statement->bindParam(":email", email);  
       $statement->bindParam(":comment", comment);
-      $statement->execute
+      $statement->execute();
       return "Event Joined"; 
     }
     
@@ -107,6 +111,7 @@
 
   function createEvent(char(40) email, char(100) title, text description, int slots, int category, tinyint(1) reported, timestamp date_created){
    //creates event 
+    // Note from Ryan - This should probably do the update if it already exists thing that the join function does.
     $dbh = connectDB();
     $statement = $dbh->prepare("SELECT count(*) from Event);
     $eventID = $statement->execute();
