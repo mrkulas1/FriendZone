@@ -56,6 +56,19 @@
     // Signs up user for desired event
     
     $dbh = connectDB();
+    
+    $statement = $dbh->prepare("Select count(*) from Joins where Id = :id");
+    $statement->bindParam(":id", id);
+    $result1 = $statment->execute();
+    
+    $statement = $dbh->prepare("Select Slots from Event where Id = :id");
+    $statement->bindParam(":id", id);
+    $result2 = $statement->execute();
+    
+    if($result1 == $result2){
+      return "Event has no remaining slots";
+    }
+    
     $statement = $dbh->prepare("Select count(*) from Joins where Id = :id and Email = :email");
     $statement->bindParam(":id", id);
     $statement->bindParam(":email", email);
