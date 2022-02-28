@@ -184,4 +184,32 @@
     $result = $statement->execute();
     return "Event Created Successfully";
   }
+
+function Update_Event(int id, String param, String newVal){
+  //Updates Event parameter param, sets to newVal
+  $dbh = connectDB();
+  $statement = $dbh->prepare("Update Event where id = :id set :param = :newVal");
+  $statement->bindParam(":id", id);
+  $statement->bindParam(":param", param);
+  $statement->bindParam(":newVal", newVal);
+  $result = $statement->execute();
+
+  return $result;
+
+}
+
+function Update_Event(String param, int newVal){
+//Updates Event parameter param, sets to newVal, same funcation, just takes input int
+//rather than string for value
+  $dbh = connectDB();
+  $statement = $dbh->prepare("Update Event where id = :id set :param = :newVal");
+  $statement->bindParam(":id", id);
+  $statement->bindParam(":param", param);
+  $statement->bindParam(":newVal", newVal);
+  $result = $statement->execute();
+
+  return $result;
+
+}
+
 ?>
