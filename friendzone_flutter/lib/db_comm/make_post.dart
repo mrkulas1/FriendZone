@@ -5,6 +5,21 @@ import 'package:friendzone_flutter/models/builders/json_builder.dart';
 import 'package:friendzone_flutter/models/builders/json_list_builder.dart';
 import 'package:http/http.dart' as http;
 
+/// Enum to track the IDs of all PHP functions that can be called.
+/// MAKE SURE THIS ENUM IS ALWAYS IN THE SAME ORDER AS THE ONE IN
+/// friendzone_post.php!!
+enum PHPFunction {
+  auth,
+  getUser,
+  createUser,
+
+  getAllEvents,
+  getDetailedEvent,
+  createEvent,
+
+  joinEvent
+}
+
 const String postPath =
     "https://classdb.it.mtu.edu/cs3141/team3-frien/friendzone_post.php";
 
@@ -13,12 +28,12 @@ const String postPath =
 /// that can build type T from JSON.
 ///
 /// [inputData] is a Map of parameters that will be passed to the POST
-/// [errMessage] is the String to print on POST request failure
+/// [errMessage] is the String to print on POST request failure (thrown as exception)
 /// [builder] is an instance of type U used to build the returned object
-Future<T> makePostRequest<T, U extends JsonBuilder<T>>(int functionID,
+Future<T> makePostRequest<T, U extends JsonBuilder<T>>(PHPFunction functionID,
     Map<String, dynamic> inputData, String errMessage, U builder) async {
   // Add the functionID to the inputData
-  inputData.putIfAbsent("functionID", () => functionID);
+  inputData.putIfAbsent("functionID", () => functionID.index);
 
   final response = await http.post(
     Uri.parse(postPath),
@@ -44,12 +59,12 @@ Future<T> makePostRequest<T, U extends JsonBuilder<T>>(int functionID,
 /// [errMessage] is the String to print on POST request failure
 /// [builder] is an instance of type U used to build the returned list
 Future<List<T>> makeListPostRequest<T, U extends JsonListBuilder<T>>(
-    int functionID,
+    PHPFunction functionID,
     Map<String, dynamic> inputData,
     String errMessage,
     U builder) async {
   // Add the functionID to the inputData
-  inputData.putIfAbsent("functionID", () => functionID);
+  inputData.putIfAbsent("functionID", () => functionID.index);
 
   final response = await http.post(
     Uri.parse(postPath),
