@@ -116,13 +116,13 @@
         return "Event has no remaining slots";
       }
       
-      $statement = $dbh->prepare("Select count(*) from Joins where id = :id and email = :email");
+      $statement = $dbh->prepare("SELECT count(*) from Joins where id = :id and email = :email");
       $statement->bindParam(":id", id);
       $statement->bindParam(":email", email);
       $result = $statement->execute();
       
       if($result > 0){
-        $statement = $dbh->prepare("Update Joins where Id = :id and Email = :email set Comment = :comment");
+        $statement = $dbh->prepare("UPDATE Joins where Id = :id and Email = :email set Comment = :comment");
         $statement->bindParam(":id", id);
         $statement->bindParam(":email", email);  
         $statement->bindParam(":comment", comment);
@@ -130,12 +130,12 @@
         return "Updated Event Comment"; 
       }
       else {
-        $statement = $dbh->prepare("Insert into Joins values(:id, :email, :comment)");
+        $statement = $dbh->prepare("INSERT INTO Joins values(:id, :email, :comment)");
         $statement->bindParam(":id", id);
         $statement->bindParam(":email", email);  
         $statement->bindParam(":comment", comment);
         $statement->execute
-        return "Event Joined"; 
+        return "Event Joined Successfully"; 
       }
     } 
     catch (Exception $exception){
@@ -148,7 +148,7 @@
    //Returns list of attendees of particular event
     try{
       $dbh = connectDB();
-      $statement = $dbh->prepare("Select * from Joins where id = :id");
+      $statement = $dbh->prepare("SELECT * from Joins where id = :id");
       $statement->bindParam(":ud", id);
       $result = $statement->execute();
       return $result;
@@ -219,7 +219,7 @@
       $dbh = connectDB();
      
       $statement = $dbh->prepare("INSERT INTO Event(title, description, time, location, slots, category, reported) 
-        values(:title, :description, :time, location = :location, :slots, :category, :reported)");
+        values(:title, :description, :time, :location, :slots, :category, :reported)");
       $statement->bindParam(":title", title);
       $statement->bindParam(":description", description);
       $statement->bindParam(":time", time);
@@ -233,6 +233,7 @@
       $eventID = $statement->execute();
 
       //Watch for validity of now()
+      //DOES CREATES TABLE EXIST?
       $statement = $dbh->prepare("INSERT INTO Creates(email, id) values(:email, :eventID)");
       $statement->bindParam(":email", email);
       $statement->bindParam(":eventID", $eventID);
