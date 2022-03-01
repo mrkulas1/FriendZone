@@ -37,6 +37,7 @@
       } 
       catch (Exception $exception){
         echo 'Errors Occurred in Auth Function function.php';
+        echo $exception->getMessage();
       }
       //return true;
     }
@@ -54,9 +55,10 @@
       return $return;
     } 
   
-  catch (Exception $exception){
-    echo 'Errors Occurred in Get_Friends Function function.php';
-  }
+    catch (Exception $exception){
+      echo 'Errors Occurred in Get_Friends Function function.php';
+      echo $exception->getMessage();
+    }
     
   }
 
@@ -68,25 +70,27 @@
     $statement = $dbh->prepare("Select * from Events");
     $return = $statement->execute();
     return $return
-  } 
+    } 
   catch (Exception $exception){
     echo 'Errors Occurred in Get_All_Events() Function function.php';
-  }
+    echo $exception->getMessage();
+    }
   }
 
   function Get_Detailed_Event(int id){
     
     //Returns detailed information from specific event
     try {
-    $dbh = connectDB();
-    $statement = $dbh->prepare("Select * from Events where id = :id");
-    $statement->bindParam(":id", id);
-    $result = $statement->execute();
-    return $result;
-  } 
-  catch (Exception $exception){
-    echo 'Errors Occurred in Get_Detailed_Events Function function.php';
-  }
+      $dbh = connectDB();
+      $statement = $dbh->prepare("Select * from Events where id = :id");
+      $statement->bindParam(":id", id);
+      $result = $statement->execute();
+      return $result;
+    } 
+    catch (Exception $exception){
+      echo 'Errors Occurred in Get_Detailed_Events Function function.php';
+      echo $exception->getMessage();
+    }
     
   }
 
@@ -136,6 +140,7 @@
     } 
     catch (Exception $exception){
       echo 'Errors Occurred in Join_Event Function function.php';
+      echo $exception->getMessage();
     }
   }
 
@@ -150,6 +155,7 @@
     } 
     catch (Exception $exception){
       echo 'Errors Occurred in Get_Event_Attendees Function function.php';
+      echo $exception->getMessage();
     }
   }
 
@@ -185,9 +191,10 @@
       return $result;
       //return "Friend Created Successfully";
     } 
-      catch (Exception $exception){
-        echo 'Errors Occurred in Create_User Function function.php';
-      }
+    catch (Exception $exception){
+      echo 'Errors Occurred in Create_User Function function.php';
+      echo $exception->getMessage();
+    }
   }
 
   function Get_User(String email){
@@ -201,8 +208,8 @@
     } 
     catch (Exception $exception){
       echo 'Errors Occurred in Get_User Function function.php';
+      echo $exception->getMessage();
     }
-
   }
 
   function Create_Event(String email, String title, String description, int slots, int category, int reported, String date_created) {
@@ -224,6 +231,7 @@
     } 
     catch (Exception $exception){
       echo 'Errors Occurred in Create_Event Function function.php';
+      echo $exception->getMessage();
     }
   }
 
@@ -242,26 +250,27 @@ function Update_Event(int id, String param, String newVal){
   
   catch (Exception $exception){
     echo 'Errors Occurred in Update_Event Function w/ String param function.php';
+    echo $exception->getMessage();
   }
-
 }
 
 function Update_Event(int id, String param, int newVal){
 //Updates Event parameter param, sets to newVal, same funcation, just takes input int
 //rather than string for value
-try {
-  $dbh = connectDB();
-  $statement = $dbh->prepare("Update Event where id = :id set :param = :newVal");
-  $statement->bindParam(":id", id);
-  $statement->bindParam(":param", param);
-  $statement->bindParam(":newVal", newVal);
-  $result = $statement->execute();
+  try {
+    $dbh = connectDB();
+    $statement = $dbh->prepare("Update Event where id = :id set :param = :newVal");
+    $statement->bindParam(":id", id);
+    $statement->bindParam(":param", param);
+    $statement->bindParam(":newVal", newVal);
+    $result = $statement->execute();
 
-  return $result;
-} 
-catch (Exception $exception){
-  echo 'Errors Occurred in Update_Event Function w/ int param function.php';
-}
+    return $result;
+  } 
+  catch (Exception $exception){
+    echo 'Errors Occurred in Update_Event Function w/ int param function.php';
+    echo $exception->getMessage();
+  }
 }
 
 ?>
