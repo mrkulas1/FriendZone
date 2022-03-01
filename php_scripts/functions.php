@@ -169,12 +169,13 @@
         return "Friend Already Exists";
       }
     
-      $statement = $dbh->preare("sha2(:password, 256)");
+      $statement = $dbh->prepare("sha2(:password, 256)");
       $statement->bindParam(":password", password);
       $result = $statement->execute();
       $encPassword = $result;
       
-      $statement = $dbh->prepare("Insert into User values(:email, :encPassword, :name, :intro, :contact, :admin)");
+      $statement = $dbh->prepare("INSERT INTO User (email, password, name, introduction, addictional_contact, admin) 
+        values(:email, :encPassword, :name, :intro, :contact, :admin)");
       $statement->bindParam(":email", email);
       $statement->bindParam(":endPassword", $encPassword);
       $statement->bindParam(":name", name);
@@ -183,7 +184,7 @@
       $statement->bindParam(":admin", admin);
       $result = $statement->execute();
 
-      $statement = $dbh->prepare("Select email, name, intro, contact, admin from User where email = :email");
+      $statement = $dbh->prepare("SELECT email, name, intro, contact, admin from User where email = :email");
       $statement->bindParam(":email", email);
       $result = $statement->execute();
       return $result;
@@ -199,7 +200,7 @@
     //Returns a given user
     try {
       $dbh = connectDB();
-      $statement = $dbh->prepare("Select email, name, intro, contact from User where email = :email");
+      $statement = $dbh->prepare("SELECT email, name, intro, contact from User where email = :email");
       $statement->bindParam(":email", email);
       $result = $statement->execute();
       return $result;
@@ -210,21 +211,35 @@
     }
   }
 
+<<<<<<< HEAD
   function Create_Event(String $email, String $title, String $description, int $slots, int $category, int $reported, String $date_created) {
+=======
+  function Create_Event(String email, String title, String description, String time, String location, int slots, int category, int reported) {
+>>>>>>> 2803b889886b3dece70333d7b79b58df8b63c5d6
    //creates event 
    try {
       $dbh = connectDB();
-      $statement = $dbh->prepare("SELECT count(*) from Event");
-      $eventID = $statement->execute();
-      $statement = $dbh->prepare("Insert into Event values(:eventID, :title, :description, :slots, :category, :reported, :date_created)");
-      $statement->bindParam(":eventID", $eventID);
+     
+      $statement = $dbh->prepare("INSERT INTO Event(title, description, time, location, slots, category, reported) 
+        values(:title, :description, :time, location = :location, :slots, :category, :reported)");
       $statement->bindParam(":title", title);
       $statement->bindParam(":description", description);
+      $statement->bindParam(":time", time);
+      $statement->bindParam(":location", location);
       $statement->bindParam(":slots", slots);
       $statement->bindParam(":category", category);
       $statement->bindParam(":reported", reported);
-      $statement->bindParam(":date_created", date_created);
       $result = $statement->execute();
+
+      $statement = $dbh->prepare("SELECT count(*) from Event");
+      $eventID = $statement->execute();
+
+      //Watch for validity of now()
+      $statement = $dbh->prepare("INSERT INTO Creates(email, id) values(:email, :eventID)");
+      $statement->bindParam(":email", email);
+      $statement->bindParam(":eventID", $eventID);
+      $result = $statement->execute()
+      
       return "Event Created Successfully";
     } 
     catch (Exception $exception){
@@ -237,7 +252,7 @@ function Update_Event(int id, String param, String newVal){
   //Updates Event parameter param, sets to newVal
   try {
     $dbh = connectDB();
-    $statement = $dbh->prepare("Update Event where id = :id set :param = :newVal");
+    $statement = $dbh->prepare("UPDATE Event where id = :id set :param = :newVal");
     $statement->bindParam(":id", id);
     $statement->bindParam(":param", param);
     $statement->bindParam(":newVal", newVal);
