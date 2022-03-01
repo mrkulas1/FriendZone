@@ -82,13 +82,15 @@ switch ($functionID) {
         //Takes POST input and assigns data to variables
         $e = $data["eventID"];
         $t = $data["title"];
+        $time = $data["time"];
+        $l = $data["location"];
         $d = $data["description"];
         $s = $data["slots"];
         $c = $data["category"];
         $r = $data["reported"];
-        $date = $data["date_created"];
+
         //Variables input to Create_Event function, performed, and returned
-        return Create_Event($e, $t, $d, $s, $c, $r, $date);
+        return Create_Event($e, $t, $d, $time, $l, $s, $c, $r);
         break;
     
     case Functions::JOIN_EVENT:
