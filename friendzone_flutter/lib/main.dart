@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'pages/login_page/login.dart';
 
 void main() {
@@ -17,16 +18,27 @@ class MyApp extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Sample Home'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          child: const Text('Log In'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => LoginApp()),
-            );
-          },
+      body: Column(
+        children: [
+          ElevatedButton(
+            child: const Text('Log In'),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginApp()),
+              );
+            },
         ),
+          ElevatedButton(
+            child: const Text("Post"),
+            onPressed: (){
+              Navigator.push(
+                context, 
+                MaterialPageRoute(builder: (context) => EventPostPage())
+              );
+            },
+          )
+        ]
       ),
     );
   }
