@@ -50,7 +50,7 @@
       $dbh = null;
 
       if ($row[0] == 0) {
-        return 3;
+        return 2;
       }
       
       

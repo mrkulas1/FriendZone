@@ -1,24 +1,28 @@
 <?php
-// MAKE SURE THIS ENUM IS ALWAYS IN THE SAME ORDER AS THE ONE IN 
+// MAKE SURE THESE CONSTANTS ARE ALWAYS IN THE SAME ORDER AS THE ONE IN 
 // make_post.dart!!
-enum Functions: int
+
+// Would be an enum, but those aren't supported in the PHP 7 on MTU servers
+class PHPFunctions
 {
-    case AUTH = 0;
-    case GET_USER = 1;
-    case CREATE_USER = 2;
+    const AUTH = 0;
+    const GET_USER = 1;
+    const CREATE_USER = 2;
     
-    case GET_ALL_EVENTS = 3;
-    case GET_DETAILED_EVENT = 4;
-    case CREATE_EVENT = 5;
-    case UPDATE_EVENT = 6;
+    const GET_ALL_EVENTS = 3;
+    const GET_DETAILED_EVENT = 4;
+    const CREATE_EVENT = 5;
+    const UPDATE_EVENT = 6;
     
-    case JOIN_EVENT = 7;    
+    const JOIN_EVENT = 7;    
 }
 
 // Main entry point for a Flutter page to make a POST request. The Flutter code
 // will post a function ID, and some parameters through JSON. This script will
 // call the relevant function, check that all parameters exist, and call the function
-// Return status code ??? on failure, echo response JSON data on success
+
+// Careful with response code 500 - Seems like Flutter sends a web request to check
+// the domain before sending the data? Need to look into this more
 
 require "functions.php";
 
@@ -33,7 +37,7 @@ function fail_alreadyThere() {
 }
 
 function fail_general() {
-    http_response_code(500);
+    http_response_code(204);
     die();
 }
 
@@ -63,7 +67,7 @@ $functionID = $data["functionID"];
 
 // Based on ID, call the function
 switch ($functionID) {
-    case Functions::AUTH:
+    case PHPFunctions::AUTH:
         //Get input from POST Request
         if (!bulk_isset(array("email", "password"), $data)) {
             fail_general();
@@ -76,7 +80,7 @@ switch ($functionID) {
         echo json_encode( array("status" => $code) );
         break;
     
-    case Functions::GET_USER:
+    case PHPFunctions::GET_USER:
         //Get input from POST Request
         if (!isset($data["email"])) {
             fail_general();
@@ -96,7 +100,7 @@ switch ($functionID) {
         echo json_encode($user);
         break;
     
-    case Functions::CREATE_USER:
+    case PHPFunctions::CREATE_USER:
         //Received input from POST Request and taken as variables
         if (!bulk_isset(array("email", "password", "name", "intro", "contact"), $data)) {
             fail_general();
@@ -120,7 +124,7 @@ switch ($functionID) {
         echo json_encode($user);
         break;
     
-    case Functions::GET_ALL_EVENTS:
+    case PHPFunctions::GET_ALL_EVENTS:
         //Return Get_All_Events Function
         $events = Get_All_Events();
         
@@ -131,7 +135,7 @@ switch ($functionID) {
         echo json_encode($events);
         break;
     
-    case Functions::GET_DETAILED_EVENT:
+    case PHPFunctions::GET_DETAILED_EVENT:
         //Takes POST input and outputs further details of the request
         if (!isset($data["id"])) {
             fail_general();
@@ -150,7 +154,7 @@ switch ($functionID) {
         echo json_encode($event);
         break;
     
-    case Functions::CREATE_EVENT:
+    case PHPFunctions::CREATE_EVENT:
         //Takes POST input and assigns data to variables
         if (!bulk_isset(array("userEmail", "title", "description", 
             "location", "time", "slots", "category"), $data)) {
@@ -177,10 +181,10 @@ switch ($functionID) {
         echo json_encode($event);
         break;
     
-    case Functions::UPDATE_EVENT:
+    case PHPFunctions::UPDATE_EVENT:
         break;
 
-    case Functions::JOIN_EVENT:
+    case PHPFunctions::JOIN_EVENT:
         //Receives POST input and assigns to variables
         $i = $data["id"];
         $e = $data["email"];
@@ -192,6 +196,7 @@ switch ($functionID) {
     default:
         // If no function specified, error
         fail_general();
+        break;
 }
 
 ?>
