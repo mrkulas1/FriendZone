@@ -12,7 +12,10 @@ class CurrentUserBuilder extends JsonBuilder<CurrentUser> {
 
   @override
   CurrentUser fromJson(Map<String, dynamic> json) {
-    // TODO: implement fromJson
-    throw UnimplementedError();
+    return CurrentUser(
+        email: json["email"],
+        name: json["name"],
+        introduction: json["introduction"],
+        contact: json["additional_contact"]);
   }
 }

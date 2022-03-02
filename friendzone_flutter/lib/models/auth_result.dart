@@ -11,7 +11,7 @@ class AuthResult {
   CurrentUser? _user;
 
   /// Construct an [AuthResult] with a [status] and null [_user]
-  AuthResult(this.status) {
+  AuthResult({required this.status}) {
     _user = null;
   }
 

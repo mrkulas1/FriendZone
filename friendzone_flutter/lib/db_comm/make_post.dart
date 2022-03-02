@@ -16,6 +16,7 @@ enum PHPFunction {
   getAllEvents,
   getDetailedEvent,
   createEvent,
+  updateEvent,
 
   joinEvent
 }

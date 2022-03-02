@@ -13,8 +13,23 @@ class EventBuilder extends JsonBuilder<Event> with JsonListBuilder<Event> {
 
   @override
   Event fromJson(Map<String, dynamic> json) {
-    // TODO: implement fromJson
-    throw UnimplementedError();
+    Event e = Event(
+        id: json["id"],
+        userEmail: json["email"],
+        title: json["title"],
+        time: json["time"],
+        location: json["location"],
+        slots: json["slots"],
+        category: json["category"]);
+
+    if (json.containsKey("description") &&
+        json.containsKey("reported") &&
+        json.containsKey("date_created")) {
+      e.makeDetailed(
+          json["description"], json["reported"], json["date_created"]);
+    }
+
+    return e;
   }
 
   @override
@@ -25,7 +40,12 @@ class EventBuilder extends JsonBuilder<Event> with JsonListBuilder<Event> {
 
   @override
   List<Event> listFromJson(List<dynamic> json) {
-    // TODO: implement listFromJson
-    throw UnimplementedError();
+    List<Event> events = [];
+
+    for (var event in json) {
+      events.add(fromJson(event));
+    }
+
+    return events;
   }
 }

@@ -11,49 +11,128 @@
     return $dbh;
   }
 
-  function Auth(String $email, String $password){
-    //Authenticates User for login function
-    
+  function errorReturn(String $message) {
+    return array("error" => $message);
+  }
 
+  /*
+  Return Codes: 
+  0 - Success
+  1 - User DNE
+  2 - Wrong Password
+  3 - Locked Out
+  4 - Error
+  */
+  function Auth(String $email, String $password) {
+    //Authenticates User for login function
     try{ 
       $dbh = connectDB();
-      $statement = $dbh->prepare("sha2(:password, 256)");
-      $statement->bindParam(":password", password);
-      $encPassword = $statement->execute();
       
-      $statement = $dbh->prepare("select count(*) from User where email = :email and password = :encPassword");
-      $statement->bindParam(":email", email);
-      $statement->bindParam(":encPassword", $encPassword);
+      // Determine whether user exists
+      $statement = $dbh->prepare("select count(*) from User where email = :email");
+      $statement->bindParam(":email", $email);
       $result = $statement->execute();
-      
-      if($result == 1){
-        $statement = $dbh->prepare("select email, name, introduction, additional_contact, admin from User where email = :email");
-        $statement->bindParam(":email", email);
-        $result = $statement->execute();
-        return $result;
-
-      } 
-      catch (Exception $exception){
-        echo 'Errors Occurred in Auth Function function.php';
-        echo $exception->getMessage();
+      $row = $statement->fetch();
+      if ($row[0] == 0)
+      {
+        $dbh = null;
+        return 1;
       }
-      //return true;
+
+      // Determine whether user is locked out - TODO
+
+      // Determine that the password is correct
+      $statement = $dbh->prepare("select count(*) from User where email = :email and password = sha2(:password, 256)");
+      $statement->bindParam(":email", $email);
+      $statement->bindParam(":password", $password);
+      $result = $statement->execute();
+      $row = $statement->fetch();
+      $dbh = null;
+
+      if ($row[0] == 0) {
+        return 3;
+      }
+      
+      
+      return 0;
+    } 
+    catch (PDOException $exception){
+        //echo 'Errors Occurred in Auth Function function.php';
+        //echo $exception->getMessage();
+        return 4;
     }
-    return null;
-    //return false
+  }
+
+
+  function Get_User(String $email) {
+    //Returns the user info from the user with the given email
+    try {
+      $dbh = connectDB();
+      $statement = $dbh->prepare("SELECT email, name, introduction, additional_contact from User where email = :email");
+      $statement->bindParam(":email", $email);
+      $result = $statement->execute();
+      $row = $statement->fetch(PDO::FETCH_ASSOC);
+      
+      $dbh = null;
+
+      if (empty($row)) {
+        return errorReturn("No user with this email");
+      }
+
+      return $row;
+    } 
+    catch (PDOException $exception){
+      return errorReturn($exception->getMessage());
+    }
+  }
+
+  function Create_User(String $email, String $password, String $name, String $intro, String $contact){
+    //Creates user in DB, then return that user 
+    try {
+      $dbh = connectDB();
+      $statement = $dbh->prepare("SELECT count(*) from User where email = :email");
+      $statement->bindParam(":email", $email);
+      $result = $statement->execute();
+      $row = $statement->fetch();
+
+      if($row[0] > 0){
+        $dbh = null;
+        return errorReturn("User Already Exists");
+      }
+    
+      
+      $statement = $dbh->prepare("INSERT INTO User (email, password, name, introduction, additional_contact) 
+        values(:email, sha2(:password, 256), :name, :intro, :contact)");
+      $statement->bindParam(":email", $email);
+      $statement->bindParam(":password", $password);
+      $statement->bindParam(":name", $name);
+      $statement->bindParam(":intro", $intro);
+      $statement->bindParam(":contact", $contact);
+      $result = $statement->execute();
+
+      $dbh = null;
+
+      return Get_User($email);
+    } 
+    catch (PDOException $exception){
+      errorReturn($exception->getMessage());
+    }
   }
 
   function Get_Friends(){
-   //Returns list of friends with desired information
-   //such as name, email, registered events with the exception of password
+    //Returns list of friends with desired information
+    //such as name, email, registered events with the exception of password
     try {
       $dbh = connectDB();
       $statement = $dbh->prepare("Select email, name, introduction, additional_contact from User");
       $return = $statement->execute();
+
+      $dbh = null;
+
       return $return;
     } 
   
-    catch (Exception $exception){
+    catch (PDOException $exception){
       echo 'Errors Occurred in Get_Friends Function function.php';
       echo $exception->getMessage();
     }
@@ -61,36 +140,125 @@
   }
 
   function Get_All_Events(){
-    
-    //returns list of events  
+    // Returns list of events with the basic info
+    // TODO: maybe filter these to only events that are in the future?  
     try {
-    $dbh = connectDB();
-    $statement = $dbh->prepare("Select * from Events");
-    $return = $statement->execute();
-    return $return
-    } 
-  catch (Exception $exception){
-    echo 'Errors Occurred in Get_All_Events() Function function.php';
-    echo $exception->getMessage();
+      $dbh = connectDB();
+      
+      $statement = $dbh->prepare("Select id, email, title, time, location, slots, category from Event");
+      $return = $statement->execute();
+      $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+      
+      $dbh = null;
+
+      return $rows;
+    } catch (PDOException $exception){
+      errorReturn($exception->getMessage());
     }
   }
 
   function Get_Detailed_Event(int $id){
-    
     //Returns detailed information from specific event
     try {
       $dbh = connectDB();
-      $statement = $dbh->prepare("Select * from Events where id = :id");
-      $statement->bindParam(":id", id);
+      $statement = $dbh->prepare("Select * from Event where id = :id");
+      $statement->bindParam(":id", $id);
       $result = $statement->execute();
-      return $result;
+      $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+      $dbh = null;
+
+      if (empty($row)) {
+        return errorReturn("No event with this ID");
+      }
+
+      return $row;
     } 
-    catch (Exception $exception){
-      echo 'Errors Occurred in Get_Detailed_Events Function function.php';
-      echo $exception->getMessage();
+    catch (PDOException $exception){
+      return errorReturn($exception->getMessage());
     }
-    
   }
+
+  function Create_Event(String $email, String $title, String $description, 
+    String $time, String $location, int $slots, int $category) {
+    //creates event, then returns its detailed info
+    // NOTE - Commenting out time for now since String - DATETIME will be weird
+    try {
+      $dbh = connectDB();
+      
+      $statement = $dbh->prepare("INSERT INTO Event(email, title, description, /*time,*/ location, slots, category) 
+        values(:email, :title, :description, /*:time,*/ :location, :slots, :category)");
+      $statement->bindParam(":email", $email);
+      $statement->bindParam(":title", $title);
+      $statement->bindParam(":description", $description);
+      //$statement->bindParam(":time", $time);
+      $statement->bindParam(":location", $location);
+      $statement->bindParam(":slots", $slots);
+      $statement->bindParam(":category", $category);
+      $result = $statement->execute();
+      
+      // This is potentially prone to error - need testing, 
+      // probably want to wrap in transaction to avoid race condition
+      $statement = $dbh->prepare("SELECT max(id) from Event");
+      $result = $statement->execute();
+      $eventID = ( $statement->fetch() )[0];
+      
+      $dbh = null;
+      return Get_Detailed_Event($eventID);
+      //Watch for validity of now()
+      //DOES CREATES TABLE EXIST?
+      //  $statement = $dbh->prepare("INSERT INTO Creates(email, id) values(:email, :eventID)");
+      //  $statement->bindParam(":email", email);
+      //  $statement->bindParam(":eventID", $eventID);
+      //  $result = $statement->execute()
+       
+       return "Event Created Successfully";
+     } 
+     catch (PDOException $exception){
+       return errorReturn($exception->getMessage());
+     }
+   }
+ 
+ function Update_Event(int $id, String $param, String $newVal){
+   //Updates Event parameter param, sets to newVal
+   // I like this idea - maybe weakly type the $param/$newVal, then make it an associative array
+   // of $param -> $newval to build a SQL statement with multiple ANDs?
+   try {
+     $dbh = connectDB();
+     $statement = $dbh->prepare("UPDATE Event where id = :id set :param = :newVal");
+     $statement->bindParam(":id", $id);
+     $statement->bindParam(":param", $param);
+     $statement->bindParam(":newVal", $newVal);
+     $result = $statement->execute();
+ 
+     return $result;
+   }
+   
+   catch (PDOException $exception){
+     echo 'Errors Occurred in Update_Event Function w/ String param function.php';
+     echo $exception->getMessage();
+   }
+ }
+
+  // Commenting out since php does not like the repeat function name
+  // function Update_Event(int $id, String $param, int $newVal){
+  //   //Updates Event parameter param, sets to newVal, same funcation, just takes input int
+  //   //rather than string for value
+  //   try {
+  //     $dbh = connectDB();
+  //     $statement = $dbh->prepare("Update Event where id = :id set :param = :newVal");
+  //     $statement->bindParam(":id", $id);
+  //     $statement->bindParam(":param", $param);
+  //     $statement->bindParam(":newVal", $newVal);
+  //     $result = $statement->execute();
+    
+  //     return $result;
+  //   } 
+  //   catch (Exception $exception){
+  //     echo 'Errors Occurred in Update_Event Function w/ int param function.php';
+  //     echo $exception->getMessage();
+  //   }
+  // }
 
   function getEventsDay(String $day){
     //Returns events on given day
@@ -99,15 +267,16 @@
 
   function Join_Event(int $id, String $email, String $comment){
     // Signs up user for desired event
+    // This needs more work, but I'm leaving it alone for now
     try {
       $dbh = connectDB();
       
       $statement = $dbh->prepare("Select count(*) from Joins where id = :id");
-      $statement->bindParam(":id", id);
-      $result1 = $statment->execute();
+      $statement->bindParam(":id", $id);
+      $result1 = $statement->execute();
       
       $statement = $dbh->prepare("Select slots from Event where id = :id");
-      $statement->bindParam(":id", id);
+      $statement->bindParam(":id", $id);
       $result2 = $statement->execute();
       
       if($result1 == $result2){
@@ -115,28 +284,28 @@
       }
       
       $statement = $dbh->prepare("SELECT count(*) from Joins where id = :id and email = :email");
-      $statement->bindParam(":id", id);
-      $statement->bindParam(":email", email);
+      $statement->bindParam(":id", $id);
+      $statement->bindParam(":email", $email);
       $result = $statement->execute();
       
       if($result > 0){
         $statement = $dbh->prepare("UPDATE Joins where Id = :id and Email = :email set Comment = :comment");
-        $statement->bindParam(":id", id);
-        $statement->bindParam(":email", email);  
-        $statement->bindParam(":comment", comment);
-        $statement->execute
+        $statement->bindParam(":id", $id);
+        $statement->bindParam(":email", $email);  
+        $statement->bindParam(":comment", $comment);
+        $statement->execute();
         return "Updated Event Comment"; 
       }
       else {
         $statement = $dbh->prepare("INSERT INTO Joins values(:id, :email, :comment)");
-        $statement->bindParam(":id", id);
-        $statement->bindParam(":email", email);  
-        $statement->bindParam(":comment", comment);
-        $statement->execute
+        $statement->bindParam(":id", $id);
+        $statement->bindParam(":email", $email);  
+        $statement->bindParam(":comment", $comment);
+        $statement->execute();
         return "Event Joined Successfully"; 
       }
     } 
-    catch (Exception $exception){
+    catch (PDOException $exception){
       echo 'Errors Occurred in Join_Event Function function.php';
       echo $exception->getMessage();
     }
@@ -147,144 +316,13 @@
     try{
       $dbh = connectDB();
       $statement = $dbh->prepare("SELECT * from Joins where id = :id");
-      $statement->bindParam(":ud", id);
+      $statement->bindParam(":id", $id);
       $result = $statement->execute();
       return $result;
     } 
-    catch (Exception $exception){
+    catch (PDOException $exception){
       echo 'Errors Occurred in Get_Event_Attendees Function function.php';
       echo $exception->getMessage();
     }
   }
-
-  function Create_User(String $email, String $password, String $name, String $intro, String $contact, int $admin){
-    //creates user in DB 
-    try {
-      $dbh = connectDB();
-      $statement = $dbh->prepare("SELECT count(*) from User where email = :email");
-      $statement->bindParam(":email", email);
-      $result = $statement->execute();
-      
-      if($result > 0){
-        return "Friend Already Exists";
-      }
-    
-      $statement = $dbh->prepare("sha2(:password, 256)");
-      $statement->bindParam(":password", password);
-      $result = $statement->execute();
-      $encPassword = $result;
-      
-      $statement = $dbh->prepare("INSERT INTO User (email, password, name, introduction, addictional_contact, admin) 
-        values(:email, :encPassword, :name, :intro, :contact, :admin)");
-      $statement->bindParam(":email", email);
-      $statement->bindParam(":endPassword", $encPassword);
-      $statement->bindParam(":name", name);
-      $statement->bindParam(":intro", intro);
-      $statement->bindParam(":contact", contact);
-      $statement->bindParam(":admin", admin);
-      $result = $statement->execute();
-
-      $statement = $dbh->prepare("SELECT email, name, intro, contact, admin from User where email = :email");
-      $statement->bindParam(":email", email);
-      $result = $statement->execute();
-      return $result;
-      //return "Friend Created Successfully";
-    } 
-    catch (Exception $exception){
-      echo 'Errors Occurred in Create_User Function function.php';
-      echo $exception->getMessage();
-    }
-  }
-
-  function Get_User(String $email){
-    //Returns a given user
-    try {
-      $dbh = connectDB();
-      $statement = $dbh->prepare("SELECT email, name, intro, contact from User where email = :email");
-      $statement->bindParam(":email", email);
-      $result = $statement->execute();
-      return $result;
-    } 
-    catch (Exception $exception){
-      echo 'Errors Occurred in Get_User Function function.php';
-      echo $exception->getMessage();
-    }
-  }
-
-<<<<<<< HEAD
-  function Create_Event(String $email, String $title, String $description, int $slots, int $category, int $reported, String $date_created) {
-=======
-  function Create_Event(String email, String title, String description, String time, String location, int slots, int category, int reported) {
->>>>>>> 2803b889886b3dece70333d7b79b58df8b63c5d6
-   //creates event 
-   try {
-      $dbh = connectDB();
-     
-      $statement = $dbh->prepare("INSERT INTO Event(title, description, time, location, slots, category, reported) 
-        values(:title, :description, :time, :location, :slots, :category, :reported)");
-      $statement->bindParam(":title", title);
-      $statement->bindParam(":description", description);
-      $statement->bindParam(":time", time);
-      $statement->bindParam(":location", location);
-      $statement->bindParam(":slots", slots);
-      $statement->bindParam(":category", category);
-      $statement->bindParam(":reported", reported);
-      $result = $statement->execute();
-
-      $statement = $dbh->prepare("SELECT count(*) from Event");
-      $eventID = $statement->execute();
-
-      //Watch for validity of now()
-      //DOES CREATES TABLE EXIST?
-      $statement = $dbh->prepare("INSERT INTO Creates(email, id) values(:email, :eventID)");
-      $statement->bindParam(":email", email);
-      $statement->bindParam(":eventID", $eventID);
-      $result = $statement->execute()
-      
-      return "Event Created Successfully";
-    } 
-    catch (Exception $exception){
-      echo 'Errors Occurred in Create_Event Function function.php';
-      echo $exception->getMessage();
-    }
-  }
-
-function Update_Event(int id, String param, String newVal){
-  //Updates Event parameter param, sets to newVal
-  try {
-    $dbh = connectDB();
-    $statement = $dbh->prepare("UPDATE Event where id = :id set :param = :newVal");
-    $statement->bindParam(":id", id);
-    $statement->bindParam(":param", param);
-    $statement->bindParam(":newVal", newVal);
-    $result = $statement->execute();
-
-    return $result;
-  }
-  
-  catch (Exception $exception){
-    echo 'Errors Occurred in Update_Event Function w/ String param function.php';
-    echo $exception->getMessage();
-  }
-}
-
-function Update_Event(int id, String param, int newVal){
-//Updates Event parameter param, sets to newVal, same funcation, just takes input int
-//rather than string for value
-  try {
-    $dbh = connectDB();
-    $statement = $dbh->prepare("Update Event where id = :id set :param = :newVal");
-    $statement->bindParam(":id", id);
-    $statement->bindParam(":param", param);
-    $statement->bindParam(":newVal", newVal);
-    $result = $statement->execute();
-
-    return $result;
-  } 
-  catch (Exception $exception){
-    echo 'Errors Occurred in Update_Event Function w/ int param function.php';
-    echo $exception->getMessage();
-  }
-}
-
 ?>
