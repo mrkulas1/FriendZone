@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_const
+
 import 'package:friendzone_flutter/globals.dart' as globals;
 
 import 'package:flutter/material.dart';
@@ -7,45 +9,20 @@ import 'package:friendzone_flutter/models/auth_result.dart';
 import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 
-import 'signup.dart';
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+import 'login.dart';
+
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignUpPage> createState() => _SignUpPage();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpPage extends State<SignUpPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  Future<AuthResult>? _futureAuth;
-
-  FutureBuilder<AuthResult> createLoginBuilder() {
-    return FutureBuilder<AuthResult>(
-        future: _futureAuth,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data!.success()) {
-              globals.activeUser = snapshot.data!.getUser();
-              return TextButton(
-                  child: Text(
-                      "Continue to FriendZone, ${snapshot.data!.getUser().name}"),
-                  onPressed: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => EventPostPage())));
-            } else {
-              return Text(snapshot.data!.getStatusMessage());
-            }
-          } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
-          }
-
-          return const CircularProgressIndicator();
-        });
-  }
-
+    final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 10,
                     ),
                     const Text(
-                      "Please Login to Your Account",
+                      "Sign Up",
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 15,
@@ -96,9 +73,48 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       width: 260,
                       height: 60,
-                      child: TextField(
-                        controller: _emailController,
-                        decoration: const InputDecoration(
+                      child: const TextField(
+                        decoration: InputDecoration(
+                          suffix: Icon (
+                            FontAwesomeIcons.keyboard,
+                            color: Colors.black,
+                          ),
+                          labelText: "First Name",
+                          border: OutlineInputBorder(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(8))
+                          )
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Container(
+                      width: 260,
+                      height: 60,
+                      child: const TextField(
+                        decoration: InputDecoration(
+                          suffix: Icon(
+                            FontAwesomeIcons.keyboard,
+                            color: Colors.black,
+                          ),
+                          labelText: "Last Name",
+                          border: OutlineInputBorder(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(8))
+                          )
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Container(
+                      width: 260,
+                      height: 60,
+                      child: const TextField(
+                        decoration: InputDecoration(
                             suffix: Icon(
                               FontAwesomeIcons.envelope,
                               color: Colors.black,
@@ -116,11 +132,10 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       width: 260,
                       height: 60,
-                      child: TextField(
-                        controller: _passwordController,
+                      child: const TextField(
                         obscureText: true,
                         decoration: const InputDecoration(
-                            suffix: Icon(
+                            suffix: const Icon(
                               FontAwesomeIcons.eyeSlash,
                               color: Colors.black,
                             ),
@@ -131,33 +146,11 @@ class _LoginPageState extends State<LoginPage> {
                             )),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 30, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            onPressed: () => {
-                              // TODO: Nothing for now, maybe comment out
-                            },
-                            child: const Text(
-                              "Forget Password",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          )
-                        ],
-                      ),
+                    const SizedBox(
+                      height: 12,
                     ),
-                    Container(
-                        child: (_futureAuth == null)
-                            ? Container()
-                            : createLoginBuilder()),
                     GestureDetector(
                       onTap: () {
-                        setState(() {
-                          _futureAuth = authenticate(
-                              _emailController.text, _passwordController.text);
-                        });
                       },
                       child: Container(
                         alignment: Alignment.center,
@@ -169,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: const Padding(
                           padding: EdgeInsets.all(12.0),
                           child: Text(
-                            'Login',
+                            'Sign up',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
@@ -182,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 17,
                     ),
                     const Text(
-                      "Or Login using",
+                      "Or sign up using",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(
@@ -213,10 +206,10 @@ class _LoginPageState extends State<LoginPage> {
                             onPressed: () => {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => SignUpPage()))
+                                MaterialPageRoute(builder: (context) => LoginPage()))
                             },
                             child: const Text(
-                              "No Account? Sign Up",
+                              "Have an account? Log in",
                               style: TextStyle(color: Colors.black),
                             ),
                           )
