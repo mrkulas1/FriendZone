@@ -1,9 +1,11 @@
+import 'package:friendzone_flutter/globals.dart' as globals;
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:friendzone_flutter/models/auth_result.dart';
 import 'package:friendzone_flutter/pages/event_page/event_post.dart';
-import 'package:friendzone_flutter/db_comm/post_functions.dart';
+import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -24,8 +26,10 @@ class _LoginPageState extends State<LoginPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data!.success()) {
+              globals.activeUser = snapshot.data!.getUser();
               return TextButton(
-                  child: const Text("Continue to FriendZone"),
+                  child: Text(
+                      "Continue to FriendZone, ${snapshot.data!.getUser().name}"),
                   onPressed: () => Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(

@@ -6,7 +6,7 @@ import 'package:friendzone_flutter/models/builders/auth_result_builder.dart';
 import 'package:friendzone_flutter/models/builders/current_user_builder.dart';
 import 'package:friendzone_flutter/models/builders/event_builder.dart';
 
-import 'make_post.dart';
+import 'make_post_request.dart';
 import 'dart:async';
 
 /// This file contains all functions that are used by the UI to interface with
