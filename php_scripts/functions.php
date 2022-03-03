@@ -115,7 +115,7 @@
       return Get_User($email);
     } 
     catch (PDOException $exception){
-      errorReturn($exception->getMessage());
+      return errorReturn($exception->getMessage());
     }
   }
 
@@ -153,7 +153,7 @@
 
       return $rows;
     } catch (PDOException $exception){
-      errorReturn($exception->getMessage());
+      return errorReturn($exception->getMessage());
     }
   }
 

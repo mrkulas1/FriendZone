@@ -1,11 +1,10 @@
-// ignore_for_file: unnecessary_const
-
 import 'package:friendzone_flutter/globals.dart' as globals;
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:friendzone_flutter/models/auth_result.dart';
+import 'package:friendzone_flutter/models/current_user.dart';
 import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 
@@ -19,11 +18,16 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPage extends State<SignUpPage> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _introController = TextEditingController();
+  final TextEditingController _contactInfoController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   final _signupFormKey = GlobalKey<FormState>();
+
+  Future<CurrentUser>? _futureUser;
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +62,8 @@ class _SignUpPage extends State<SignUpPage> {
                       ),
                       const Text(
                         "Friend Zone",
-                        style:
-                            TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 28, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(
                         height: 10,
@@ -78,24 +82,22 @@ class _SignUpPage extends State<SignUpPage> {
                         width: 260,
                         height: 60,
                         child: TextFormField(
-                          validator: (value)
-                          {
+                          controller: _firstNameController,
+                          validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter a first name';
                             }
                             return null;
                           },
                           decoration: const InputDecoration(
-                            suffix: Icon (
-                              FontAwesomeIcons.keyboard,
-                              color: Colors.black,
-                            ),
-                            labelText: "First Name",
-                            border: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(8))
-                            )
-                          ),
+                              suffix: Icon(
+                                FontAwesomeIcons.keyboard,
+                                color: Colors.black,
+                              ),
+                              labelText: "First Name",
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8)))),
                         ),
                       ),
                       const SizedBox(
@@ -105,24 +107,22 @@ class _SignUpPage extends State<SignUpPage> {
                         width: 260,
                         height: 60,
                         child: TextFormField(
-                          validator: (value)
-                          {
+                          controller: _lastNameController,
+                          validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter a last name';
                             }
                             return null;
                           },
                           decoration: const InputDecoration(
-                            suffix: Icon(
-                              FontAwesomeIcons.keyboard,
-                              color: Colors.black,
-                            ),
-                            labelText: "Last Name",
-                            border: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(8))
-                            )
-                          ),
+                              suffix: Icon(
+                                FontAwesomeIcons.keyboard,
+                                color: Colors.black,
+                              ),
+                              labelText: "Last Name",
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8)))),
                         ),
                       ),
                       const SizedBox(
@@ -132,17 +132,64 @@ class _SignUpPage extends State<SignUpPage> {
                         width: 260,
                         height: 60,
                         child: TextFormField(
-                          validator: (value)
-                          {
+                          controller: _introController,
+                          validator: (value) {
+                            return null;
+                          },
+                          decoration: const InputDecoration(
+                              suffix: Icon(
+                                FontAwesomeIcons.envelope,
+                                color: Colors.black,
+                              ),
+                              labelText: "Short Introduction",
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
+                              )),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      Container(
+                        width: 260,
+                        height: 60,
+                        child: TextFormField(
+                          controller: _contactInfoController,
+                          validator: (value) {
+                            if (value != null && value.length > 40) {
+                              return 'Contact Info must be under 40 characters';
+                            }
+                            return null;
+                          },
+                          decoration: const InputDecoration(
+                              suffix: Icon(
+                                FontAwesomeIcons.envelope,
+                                color: Colors.black,
+                              ),
+                              labelText: "Other Contact Info",
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
+                              )),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      Container(
+                        width: 260,
+                        height: 60,
+                        child: TextFormField(
+                          controller: _emailController,
+                          validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter an email';
                             }
-                            if(value.length > 100)
-                            {
+                            if (value.length > 100) {
                               return 'Email must be less than 100 characters';
                             }
-                            if(!value.endsWith('@mtu.edu'))
-                            {
+                            if (!value.endsWith('@mtu.edu')) {
                               return 'Please enter an MTU email';
                             }
                             return null;
@@ -166,24 +213,22 @@ class _SignUpPage extends State<SignUpPage> {
                         width: 260,
                         height: 60,
                         child: TextFormField(
-                          validator: (value)
-                          {
+                          controller: _passwordController,
+                          validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter a password';
                             }
-                            if(value.length < 8)
-                            {
+                            if (value.length < 8) {
                               return 'Password must be greater than 8 characters';
                             }
-                            if(value.length > 100)
-                            {
+                            if (value.length > 100) {
                               return 'Password must be less than 100 characters';
                             }
                             return null;
                           },
                           obscureText: true,
                           decoration: const InputDecoration(
-                              suffix: const Icon(
+                              suffix: Icon(
                                 FontAwesomeIcons.eyeSlash,
                                 color: Colors.black,
                               ),
@@ -197,11 +242,61 @@ class _SignUpPage extends State<SignUpPage> {
                       const SizedBox(
                         height: 12,
                       ),
+                      Container(
+                        width: 260,
+                        height: 60,
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value != _passwordController.text) {
+                              return 'Passwords must match';
+                            }
+                            return null;
+                          },
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                              suffix: Icon(
+                                FontAwesomeIcons.eyeSlash,
+                                color: Colors.black,
+                              ),
+                              labelText: "Confirm Password",
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
+                              )),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
                       GestureDetector(
                         onTap: () {
-                          if (_signupFormKey.currentState!.validate())
-                          {
-                            //Set the state     
+                          if (_signupFormKey.currentState!.validate()) {
+                            setState(() {
+                              _futureUser = register(
+                                  _emailController.text,
+                                  _passwordController.text,
+                                  "${_firstNameController.text} ${_lastNameController.text}",
+                                  _introController.text,
+                                  _contactInfoController.text);
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("Registering ...")));
+
+                              _futureUser?.then((value) {
+                                globals.activeUser = value;
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            const EventPostPage()));
+                              }).catchError((error) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(error.toString())));
+                              });
+                            });
                           }
                         },
                         child: Container(
@@ -257,8 +352,9 @@ class _SignUpPage extends State<SignUpPage> {
                             TextButton(
                               onPressed: () => {
                                 Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => LoginPage()))
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginPage()))
                               },
                               child: const Text(
                                 "Have an account? Log in",

@@ -8,6 +8,7 @@ import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 
 import 'signup.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -22,37 +23,11 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<AuthResult>? _futureAuth;
 
-  FutureBuilder<AuthResult> createLoginBuilder() {
-    return FutureBuilder<AuthResult>(
-        future: _futureAuth,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data!.success()) {
-              globals.activeUser = snapshot.data!.getUser();
-              return TextButton(
-                  child: Text(
-                      "Continue to FriendZone, ${snapshot.data!.getUser().name}"),
-                  onPressed: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => EventPostPage())));
-            } else {
-              return Text(snapshot.data!.getStatusMessage());
-            }
-          } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
-          }
-
-          return const CircularProgressIndicator();
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Form(
-    key: _loginFormKey,
-    child:
-      Scaffold(
+      key: _loginFormKey,
+      child: Scaffold(
         body: SingleChildScrollView(
           child: Container(
             height: MediaQuery.of(context).size.height,
@@ -81,8 +56,8 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const Text(
                         "Friend Zone",
-                        style:
-                            TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 28, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(
                         height: 10,
@@ -101,8 +76,7 @@ class _LoginPageState extends State<LoginPage> {
                         width: 260,
                         height: 60,
                         child: TextFormField(
-                          validator: (value)
-                          {
+                          validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter an email';
                             }
@@ -128,8 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                         width: 260,
                         height: 60,
                         child: TextFormField(
-                          validator: (value)
-                          {
+                          validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter a password';
                             }
@@ -166,17 +139,40 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                       ),
-                      Container(
-                          child: (_futureAuth == null)
-                              ? Container()
-                              : createLoginBuilder()),
                       GestureDetector(
                         onTap: () {
-                          if (_loginFormKey.currentState!.validate())
-                          {
+                          if (_loginFormKey.currentState!.validate()) {
                             setState(() {
-                              _futureAuth = authenticate(
-                                  _emailController.text, _passwordController.text);
+                              _futureAuth = authenticate(_emailController.text,
+                                  _passwordController.text);
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("Logging In ...")));
+
+                              _futureAuth?.then((value) {
+                                if (value.success()) {
+                                  globals.activeUser = value.getUser();
+                                  ScaffoldMessenger.of(context)
+                                      .clearSnackBars();
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              const EventPostPage()));
+                                } else {
+                                  ScaffoldMessenger.of(context)
+                                      .clearSnackBars();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content:
+                                              Text(value.getStatusMessage())));
+                                }
+                              }).catchError((error) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(error.toString())));
+                              });
                             });
                           }
                         },
@@ -233,8 +229,10 @@ class _LoginPageState extends State<LoginPage> {
                             TextButton(
                               onPressed: () => {
                                 Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => SignUpPage()))
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const SignUpPage()))
                               },
                               child: const Text(
                                 "No Account? Sign Up",

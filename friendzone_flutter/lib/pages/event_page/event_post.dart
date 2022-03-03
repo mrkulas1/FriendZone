@@ -1,3 +1,5 @@
+import 'package:friendzone_flutter/globals.dart' as globals;
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
@@ -10,16 +12,16 @@ class EventPostPage extends StatefulWidget {
   const EventPostPage({Key? key}) : super(key: key);
 //  const EventPostPage({Key? key, required this.event}) : super(key: key)
 
-
   @override
   EventPostPageState createState() {
     return EventPostPageState();
   }
 }
-class EventPostPageState extends State<EventPostPage>{
+
+class EventPostPageState extends State<EventPostPage> {
   final TextEditingController _eventName = TextEditingController();
   final TextEditingController _location = TextEditingController();
-  final TextEditingController _numSlots= TextEditingController();
+  final TextEditingController _numSlots = TextEditingController();
   final TextEditingController _datetime = TextEditingController();
   final TextEditingController _category = TextEditingController();
   final TextEditingController _description = TextEditingController();
@@ -69,16 +71,15 @@ class EventPostPageState extends State<EventPostPage>{
                       width: 260,
                       height: 80,
                       child: TextFormField(
-                         validator: (value) {
+                        validator: (value) {
                           if (value == null || value.isEmpty) {
-                             return 'Please add a name';
-                          }
-                          else if(value.length > 100){
+                            return 'Please add a name';
+                          } else if (value.length > 100) {
                             return 'Too long';
                           }
-                            return null;
-                           },
-                           controller: _eventName,
+                          return null;
+                        },
+                        controller: _eventName,
                         decoration: const InputDecoration(
                             labelText: "Event Name",
                             border: OutlineInputBorder(
@@ -93,11 +94,11 @@ class EventPostPageState extends State<EventPostPage>{
                       child: TextFormField(
                         validator: (value) {
                           if (value != null && value.length > 100) {
-                             return 'Too long';
+                            return 'Too long';
                           }
-                            return null;
-                           },
-                           controller: _location,
+                          return null;
+                        },
+                        controller: _location,
                         decoration: const InputDecoration(
                             labelText: "Location",
                             border: OutlineInputBorder(
@@ -111,14 +112,13 @@ class EventPostPageState extends State<EventPostPage>{
                       height: 80,
                       child: TextFormField(
                         validator: (value) {
-                          try{
-                            if(value != null){
-                            int a = int.parse(value);
+                          try {
+                            if (value != null) {
+                              int a = int.parse(value);
                             }
                             return null;
-                          }
-                         on Exception catch(_){
-                           return 'Please enter a whole number';
+                          } on Exception catch (_) {
+                            return 'Please enter a whole number';
                           }
                         },
                         controller: _numSlots,
@@ -133,11 +133,11 @@ class EventPostPageState extends State<EventPostPage>{
                     Container(
                       width: 260,
                       height: 80,
-                      child:  TextFormField(
+                      child: TextFormField(
                         validator: (value) {
-                            return null;
-                           },
-                           controller: _datetime,
+                          return null;
+                        },
+                        controller: _datetime,
                         decoration: const InputDecoration(
                             labelText: "Date/Time",
                             border: OutlineInputBorder(
@@ -150,10 +150,10 @@ class EventPostPageState extends State<EventPostPage>{
                       width: 260,
                       height: 80,
                       child: TextFormField(
-                        validator: (value) { 
-                            return null;
-                           },
-                           controller: _category,
+                        validator: (value) {
+                          return null;
+                        },
+                        controller: _category,
                         decoration: const InputDecoration(
                             labelText: "Category",
                             border: OutlineInputBorder(
@@ -165,11 +165,11 @@ class EventPostPageState extends State<EventPostPage>{
                     Container(
                       width: 260,
                       height: 80,
-                      child:TextFormField(
+                      child: TextFormField(
                         validator: (value) {
-                            return null;
-                           },
-                           controller: _description,
+                          return null;
+                        },
+                        controller: _description,
                         decoration: const InputDecoration(
                             labelText: "Description of Event",
                             border: OutlineInputBorder(
@@ -180,14 +180,15 @@ class EventPostPageState extends State<EventPostPage>{
                     ),
                     ElevatedButton(
                       onPressed: () => {
-                        if(_postFormKey.currentState!.validate()){
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Creating Event ...')),
-                          )
-                          // createEvent(userEmail, title, description, location, time, slots, category)
-                        // Use for Create Event
-                        }
-
+                        if (_postFormKey.currentState!.validate())
+                          {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Creating Event ...')),
+                            )
+                            // createEvent(userEmail, title, description, location, time, slots, category)
+                            // Use for Create Event
+                          }
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
