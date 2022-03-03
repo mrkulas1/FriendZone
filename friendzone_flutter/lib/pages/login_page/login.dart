@@ -51,7 +51,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Form(
     key: _loginFormKey,
-  
     child:
       Scaffold(
         body: SingleChildScrollView(
