@@ -205,40 +205,69 @@
       
       $dbh = null;
       return Get_Detailed_Event($eventID);
-      //Watch for validity of now()
-      //DOES CREATES TABLE EXIST?
-      //  $statement = $dbh->prepare("INSERT INTO Creates(email, id) values(:email, :eventID)");
-      //  $statement->bindParam(":email", email);
-      //  $statement->bindParam(":eventID", $eventID);
-      //  $result = $statement->execute()
-       
-       return "Event Created Successfully";
-     } 
-     catch (PDOException $exception){
-       return errorReturn($exception->getMessage());
-     }
-   }
+    } 
+    catch (PDOException $exception){
+      return errorReturn($exception->getMessage());
+    }
+  }
  
- function Update_Event(int $id, String $param, String $newVal){
-   //Updates Event parameter param, sets to newVal
-   // I like this idea - maybe weakly type the $param/$newVal, then make it an associative array
-   // of $param -> $newval to build a SQL statement with multiple ANDs?
-   try {
-     $dbh = connectDB();
-     $statement = $dbh->prepare("UPDATE Event where id = :id set :param = :newVal");
-     $statement->bindParam(":id", $id);
-     $statement->bindParam(":param", $param);
-     $statement->bindParam(":newVal", $newVal);
-     $result = $statement->execute();
+  // Making this to quickly throw something together
+  function Update_Event(int $id, String $title, String $description, 
+    String $time, String $location, int $slots, int $category) {
+
+    try {
+      $dbh = connectDB();
+
+      $statement = $dbh->prepare("SELECT COUNT(*) FROM Event WHERE id = :id");
+      $statement->bindParam(":id", $id);
+      $result = $statement->execute();
+      $row = $statement->fetch();
+
+      if ($row[0] == 0) {
+        $dbh = null;
+        return errorReturn("No event with this ID");
+      }
+
+      $statement = $dbh->prepare("UPDATE Event SET title = :title, description = :description, 
+        /*time = :time,*/ location = :location, slots = :slots, category = :category WHERE id = :id");
+      $statement->bindParam(":id", $id);
+      $statement->bindParam(":title", $title);
+      $statement->bindParam(":description", $description);
+      //$statement->bindParam(":time", $time);
+      $statement->bindParam(":location", $location);
+      $statement->bindParam(":slots", $slots);
+      $statement->bindParam(":category", $category);
+      $result = $statement->execute();
+
+      $dbh = null;
+
+      return Get_Detailed_Event($id);
+    } catch (PDOException $exception) {
+      return errorReturn($exception->getMessage());
+    }
+  }
+
+
+//  function Update_Event(int $id, String $param, String $newVal){
+//    //Updates Event parameter param, sets to newVal
+//    // I like this idea - maybe weakly type the $param/$newVal, then make it an associative array
+//    // of $param -> $newval to build a SQL statement with multiple ANDs?
+//    try {
+//      $dbh = connectDB();
+//      $statement = $dbh->prepare("UPDATE Event where id = :id set :param = :newVal");
+//      $statement->bindParam(":id", $id);
+//      $statement->bindParam(":param", $param);
+//      $statement->bindParam(":newVal", $newVal);
+//      $result = $statement->execute();
  
-     return $result;
-   }
+//      return $result;
+//    }
    
-   catch (PDOException $exception){
-     echo 'Errors Occurred in Update_Event Function w/ String param function.php';
-     echo $exception->getMessage();
-   }
- }
+//    catch (PDOException $exception){
+//      echo 'Errors Occurred in Update_Event Function w/ String param function.php';
+//      echo $exception->getMessage();
+//    }
+//  }
 
   // Commenting out since php does not like the repeat function name
   // function Update_Event(int $id, String $param, int $newVal){

@@ -36,36 +36,47 @@ class MyApp extends StatelessWidget {
           ElevatedButton(
             child: const Text("Post"),
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const EventPostPage()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const EventPostPage()));
             },
           ),
           ElevatedButton(
             child: const Text("Event View"),
             onPressed: () {
               Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const EventViewApp()));
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const EventViewApp()));
             },
           ),
           ElevatedButton(
             child: const Text("Sign up"),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SignUpPage()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const SignUpPage()));
             },
-            ),
-            ElevatedButton(
+          ),
+          ElevatedButton(
             child: const Text("Edit Post"),
             onPressed: () {
               Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => EventEditPage(event: Event(id: 0 ,category: 0, title: 'Test Title', userEmail: 'Test Email' , time: 'Test time',location: 'Test location', slots: 5, ),)));
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => EventEditPage(
+                            event: Event(
+                              id: 0,
+                              category: 0,
+                              title: 'Test Title',
+                              userEmail: 'Test Email',
+                              time: 'Test time',
+                              location: 'Test location',
+                              slots: 5,
+                            ),
+                          )));
             },
-            ),
-        ])
-      )
-    );
+          ),
+        ])));
   }
 }

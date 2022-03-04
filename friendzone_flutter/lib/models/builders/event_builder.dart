@@ -14,19 +14,19 @@ class EventBuilder extends JsonBuilder<Event> with JsonListBuilder<Event> {
   @override
   Event fromJson(Map<String, dynamic> json) {
     Event e = Event(
-        id: json["id"],
-        userEmail: json["email"],
-        title: json["title"],
-        time: json["time"],
-        location: json["location"],
-        slots: json["slots"],
-        category: json["category"]);
+        id: int.parse(json["id"] ?? '0'),
+        userEmail: json["email"] ?? "",
+        title: json["title"] ?? "",
+        time: json["time"] ?? "",
+        location: json["location"] ?? "",
+        slots: int.parse(json["slots"] ?? '0'),
+        category: int.parse(json["category"] ?? '0'));
 
     if (json.containsKey("description") &&
         json.containsKey("reported") &&
         json.containsKey("date_created")) {
-      e.makeDetailed(
-          json["description"], json["reported"], json["date_created"]);
+      e.makeDetailed(json["description"] ?? "",
+          int.parse(json["reported"] ?? '0') == 0, json["date_created"] ?? "");
     }
 
     return e;

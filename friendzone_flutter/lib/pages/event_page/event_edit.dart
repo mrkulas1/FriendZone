@@ -23,7 +23,7 @@ class EventEditPageState extends State<EventEditPage> {
   final TextEditingController _datetimeEdit = TextEditingController();
   final TextEditingController _categoryEdit = TextEditingController();
   final TextEditingController _descriptionEdit = TextEditingController();
-  
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +34,7 @@ class EventEditPageState extends State<EventEditPage> {
     _descriptionEdit.text = widget.event.description ?? "";
     _datetimeEdit.text = widget.event.time;
   }
-  
+
   final _postFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -67,7 +67,7 @@ class EventEditPageState extends State<EventEditPage> {
                       height: 20,
                     ),
                     const Text(
-                      "Create an Event",
+                      "Edit your Event",
                       style: TextStyle(
                         color: Color.fromARGB(66, 5, 5, 5),
                         fontSize: 20,
@@ -189,16 +189,34 @@ class EventEditPageState extends State<EventEditPage> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () => {
-                        if (_postFormKey.currentState!.validate())
-                          {
+                      onPressed: () {
+                        if (_postFormKey.currentState!.validate()) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Updating Event ...')),
+                          );
+
+                          Future<Event> newEvent = updateEvent(
+                              widget.event.id,
+                              _eventNameEdit.text,
+                              _descriptionEdit.text,
+                              _locationEdit.text,
+                              _datetimeEdit.text,
+                              int.parse(_numSlotsEdit.text),
+                              0);
+
+                          newEvent.then((value) {
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        EventEditPage(event: value)));
+                          }).catchError((error) {
+                            ScaffoldMessenger.of(context).clearSnackBars();
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Updating Event ...')),
-                            )
-                            // createEvent(userEmail, title, description, location, time, slots, category)
-                            // Use for Create Event
-                          }
+                                SnackBar(content: Text(error.toString())));
+                          });
+                        }
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
@@ -233,4 +251,3 @@ class EventEditPageState extends State<EventEditPage> {
     );
   }
 }
-

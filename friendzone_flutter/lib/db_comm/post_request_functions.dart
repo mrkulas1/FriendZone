@@ -51,8 +51,8 @@ Future<CurrentUser> register(String email, String password, String name,
   Map<int, String> errorMessages = buildErrorMessages(
       alreadyThereMessage:
           "A user with this email is already registered. Try logging in",
-      internalErrorMessage: """Failed to create the user. 
-          Check your internet connection and try again""");
+      internalErrorMessage: "Failed to create the user."
+          " Check your internet connection and try again");
 
   CurrentUser user = await makePostRequest(
       PHPFunction.createUser, input, errorMessages, CurrentUserBuilder());
@@ -63,9 +63,9 @@ Future<CurrentUser> register(String email, String password, String name,
 /// Get a list of the basic info for all Events. Throw an exception on failure.
 Future<List<Event>> getAllEvents() async {
   Map<String, dynamic> input = {};
-  Map<int, String> errorMessages =
-      buildErrorMessages(internalErrorMessage: """Failed to retrieve events. 
-          Check your internet connection and try again.""");
+  Map<int, String> errorMessages = buildErrorMessages(
+      internalErrorMessage: "Failed to retrieve events."
+          " Check your internet connection and try again.");
 
   List<Event> events = await makeListPostRequest(
       PHPFunction.getAllEvents, input, errorMessages, EventBuilder());
@@ -79,8 +79,8 @@ Future<Event> getDetailedEvent(int eventID) async {
 
   Map<int, String> errorMessages = buildErrorMessages(
       notFoundMessage: "Requested event was not found.",
-      internalErrorMessage: """Failed to retrieve event data. 
-    Check your internet connection and try again.""");
+      internalErrorMessage: "Failed to retrieve event data."
+          " Check your internet connection and try again.");
 
   Event event = await makePostRequest(
       PHPFunction.getDetailedEvent, input, errorMessages, EventBuilder());
@@ -102,12 +102,37 @@ Future<Event> createEvent(String userEmail, String title, String description,
     "category": category
   };
 
-  Map<int, String> errorMessages =
-      buildErrorMessages(internalErrorMessage: """Failed to create the event. 
-      Check your internetconnection and try again.""");
+  Map<int, String> errorMessages = buildErrorMessages(
+      internalErrorMessage: "Failed to create the event."
+          " Check your internet connection and try again.");
 
   Event event = await makePostRequest(
       PHPFunction.createEvent, input, errorMessages, EventBuilder());
+
+  return event;
+}
+
+/// Update the event with ID [eventID] with the given [title], [description],
+/// [location], [time], number of [slots], and [category].
+Future<Event> updateEvent(int eventID, String title, String description,
+    String location, String time, int slots, int category) async {
+  Map<String, dynamic> input = {
+    "id": eventID,
+    "title": title,
+    "description": description,
+    "location": location,
+    "time": time,
+    "slots": slots,
+    "category": category
+  };
+
+  Map<int, String> errorMessages = buildErrorMessages(
+      notFoundMessage: "No event with the provided ID exists",
+      internalErrorMessage: "Failed to create the event."
+          " Check your internet connection and try again.");
+
+  Event event = await makePostRequest(
+      PHPFunction.updateEvent, input, errorMessages, EventBuilder());
 
   return event;
 }
