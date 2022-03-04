@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:friendzone_flutter/models/event.dart';
+import 'package:friendzone_flutter/pages/event_page/event_edit.dart';
 import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'pages/login_page/login.dart';
 import 'pages/login_page/signup.dart';
@@ -35,7 +37,7 @@ class MyApp extends StatelessWidget {
             child: const Text("Post"),
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => EventPostPage()));
+                  MaterialPageRoute(builder: (context) => const EventPostPage()));
             },
           ),
           ElevatedButton(
@@ -52,6 +54,14 @@ class MyApp extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const SignUpPage()));
+            },
+            ),
+            ElevatedButton(
+            child: const Text("Edit Post"),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EventEditPage(event: Event(id: 0 ,category: 0, title: 'Test Title', userEmail: 'Test Email' , time: 'Test time',location: 'Test location', slots: 5, ),)));
             },
             ),
         ])
