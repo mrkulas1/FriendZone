@@ -17,8 +17,16 @@ class EventViewApp extends StatefulWidget {
 
 class _EventViewApp extends State<EventViewApp> {
   // TODO: Convert to LIST
-
+  Future<List<Event>>? _events;
   DateTime selectedDate = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _events = getAllEvents();
+  }
+
   // Date selector
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -26,12 +34,13 @@ class _EventViewApp extends State<EventViewApp> {
         initialDate: selectedDate,
         firstDate: DateTime(2019, 1),
         lastDate: DateTime(2111));
-    if (picked != null)
+    if (picked != null) {
       setState(
         () {
           selectedDate = picked;
         },
       );
+    }
   }
 
   @override
@@ -161,29 +170,35 @@ class _EventViewApp extends State<EventViewApp> {
                   ),
                 ],
               ),
-              FutureBuilder<List<Event>>(
-                future: getAllEvents(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Event>> snapshot) {
-                  if (snapshot.data == null) {
-                    return const Center(child: Text("Loading..."));
-                  } else {
-                    return ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, int index) {
-                        return ListTile(
-                          leading: const Icon(FontAwesomeIcons.atom),
-                          title: Text(snapshot.data![index].title),
-                          subtitle: Text(snapshot.data![index].time +
-                              "\n  ${snapshot.data![index].slots}"),
-                          onTap: () {
-                            // TODO: Get to the detail Page
-                          },
-                        );
-                      },
-                    );
-                  }
-                },
+              Container(
+                child: _events == null
+                    ? Container()
+                    : FutureBuilder<List<Event>>(
+                        future: _events,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Expanded(
+                                child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              itemCount: snapshot.data!.length,
+                              itemBuilder: (context, int index) {
+                                return ListTile(
+                                  leading: const Icon(FontAwesomeIcons.atom),
+                                  title: Text(snapshot.data![index].title),
+                                  subtitle: Text(snapshot.data![index].time +
+                                      "\n  ${snapshot.data![index].slots}"),
+                                  onTap: () {
+                                    // TODO: Get to the detail Page
+                                  },
+                                );
+                              },
+                            ));
+                          } else if (snapshot.hasError) {
+                            return Text("${snapshot.error!}");
+                          }
+                          return const CircularProgressIndicator();
+                        },
+                      ),
               ),
             ],
           ),

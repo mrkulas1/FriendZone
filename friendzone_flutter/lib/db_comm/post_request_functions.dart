@@ -128,7 +128,7 @@ Future<Event> updateEvent(int eventID, String title, String description,
 
   Map<int, String> errorMessages = buildErrorMessages(
       notFoundMessage: "No event with the provided ID exists",
-      internalErrorMessage: "Failed to create the event."
+      internalErrorMessage: "Failed to update the event."
           " Check your internet connection and try again.");
 
   Event event = await makePostRequest(
