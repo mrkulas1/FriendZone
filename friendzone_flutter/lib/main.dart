@@ -3,12 +3,15 @@ import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'pages/login_page/login.dart';
 import 'pages/login_page/signup.dart';
 import 'pages/event_page/event_viewing.dart';
+import 'global_header.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    title: 'FriendZone',
-    home: MyApp(),
-  ));
+  runApp(
+    const MaterialApp(
+      title: 'FriendZone',
+      home: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -41,21 +44,24 @@ class MyApp extends StatelessWidget {
           ElevatedButton(
             child: const Text("Event View"),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const EventViewApp()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => EventViewApp()));
             },
           ),
           ElevatedButton(
             child: const Text("Sign up"),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SignUpPage()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const SignUpPage()));
             },
-            ),
-        ])
-      )
-    );
+          ),
+          ElevatedButton(
+            child: const Text("Header"),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Header()));
+            },
+          ),
+        ])));
   }
 }
