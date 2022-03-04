@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/models/event.dart';
+import 'package:friendzone_flutter/pages/event_page/event_edit.dart';
 
 class EventPostPage extends StatefulWidget {
-  //final Event event;
-
   void click() {}
   const EventPostPage({Key? key}) : super(key: key);
-//  const EventPostPage({Key? key, required this.event}) : super(key: key)
 
   @override
   EventPostPageState createState() {
@@ -179,16 +177,33 @@ class EventPostPageState extends State<EventPostPage> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () => {
-                        if (_postFormKey.currentState!.validate())
-                          {
-                            ScaffoldMessenger.of(context).showSnackBar(
+                      onPressed: () {
+                        if (_postFormKey.currentState!.validate()) {
+                          ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                  content: Text('Creating Event ...')),
-                            )
-                            // createEvent(userEmail, title, description, location, time, slots, category)
-                            // Use for Create Event
-                          }
+                                  content: Text("Creating Event...")));
+                          Future<Event> event = createEvent(
+                              globals.activeUser?.email ?? "",
+                              _eventName.text,
+                              _description.text,
+                              _location.text,
+                              _datetime.text,
+                              int.parse(_numSlots.text),
+                              0 /*TODO: Category enum */);
+
+                          event.then((value) {
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        EventEditPage(event: value)));
+                          }).catchError((error) {
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(error.toString())));
+                          });
+                        }
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(

@@ -37,7 +37,7 @@ function fail_alreadyThere() {
 }
 
 function fail_general() {
-    http_response_code(204);
+    http_response_code(202);
     die();
 }
 
@@ -91,6 +91,7 @@ switch ($functionID) {
         $user = Get_User($e);
         
         if (isset($user["error"])) {
+            echo json_encode($user);
             if ($user["error"] == "No user with this email") {
                 fail_notFound();
             }
@@ -129,6 +130,7 @@ switch ($functionID) {
         $events = Get_All_Events();
         
         if (isset($events["error"])) {
+            echo json_encode($events);
             fail_general();
         }
 
@@ -145,6 +147,7 @@ switch ($functionID) {
         $event = Get_Detailed_Event($i);
         
         if (isset($event["error"])) {
+            echo json_encode($event);
             if ($event["error"] == "No event with this ID") {
                 fail_notFound();
             }
@@ -169,12 +172,10 @@ switch ($functionID) {
         $c = $data["category"];
 
         //Variables input to Create_Event function, performed, and returned
-        $event = Create_Event($e, $t, $d, $time, $l, $s, $c, $r);
+        $event = Create_Event($e, $t, $d, $time, $l, $s, $c);
         
         if (isset($event["error"])) {
-            if ($event["error"] == "No event with this ID") {
-                fail_notFound();
-            }
+            echo json_encode($event);
             fail_general();
         }
 
@@ -182,6 +183,26 @@ switch ($functionID) {
         break;
     
     case PHPFunctions::UPDATE_EVENT:
+        $i = $data["id"];
+        $t = $data["title"];
+        $d = $data["description"];
+        $l = $data["location"];
+        $time = $data["time"];
+        $s = $data["slots"];
+        $c = $data["category"];
+
+        //Variables input to Create_Event function, performed, and returned
+        $event = Update_Event($i, $t, $d, $time, $l, $s, $c);
+        
+        if (isset($event["error"])) {
+            echo json_encode($event);
+            if ($event["error"] == "No event with this ID") {
+                fail_notFound();
+            }
+            fail_general();
+        }
+
+        echo json_encode($event);
         break;
 
     case PHPFunctions::JOIN_EVENT:

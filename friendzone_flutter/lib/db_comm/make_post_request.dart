@@ -29,7 +29,7 @@ const String postPath =
 const int phpSuccessCode = 200; // Expected result will be available
 const int phpNotFoundCode = 404; // Requested data not in database
 const int phpAlreadyThereCode = 409; // Data to add already exists in database
-const int phpInternalErrorCode = 204;
+const int phpInternalErrorCode = 202;
 
 /// Create an error messages map and optionally specify specific error messages
 /// [notFoundMessage] is printed on response 404
