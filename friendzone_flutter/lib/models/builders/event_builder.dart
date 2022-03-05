@@ -26,7 +26,7 @@ class EventBuilder extends JsonBuilder<Event> with JsonListBuilder<Event> {
         json.containsKey("reported") &&
         json.containsKey("date_created")) {
       e.makeDetailed(json["description"] ?? "",
-          int.parse(json["reported"] ?? '0') == 0, json["date_created"] ?? "");
+          int.parse(json["reported"] ?? '0') == 1, json["date_created"] ?? "");
     }
 
     return e;
