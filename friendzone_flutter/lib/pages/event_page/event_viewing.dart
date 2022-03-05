@@ -185,8 +185,10 @@ class _EventViewApp extends State<EventViewApp> {
                                 return ListTile(
                                   leading: const Icon(FontAwesomeIcons.atom),
                                   title: Text(snapshot.data![index].title),
-                                  subtitle: Text(snapshot.data![index].time +
-                                      "\n  ${snapshot.data![index].slots}"),
+                                  subtitle: Text(
+                                      "Where: ${snapshot.data![index].location}\n"
+                                      "When: ${snapshot.data![index].time}\n"
+                                      "# of Slots: ${snapshot.data![index].slots}"),
                                   onTap: () {
                                     // TODO: Get to the detail Page
                                   },
