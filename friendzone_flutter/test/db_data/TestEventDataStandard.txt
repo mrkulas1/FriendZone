@@ -1,0 +1,5 @@
+123123123	'aelaest@mtu.edu'	'Fun With FriendZone'	'testing spicy event stuff'	'2021-03-23'	'Somewhere'		23	6	0	'2021-03-23 12:23:04'
+234324245	'rckleww@mtu.edu'		'Dinner in Dining Hall'	'eating dinner'			'2021-03-31'	'Wads Dining Hal'	5	9	0	'2022-04-23 01:35:04'
+123333333	'CS3141Admin@mtu.edu'	'Have Some Fun '	'Exciting Activities to do'	'2023-12-23'	'SomePlaceNew'		23	6	0	'2021-03-23 12:23:04'
+666666645	'rckleww@mtu.edu'	'Goingtoalocaton'	'doingsomethingfun'		'2024-05-31'	'AT a LOCATION AHH'	53	99	0	'2022-07-28 11:35:04'
+132523546	'10010101@mtu.edu'	'Getting FriendZoned'	'fun times'			'2022-08-09'	'McNair'		34	7	1	'2022-07-28 11:35:04'

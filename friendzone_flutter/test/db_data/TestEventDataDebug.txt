@@ -1,0 +1,6 @@
+123123123	'aelost@mtu.edu'	'Fun With FriendZone'	'testing spicy event stuff'	'2021-03-23'	'Somewhere'		23	6	false	'2021-03-23 12:23:04'
+234324245	'123@abc.mtu.edu'	'Dinner in Dining Hall'	'eating dinner'			'2021-03-31'	'Wads Dining Hal'	5	9	false	'2022-04-23 01:35:04'
+123333333	'rckiim@mtu.edu'	'Have Some Fun '	'Exciting Activities to do'	'2023-12-23'	'SomePlaceNew'		23	6	false	'2021-03-23 12:23:04'
+666666645	'rckiim@mtu.edu'	'Goingtoalocaton'	'doingsomethingfun'		'2024-05-31'	'AT a LOCATION AHH'	53	99	false	'2022-07-28 11:35:04'
+543654346	'10010101@mtu.edu'	'activityactivity'	'asdfsadfasdfasdfasdf'		'2022-05-31'	'FUNPLACETODOSTUFF'	30	9	true	'2023-05-24 01:35:04'
+543654356	'msdt@mt.u.edu'		'activity1111vity'	'asdfsaerwerwerwerwer'		'2022-05-32'	'aHHHHHHHHHHHHHHHH'	1090	66	true	'2023-05-22 01:35:04'

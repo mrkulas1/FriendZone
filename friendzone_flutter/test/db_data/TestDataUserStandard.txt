@@ -1,0 +1,8 @@
+'aelaest@mtu.edu'		'123456'	'Audrey'	'Hi I am Audrey this is a test'		null 			1
+'notarealemail@mtu.edu'		'password'	'Nota Persin'	'Test not a person'			'1 (234) 567 - 8901'	0
+'rckleww@mtu.edu'		'678910'	'Ryan'		'Rayon'					null			0
+'null@pointerexception.com'	'yikes'		'Data Str' 	'Handle some big data'			'123-323-3456'		0
+'123@abc.mtu.edu'		'doge'		'Tme2dye'	'Making some FRIENZ'			'869954123123123'	0
+'msdt@mt.u.edu'			'notmtu'	'werdcase'	'ahhhhhhhhhhhhhhhhhh'			null			0
+'CS3141Admin@mtu.edu'		'admin'  	'admin'		null					'1 (420) 666 - 6969'	1
+'10010101@mtu.edu'		'00000000'	'11111111'	'dfg;adsfasdfasdf'			null			0
