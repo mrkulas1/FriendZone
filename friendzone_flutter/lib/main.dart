@@ -5,6 +5,7 @@ import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'pages/login_page/login.dart';
 import 'pages/login_page/signup.dart';
 import 'pages/event_page/event_viewing.dart';
+import 'pages/event_page/event_detail_view.dart';
 
 void main() {
   runApp(const MaterialApp(
@@ -49,6 +50,15 @@ class MyApp extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => const EventViewApp()));
+            },
+          ),
+          ElevatedButton(
+            child: const Text("Detail Event View"),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const DetailEventViewApp()));
             },
           ),
           ElevatedButton(

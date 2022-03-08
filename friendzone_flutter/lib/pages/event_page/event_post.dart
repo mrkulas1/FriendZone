@@ -5,8 +5,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/models/event.dart';
 import 'package:friendzone_flutter/pages/event_page/event_edit.dart';
+import 'package:friendzone_flutter/global_header.dart';
 
 class EventPostPage extends StatefulWidget {
+  static const String routeName = '/post';
+
   void click() {}
   const EventPostPage({Key? key}) : super(key: key);
 
@@ -28,6 +31,7 @@ class EventPostPageState extends State<EventPostPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: Header(),
       body: SingleChildScrollView(
         child: Form(
           key: _postFormKey,

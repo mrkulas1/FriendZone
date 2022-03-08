@@ -44,9 +44,6 @@ class _SignUpPage extends State<SignUpPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                const SizedBox(
-                  height: 60,
-                ),
                 Container(
                   width: 325,
                   //height: 500,
@@ -76,9 +73,9 @@ class _SignUpPage extends State<SignUpPage> {
                         ),
                       ),
                       const SizedBox(
-                        height: 30,
+                        height: 20,
                       ),
-                      Container(
+                      SizedBox(
                         width: 260,
                         height: 60,
                         child: TextFormField(
@@ -103,7 +100,7 @@ class _SignUpPage extends State<SignUpPage> {
                       const SizedBox(
                         height: 12,
                       ),
-                      Container(
+                      SizedBox(
                         width: 260,
                         height: 60,
                         child: TextFormField(
@@ -128,7 +125,7 @@ class _SignUpPage extends State<SignUpPage> {
                       const SizedBox(
                         height: 12,
                       ),
-                      Container(
+                      SizedBox(
                         width: 260,
                         height: 60,
                         child: TextFormField(
@@ -138,7 +135,7 @@ class _SignUpPage extends State<SignUpPage> {
                           },
                           decoration: const InputDecoration(
                               suffix: Icon(
-                                FontAwesomeIcons.envelope,
+                                FontAwesomeIcons.paragraph,
                                 color: Colors.black,
                               ),
                               labelText: "Short Introduction",
@@ -151,7 +148,7 @@ class _SignUpPage extends State<SignUpPage> {
                       const SizedBox(
                         height: 12,
                       ),
-                      Container(
+                      SizedBox(
                         width: 260,
                         height: 60,
                         child: TextFormField(
@@ -164,7 +161,7 @@ class _SignUpPage extends State<SignUpPage> {
                           },
                           decoration: const InputDecoration(
                               suffix: Icon(
-                                FontAwesomeIcons.envelope,
+                                FontAwesomeIcons.addressBook,
                                 color: Colors.black,
                               ),
                               labelText: "Other Contact Info",
@@ -177,7 +174,7 @@ class _SignUpPage extends State<SignUpPage> {
                       const SizedBox(
                         height: 12,
                       ),
-                      Container(
+                      SizedBox(
                         width: 260,
                         height: 60,
                         child: TextFormField(
@@ -209,7 +206,7 @@ class _SignUpPage extends State<SignUpPage> {
                       const SizedBox(
                         height: 12,
                       ),
-                      Container(
+                      SizedBox(
                         width: 260,
                         height: 60,
                         child: TextFormField(
@@ -242,7 +239,7 @@ class _SignUpPage extends State<SignUpPage> {
                       const SizedBox(
                         height: 12,
                       ),
-                      Container(
+                      SizedBox(
                         width: 260,
                         height: 60,
                         child: TextFormField(
@@ -342,7 +339,7 @@ class _SignUpPage extends State<SignUpPage> {
                         ],
                       ),
                       const SizedBox(
-                        height: 15,
+                        height: 10,
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -354,7 +351,8 @@ class _SignUpPage extends State<SignUpPage> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => LoginPage()))
+                                        builder: (context) =>
+                                            const LoginPage()))
                               },
                               child: const Text(
                                 "Have an account? Log in",

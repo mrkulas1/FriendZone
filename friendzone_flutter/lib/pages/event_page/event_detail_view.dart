@@ -11,14 +11,14 @@ import 'package:friendzone_flutter/global_header.dart';
 import 'event_full_view.dart';
 import 'package:friendzone_flutter/pages/modules.dart';
 
-class EventViewApp extends StatefulWidget {
-  const EventViewApp({Key? key}) : super(key: key);
+class DetailEventViewApp extends StatefulWidget {
+  const DetailEventViewApp({Key? key}) : super(key: key);
 
   @override
-  _EventViewApp createState() => _EventViewApp();
+  _DetailEventViewApp createState() => _DetailEventViewApp();
 }
 
-class _EventViewApp extends State<EventViewApp> {
+class _DetailEventViewApp extends State<DetailEventViewApp> {
   Future<List<Event>>? _events;
   DateTime selectedDate = DateTime.now();
 
@@ -115,20 +115,39 @@ class _EventViewApp extends State<EventViewApp> {
                               itemBuilder: (context, int index) {
                                 return ListTile(
                                   leading: const Icon(FontAwesomeIcons.atom),
-                                  title: Text(snapshot.data![index].title),
+                                  title: Text(
+                                    snapshot.data![index].title,
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                    ),
+                                  ),
                                   subtitle: Text(
-                                      "Where: ${snapshot.data![index].location}\n"
-                                      "When: ${snapshot.data![index].time}\n"
-                                      "# of Slots: ${snapshot.data![index].slots}"),
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                DetailEventView(
-                                                    data: snapshot
-                                                        .data![index])));
-                                  },
+                                    "When: ${snapshot.data![index].time}\n"
+                                    "Username: ${snapshot.data![index].id}\n"
+                                    "Mail: ${snapshot.data![index].userEmail}\n"
+                                    "# of Slots: ${snapshot.data![index].slots}\n"
+                                    "Location\n"
+                                    "${snapshot.data![index].location}",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  trailing: ElevatedButton(
+                                    child: const Text(
+                                      "Join",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(50))),
+                                    onPressed: () {
+                                      // Join, and Left
+                                    },
+                                  ),
                                 );
                               },
                             ));
