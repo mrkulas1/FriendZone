@@ -10,7 +10,7 @@ import 'pages/event_page/event_detail_view.dart';
 void main() {
   runApp(const MaterialApp(
     title: 'FriendZone',
-    home: MyApp(),
+    home: LoginPage(),
   ));
 }
 
@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const EventViewApp()));
+                      builder: (context) => const EventViewAllPage()));
             },
           ),
           ElevatedButton(

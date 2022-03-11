@@ -7,6 +7,7 @@ import 'package:friendzone_flutter/models/auth_result.dart';
 import 'package:friendzone_flutter/models/current_user.dart';
 import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
+import 'package:friendzone_flutter/pages/event_page/event_viewing.dart';
 
 import 'login.dart';
 
@@ -287,7 +288,7 @@ class _SignUpPage extends State<SignUpPage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (BuildContext context) =>
-                                            const EventPostPage()));
+                                            const EventViewAllPage()));
                               }).catchError((error) {
                                 ScaffoldMessenger.of(context).clearSnackBars();
                                 ScaffoldMessenger.of(context).showSnackBar(

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:friendzone_flutter/pages/event_page/event_viewing.dart';
+import 'package:friendzone_flutter/pages/login_page/login.dart';
 
+import 'globals.dart' as globals;
 import 'pages/event_page/event_post.dart';
 import 'main.dart';
 
@@ -36,8 +39,8 @@ class Header extends AppBar {
         );
 }
 
-class CoustomDrawer extends StatelessWidget {
-  const CoustomDrawer({Key? key}) : super(key: key);
+class CustomDrawer extends StatelessWidget {
+  const CustomDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +65,10 @@ class CoustomDrawer extends StatelessWidget {
             title: const Text('Home'),
             onTap: () {
               // TAKE ME HOMEEEEEEEEEEEEEEEEEEEEE
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const MyApp()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const EventViewAllPage()));
             },
           ),
           ListTile(
@@ -80,9 +85,11 @@ class CoustomDrawer extends StatelessWidget {
           ),
           ListTile(
             textColor: const Color(0xFFFFCC00),
-            title: const Text('Do something'),
+            title: const Text('Logout'),
             onTap: () {
-              // Do something
+              globals.activeUser = null;
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: ((context) => const LoginPage())));
             },
           ),
         ],

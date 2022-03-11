@@ -6,6 +6,7 @@ import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/models/event.dart';
 import 'package:friendzone_flutter/pages/event_page/event_edit.dart';
 import 'package:friendzone_flutter/global_header.dart';
+import 'package:friendzone_flutter/pages/event_page/event_full_view.dart';
 
 class EventPostPage extends StatefulWidget {
   static const String routeName = '/post';
@@ -197,11 +198,11 @@ class EventPostPageState extends State<EventPostPage> {
 
                           event.then((value) {
                             ScaffoldMessenger.of(context).clearSnackBars();
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (BuildContext context) =>
-                                        EventEditPage(event: value)));
+                                        DetailEventViewPage(data: value)));
                           }).catchError((error) {
                             ScaffoldMessenger.of(context).clearSnackBars();
                             ScaffoldMessenger.of(context).showSnackBar(

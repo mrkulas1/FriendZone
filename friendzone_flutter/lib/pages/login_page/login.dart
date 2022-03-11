@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:friendzone_flutter/models/auth_result.dart';
 import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
+import 'package:friendzone_flutter/pages/event_page/event_viewing.dart';
 
 import 'signup.dart';
 
@@ -159,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (BuildContext context) =>
-                                              const EventPostPage()));
+                                              const EventViewAllPage()));
                                 } else {
                                   ScaffoldMessenger.of(context)
                                       .clearSnackBars();

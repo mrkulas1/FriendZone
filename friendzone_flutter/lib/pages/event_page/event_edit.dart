@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/models/event.dart';
 import 'package:friendzone_flutter/global_header.dart';
+import 'package:friendzone_flutter/pages/event_page/event_full_view.dart';
 
 class EventEditPage extends StatefulWidget {
   final Event event;
@@ -208,11 +209,11 @@ class EventEditPageState extends State<EventEditPage> {
 
                           newEvent.then((value) {
                             ScaffoldMessenger.of(context).clearSnackBars();
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (BuildContext context) =>
-                                        EventEditPage(event: value)));
+                                        DetailEventViewPage(data: value)));
                           }).catchError((error) {
                             ScaffoldMessenger.of(context).clearSnackBars();
                             ScaffoldMessenger.of(context).showSnackBar(

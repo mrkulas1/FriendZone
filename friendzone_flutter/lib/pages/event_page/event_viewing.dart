@@ -11,14 +11,14 @@ import 'package:friendzone_flutter/global_header.dart';
 import 'event_full_view.dart';
 import 'package:friendzone_flutter/pages/modules.dart';
 
-class EventViewApp extends StatefulWidget {
-  const EventViewApp({Key? key}) : super(key: key);
+class EventViewAllPage extends StatefulWidget {
+  const EventViewAllPage({Key? key}) : super(key: key);
 
   @override
-  _EventViewApp createState() => _EventViewApp();
+  _EventViewAllPageState createState() => _EventViewAllPageState();
 }
 
-class _EventViewApp extends State<EventViewApp> {
+class _EventViewAllPageState extends State<EventViewAllPage> {
   Future<List<Event>>? _events;
   DateTime selectedDate = DateTime.now();
 
@@ -47,102 +47,126 @@ class _EventViewApp extends State<EventViewApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: Header(),
-        drawer: const CoustomDrawer(),
-        backgroundColor: const Color(0xFFDCDCDC), // Background color
-        body: Container(
-          alignment: Alignment.center,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    // Row of search bottom and search text
-                    children: [
-                      IconButton(
+    return Scaffold(
+      appBar: Header(),
+      drawer: const CustomDrawer(),
+      backgroundColor: const Color(0xFFDCDCDC), // Background color
+      body: Container(
+        alignment: Alignment.center,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  // Row of search bottom and search text
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        showSearch(
+                            context: context, delegate: MySearchDelegate());
+                      },
+                      icon: const Icon(
+                        Icons.search,
+                        semanticLabel: "Search",
+                      ),
+                    ),
+                    const Text('Search'),
+                  ],
+                ),
+                Row(
+                  // TODO: Might be a good idea to add some arrow by move the date
+                  // Date selector
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        _selectDate(context);
+                        // TODO: Honestly could use this as the filter for dates, IDK
+                      },
+                      child: Text(
+                          '${selectedDate.month}/${selectedDate.day}/${selectedDate.year}'),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Text('Filter'),
+                    IconButton(
                         onPressed: () {
-                          showSearch(
-                              context: context, delegate: MySearchDelegate());
+                          // Add some stuff here for filter list
                         },
-                        icon: const Icon(
-                          Icons.search,
-                          semanticLabel: "Search",
-                        ),
-                      ),
-                      const Text('Search'),
-                    ],
-                  ),
-                  Row(
-                    // TODO: Might be a good idea to add some arrow by move the date
-                    // Date selector
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          _selectDate(context);
-                          // TODO: Honestly could use this as the filter for dates, IDK
-                        },
-                        child: Text(
-                            '${selectedDate.month}/${selectedDate.day}/${selectedDate.year}'),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      const Text('Filter'),
-                      IconButton(
-                          onPressed: () {
-                            // Add some stuff here for filter list
-                          },
-                          icon: const Icon(FontAwesomeIcons.filter)),
-                    ],
-                  ),
-                ],
-              ),
-              Container(
-                child: _events == null
-                    ? Container()
-                    : FutureBuilder<List<Event>>(
-                        future: _events,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Expanded(
-                                child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: (context, int index) {
-                                return ListTile(
-                                  leading: const Icon(FontAwesomeIcons.atom),
-                                  title: Text(snapshot.data![index].title),
-                                  subtitle: Text(
-                                      "Where: ${snapshot.data![index].location}\n"
-                                      "When: ${snapshot.data![index].time}\n"
-                                      "# of Slots: ${snapshot.data![index].slots}"),
-                                  onTap: () {
+                        icon: const Icon(FontAwesomeIcons.filter)),
+                  ],
+                ),
+              ],
+            ),
+            Container(
+              child: _events == null
+                  ? Container()
+                  : FutureBuilder<List<Event>>(
+                      future: _events,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Expanded(
+                              child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, int index) {
+                              return ListTile(
+                                leading: const Icon(FontAwesomeIcons.atom),
+                                title: Text(snapshot.data![index].title),
+                                subtitle: Text(
+                                    "Where: ${snapshot.data![index].location}\n"
+                                    "When: ${snapshot.data![index].time}\n"
+                                    "# of Slots: ${snapshot.data![index].slots}"),
+                                onTap: () {
+                                  Future<Event> detailedEvent =
+                                      getDetailedEvent(
+                                          snapshot.data![index].id);
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content:
+                                              Text("Getting Event Details")));
+
+                                  detailedEvent.then((value) {
+                                    ScaffoldMessenger.of(context)
+                                        .clearSnackBars();
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                DetailEventView(
-                                                    data: snapshot
-                                                        .data![index])));
-                                  },
-                                );
-                              },
-                            ));
-                          } else if (snapshot.hasError) {
-                            return Text("${snapshot.error!}");
-                          }
-                          return const CircularProgressIndicator();
-                        },
-                      ),
-              ),
-            ],
-          ),
+                                                DetailEventViewPage(
+                                                    data: value)));
+                                  }).catchError((error) {
+                                    ScaffoldMessenger.of(context)
+                                        .clearSnackBars();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(error.toString())));
+                                  });
+                                },
+                              );
+                            },
+                          ));
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error!}");
+                        }
+                        return const CircularProgressIndicator();
+                      },
+                    ),
+            ),
+          ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            setState(() {
+              _events = getAllEvents();
+            });
+          },
+          backgroundColor: const Color.fromARGB(255, 255, 204, 0),
+          child: const Icon(Icons.restart_alt)),
     );
   }
 }

@@ -1,3 +1,4 @@
+/// Not currently used in the app
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:async';
@@ -50,7 +51,7 @@ class _DetailEventViewApp extends State<DetailEventViewApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: Header(),
-        drawer: const CoustomDrawer(),
+        drawer: const CustomDrawer(),
         backgroundColor: const Color(0xFFDCDCDC), // Background color
         body: Container(
           alignment: Alignment.center,
