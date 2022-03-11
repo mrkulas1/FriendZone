@@ -212,7 +212,7 @@ class EventPostPageState extends State<EventPostPage> {
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
-                            Color.fromARGB(255, 255, 204, 0)),
+                            globals.friendzoneYellow),
                       ),
                       child: Container(
                         width: 220,

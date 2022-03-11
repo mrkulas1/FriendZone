@@ -165,7 +165,7 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
               _events = getAllEvents();
             });
           },
-          backgroundColor: const Color.fromARGB(255, 255, 204, 0),
+          backgroundColor: globals.friendzoneYellow,
           child: const Icon(Icons.restart_alt)),
     );
   }

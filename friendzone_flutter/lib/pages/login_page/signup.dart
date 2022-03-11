@@ -266,8 +266,8 @@ class _SignUpPage extends State<SignUpPage> {
                       const SizedBox(
                         height: 12,
                       ),
-                      GestureDetector(
-                        onTap: () {
+                      ElevatedButton(
+                        onPressed: () {
                           if (_signupFormKey.currentState!.validate()) {
                             setState(() {
                               _futureUser = register(
@@ -297,13 +297,19 @@ class _SignUpPage extends State<SignUpPage> {
                             });
                           }
                         },
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              globals.friendzoneYellow),
+                        ),
                         child: Container(
                           alignment: Alignment.center,
                           width: 250,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(50)),
-                            color: Color(0xFFFFCC00),
-                          ),
                           child: const Padding(
                             padding: EdgeInsets.all(12.0),
                             child: Text(

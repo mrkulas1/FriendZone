@@ -62,7 +62,7 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                             onPressed: () {/*TODO: Join Logic*/},
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  Color.fromARGB(255, 255, 204, 0)),
+                                  globals.friendzoneYellow),
                             ),
                             child: const Text("Join")),
                         Text(
@@ -87,7 +87,7 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                               style: ButtonStyle(
                                 backgroundColor:
                                     MaterialStateProperty.all<Color>(
-                                        Color.fromARGB(255, 255, 204, 0)),
+                                        globals.friendzoneYellow),
                               ),
                               child: const Text("Edit"))
                           : Container(),
