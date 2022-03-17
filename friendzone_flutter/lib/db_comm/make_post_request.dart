@@ -18,7 +18,8 @@ enum PHPFunction {
   createEvent,
   updateEvent,
 
-  joinEvent
+  joinEvent,
+  leaveEvent,
 }
 
 // Path for all POST requests
@@ -124,7 +125,7 @@ Future<List<T>> makeListPostRequest<T, U extends JsonListBuilder<T>>(
       throw Exception(
           errMessages[phpInternalErrorCode] ?? "PHP Error occurred");
     default:
-      throw Exception("""Unexpected error occurred. 
+      throw Exception("""Unexpected error occurred.
           Check your internet connection and try again.""");
   }
 }

@@ -1,5 +1,5 @@
 <?php
-// MAKE SURE THESE CONSTANTS ARE ALWAYS IN THE SAME ORDER AS THE ONE IN 
+// MAKE SURE THESE CONSTANTS ARE ALWAYS IN THE SAME ORDER AS THE ONE IN
 // make_post.dart!!
 
 // Would be an enum, but those aren't supported in the PHP 7 on MTU servers
@@ -8,13 +8,14 @@ class PHPFunctions
     const AUTH = 0;
     const GET_USER = 1;
     const CREATE_USER = 2;
-    
+
     const GET_ALL_EVENTS = 3;
     const GET_DETAILED_EVENT = 4;
     const CREATE_EVENT = 5;
     const UPDATE_EVENT = 6;
-    
-    const JOIN_EVENT = 7;    
+
+    const JOIN_EVENT = 7;
+    const LEAVE_EVENT = 8;
 }
 
 // Main entry point for a Flutter page to make a POST request. The Flutter code
@@ -76,10 +77,10 @@ switch ($functionID) {
         $p = $data["password"];
         //Output Auth function performed upon input
         $code = Auth($e, $p);
-        
+
         echo json_encode( array("status" => $code) );
         break;
-    
+
     case PHPFunctions::GET_USER:
         //Get input from POST Request
         if (!isset($data["email"])) {
@@ -89,7 +90,7 @@ switch ($functionID) {
         $e = $data["email"];
         //Output specified user based upon input data
         $user = Get_User($e);
-        
+
         if (isset($user["error"])) {
             echo json_encode($user);
             if ($user["error"] == "No user with this email") {
@@ -100,7 +101,7 @@ switch ($functionID) {
 
         echo json_encode($user);
         break;
-    
+
     case PHPFunctions::CREATE_USER:
         //Received input from POST Request and taken as variables
         if (!bulk_isset(array("email", "password", "name", "intro", "contact"), $data)) {
@@ -114,7 +115,7 @@ switch ($functionID) {
         $c = $data["contact"];
         //Performs and outputs Create_User Function
         $user = Create_User($e, $p, $n, $i, $c);
-        
+
         if (isset($user["error"])) {
             if ($user["error"] == "User Already Exists") {
                 fail_alreadyThere();
@@ -124,11 +125,11 @@ switch ($functionID) {
 
         echo json_encode($user);
         break;
-    
+
     case PHPFunctions::GET_ALL_EVENTS:
         //Return Get_All_Events Function
         $events = Get_All_Events();
-        
+
         if (isset($events["error"])) {
             echo json_encode($events);
             fail_general();
@@ -136,7 +137,7 @@ switch ($functionID) {
 
         echo json_encode($events);
         break;
-    
+
     case PHPFunctions::GET_DETAILED_EVENT:
         //Takes POST input and outputs further details of the request
         if (!isset($data["id"])) {
@@ -145,7 +146,7 @@ switch ($functionID) {
 
         $i = $data["id"];
         $event = Get_Detailed_Event($i);
-        
+
         if (isset($event["error"])) {
             echo json_encode($event);
             if ($event["error"] == "No event with this ID") {
@@ -153,13 +154,13 @@ switch ($functionID) {
             }
             fail_general();
         }
-        
+
         echo json_encode($event);
         break;
-    
+
     case PHPFunctions::CREATE_EVENT:
         //Takes POST input and assigns data to variables
-        if (!bulk_isset(array("userEmail", "title", "description", 
+        if (!bulk_isset(array("userEmail", "title", "description",
             "location", "time", "slots", "category"), $data)) {
             fail_general();
         }
@@ -173,7 +174,7 @@ switch ($functionID) {
 
         //Variables input to Create_Event function, performed, and returned
         $event = Create_Event($e, $t, $d, $time, $l, $s, $c);
-        
+
         if (isset($event["error"])) {
             echo json_encode($event);
             fail_general();
@@ -181,7 +182,7 @@ switch ($functionID) {
 
         echo json_encode($event);
         break;
-    
+
     case PHPFunctions::UPDATE_EVENT:
         $i = $data["id"];
         $t = $data["title"];
@@ -193,7 +194,7 @@ switch ($functionID) {
 
         //Variables input to Create_Event function, performed, and returned
         $event = Update_Event($i, $t, $d, $time, $l, $s, $c);
-        
+
         if (isset($event["error"])) {
             echo json_encode($event);
             if ($event["error"] == "No event with this ID") {
@@ -212,6 +213,13 @@ switch ($functionID) {
         $c = $data["comment"];
         //Returns and performs Join_Event function
         return Join_Event($i, $e, $c);
+        break;
+
+    case PHPFunctions::LEAVE_EVENT:
+        // DO SOMETHING HERE
+        $i = $date["id"];
+        $e = $data["email"];
+        return Leave_Event($i, $e);
         break;
 
     default:

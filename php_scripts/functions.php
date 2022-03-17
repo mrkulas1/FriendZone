@@ -16,7 +16,7 @@
   }
 
   /*
-  Return Codes: 
+  Return Codes:
   0 - Success
   1 - User DNE
   2 - Wrong Password
@@ -25,9 +25,9 @@
   */
   function Auth(String $email, String $password) {
     //Authenticates User for login function
-    try{ 
+    try{
       $dbh = connectDB();
-      
+
       // Determine whether user exists
       $statement = $dbh->prepare("select count(*) from User where email = :email");
       $statement->bindParam(":email", $email);
@@ -52,10 +52,10 @@
       if ($row[0] == 0) {
         return 2;
       }
-      
-      
+
+
       return 0;
-    } 
+    }
     catch (PDOException $exception){
         //echo 'Errors Occurred in Auth Function function.php';
         //echo $exception->getMessage();
@@ -72,7 +72,7 @@
       $statement->bindParam(":email", $email);
       $result = $statement->execute();
       $row = $statement->fetch(PDO::FETCH_ASSOC);
-      
+
       $dbh = null;
 
       if (empty($row)) {
@@ -80,14 +80,14 @@
       }
 
       return $row;
-    } 
+    }
     catch (PDOException $exception){
       return errorReturn($exception->getMessage());
     }
   }
 
   function Create_User(String $email, String $password, String $name, String $intro, String $contact){
-    //Creates user in DB, then return that user 
+    //Creates user in DB, then return that user
     try {
       $dbh = connectDB();
       $statement = $dbh->prepare("SELECT count(*) from User where email = :email");
@@ -99,9 +99,9 @@
         $dbh = null;
         return errorReturn("User Already Exists");
       }
-    
-      
-      $statement = $dbh->prepare("INSERT INTO User (email, password, name, introduction, additional_contact) 
+
+
+      $statement = $dbh->prepare("INSERT INTO User (email, password, name, introduction, additional_contact)
         values(:email, sha2(:password, 256), :name, :intro, :contact)");
       $statement->bindParam(":email", $email);
       $statement->bindParam(":password", $password);
@@ -113,7 +113,7 @@
       $dbh = null;
 
       return Get_User($email);
-    } 
+    }
     catch (PDOException $exception){
       return errorReturn($exception->getMessage());
     }
@@ -130,25 +130,25 @@
       $dbh = null;
 
       return $return;
-    } 
-  
+    }
+
     catch (PDOException $exception){
       echo 'Errors Occurred in Get_Friends Function function.php';
       echo $exception->getMessage();
     }
-    
+
   }
 
   function Get_All_Events(){
     // Returns list of events with the basic info
-    // TODO: maybe filter these to only events that are in the future?  
+    // TODO: maybe filter these to only events that are in the future?
     try {
       $dbh = connectDB();
-      
+
       $statement = $dbh->prepare("Select id, email, title, time, location, slots, category from Event");
       $return = $statement->execute();
       $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
-      
+
       $dbh = null;
 
       return $rows;
@@ -173,20 +173,20 @@
       }
 
       return $row;
-    } 
+    }
     catch (PDOException $exception){
       return errorReturn($exception->getMessage());
     }
   }
 
-  function Create_Event(String $email, String $title, String $description, 
+  function Create_Event(String $email, String $title, String $description,
     String $time, String $location, int $slots, int $category) {
     //creates event, then returns its detailed info
     // NOTE - Commenting out time for now since String - DATETIME will be weird
     try {
       $dbh = connectDB();
-      
-      $statement = $dbh->prepare("INSERT INTO Event(email, title, description, /*time,*/ location, slots, category) 
+
+      $statement = $dbh->prepare("INSERT INTO Event(email, title, description, /*time,*/ location, slots, category)
         values(:email, :title, :description, /*:time,*/ :location, :slots, :category)");
       $statement->bindParam(":email", $email);
       $statement->bindParam(":title", $title);
@@ -196,23 +196,23 @@
       $statement->bindParam(":slots", $slots);
       $statement->bindParam(":category", $category);
       $result = $statement->execute();
-      
-      // This is potentially prone to error - need testing, 
+
+      // This is potentially prone to error - need testing,
       // probably want to wrap in transaction to avoid race condition
       $statement = $dbh->prepare("SELECT max(id) from Event");
       $result = $statement->execute();
       $eventID = ( $statement->fetch() )[0];
-      
+
       $dbh = null;
       return Get_Detailed_Event($eventID);
-    } 
+    }
     catch (PDOException $exception){
       return errorReturn($exception->getMessage());
     }
   }
- 
+
   // Making this to quickly throw something together
-  function Update_Event(int $id, String $title, String $description, 
+  function Update_Event(int $id, String $title, String $description,
     String $time, String $location, int $slots, int $category) {
 
     try {
@@ -228,7 +228,7 @@
         return errorReturn("No event with this ID");
       }
 
-      $statement = $dbh->prepare("UPDATE Event SET title = :title, description = :description, 
+      $statement = $dbh->prepare("UPDATE Event SET title = :title, description = :description,
         /*time = :time,*/ location = :location, slots = :slots, category = :category WHERE id = :id");
       $statement->bindParam(":id", $id);
       $statement->bindParam(":title", $title);
@@ -259,10 +259,10 @@
 //      $statement->bindParam(":param", $param);
 //      $statement->bindParam(":newVal", $newVal);
 //      $result = $statement->execute();
- 
+
 //      return $result;
 //    }
-   
+
 //    catch (PDOException $exception){
 //      echo 'Errors Occurred in Update_Event Function w/ String param function.php';
 //      echo $exception->getMessage();
@@ -280,9 +280,9 @@
   //     $statement->bindParam(":param", $param);
   //     $statement->bindParam(":newVal", $newVal);
   //     $result = $statement->execute();
-    
+
   //     return $result;
-  //   } 
+  //   }
   //   catch (Exception $exception){
   //     echo 'Errors Occurred in Update_Event Function w/ int param function.php';
   //     echo $exception->getMessage();
@@ -295,47 +295,78 @@
   }
 
   function Join_Event(int $id, String $email, String $comment){
-    // Signs up user for desired event
-    // This needs more work, but I'm leaving it alone for now
     try {
       $dbh = connectDB();
-      
-      $statement = $dbh->prepare("Select count(*) from Joins where id = :id");
+
+      $statement = $dbh->prepare("SELECT Count(id) FROM Joins WHERE id = :id AND email = :email");
       $statement->bindParam(":id", $id);
-      $result1 = $statement->execute();
-      
-      $statement = $dbh->prepare("Select slots from Event where id = :id");
+      $statement->bindParam(":email", $email);
+      $statement->execute();
+      $result = $statement->fetchColumn(0);
+
+      // Check if user already sign up for an event
+      if($result > 0){
+        echo("Hasdjoasp\n");
+        $statement = $dbh->prepare("UPDATE Joins set comment = :comment where id = :id and email = :email");
+        $statement->bindParam(":id", $id);
+        $statement->bindParam(":email", $email);
+        $statement->bindParam(":comment", $comment);
+        $statement->execute();
+        return "Updated Event Comment";
+      }
+
+
+      $statement = $dbh->prepare("SELECT Count(id) FROM Joins WHERE id = :id");
       $statement->bindParam(":id", $id);
-      $result2 = $statement->execute();
-      
+      $statement->execute();
+      $result1 = $statement->fetchColumn(0);
+
+      $statement = $dbh->prepare("SELECT slots FROM Event WHERE id = :id");
+      $statement->bindParam(":id", $id);
+      $statement->execute();
+      $result2 = $statement->fetchColumn(0);
+
+      // Check if there are any slots left.
       if($result1 == $result2){
         return "Event has no remaining slots";
+      } else {
+        $statement = $dbh->prepare("INSERT INTO Joins values(:id, :email, :comment)");
+        $statement->bindParam(":id", $id);
+        $statement->bindParam(":email", $email);
+        $statement->bindParam(":comment", $comment);
+        $statement->execute();
+        return "Event Joined Successfully";
       }
-      
-      $statement = $dbh->prepare("SELECT count(*) from Joins where id = :id and email = :email");
+    }
+    catch (PDOException $exception){
+      echo 'Errors Occurred in Join_Event Function function.php';
+      echo $exception->getMessage();
+    }
+  }
+
+  function Leave_Event(int $id, String $email){
+
+    try{
+      $dbh = connectDB();
+
+      $statement = $dbh->prepare("SELECT ifnull(Count(*), 0) From Joins where id = :id and email = :email");
+      $statement->bindParam(":id", $id);
+      $statement->bindParam(":email", $email);
+      $statement->execute();
+      $result = $statement->fetchColumn(0);
+      // Check if user is signed up to the event
+      if ($result == 0) {
+        return "Already left the event";
+      }
+
+      $statement = $dbh->prepare("DELETE from Joins where id=:id and Email = :email");
       $statement->bindParam(":id", $id);
       $statement->bindParam(":email", $email);
       $result = $statement->execute();
-      
-      if($result > 0){
-        $statement = $dbh->prepare("UPDATE Joins where Id = :id and Email = :email set Comment = :comment");
-        $statement->bindParam(":id", $id);
-        $statement->bindParam(":email", $email);  
-        $statement->bindParam(":comment", $comment);
-        $statement->execute();
-        return "Updated Event Comment"; 
-      }
-      else {
-        $statement = $dbh->prepare("INSERT INTO Joins values(:id, :email, :comment)");
-        $statement->bindParam(":id", $id);
-        $statement->bindParam(":email", $email);  
-        $statement->bindParam(":comment", $comment);
-        $statement->execute();
-        return "Event Joined Successfully"; 
-      }
-    } 
-    catch (PDOException $exception){
-      echo 'Errors Occurred in Join_Event Function function.php';
+      return "Event leave successfully";
+    }
+    catch (PDOException $exception) {
+      echo 'Errors Occurred in Leave_Event Function function.php';
       echo $exception->getMessage();
     }
   }
@@ -348,7 +379,7 @@
       $statement->bindParam(":id", $id);
       $result = $statement->execute();
       return $result;
-    } 
+    }
     catch (PDOException $exception){
       echo 'Errors Occurred in Get_Event_Attendees Function function.php';
       echo $exception->getMessage();
