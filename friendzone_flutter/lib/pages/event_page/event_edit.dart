@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:friendzone_flutter/globals.dart' as globals;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -25,6 +27,8 @@ class EventEditPageState extends State<EventEditPage> {
   final TextEditingController _datetimeEdit = TextEditingController();
   final TextEditingController _categoryEdit = TextEditingController();
   final TextEditingController _descriptionEdit = TextEditingController();
+  TimeOfDay selectedTime = TimeOfDay.now();
+  DateTime dateTime = DateTime.now();
 
   @override
   void initState() {
@@ -142,21 +146,54 @@ class EventEditPageState extends State<EventEditPage> {
                             )),
                       ),
                     ),
-                    Container(
-                      width: 260,
-                      height: 80,
-                      child: TextFormField(
-                        validator: (value) {
-                          return null;
-                        },
-                        controller: _datetimeEdit,
-                        decoration: const InputDecoration(
-                            labelText: "Date/Time",
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(3)),
-                            )),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 70,
+                          width: 64,
+                          padding: const EdgeInsets.only(bottom: 35),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  globals.friendzoneYellow),
+                            ),
+                            onPressed: () {
+                              _selectDate(context);
+                            },
+                            child: const Text("Date"),
+                          ),
+                        ),
+                        Container(
+                          height: 70,
+                          width: 90,
+                          padding: const EdgeInsets.only(left: 10, top: 10),
+                          child: Text(
+                              "${dateTime.month}/${dateTime.day}/${dateTime.year}"),
+                        ),
+                        Container(
+                          height: 70,
+                          width: 64,
+                          padding: const EdgeInsets.only(bottom: 35),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  globals.friendzoneYellow),
+                            ),
+                            onPressed: () {
+                              _selectTime(context);
+                            },
+                            child: const Text("Time"),
+                          ),
+                        ),
+                        Container(
+                          height: 70,
+                          width: 60,
+                          padding: const EdgeInsets.only(left: 8, top: 10),
+                          child: Text(
+                              "${selectedTime.hour}:${selectedTime.minute}"),
+                        ),
+                      ],
                     ),
                     Container(
                       width: 260,
@@ -252,5 +289,33 @@ class EventEditPageState extends State<EventEditPage> {
         ),
       ),
     );
+  }
+
+  _selectTime(BuildContext context) async {
+    final TimeOfDay? timeOfDay = await showTimePicker(
+      context: context,
+      initialTime: selectedTime,
+      initialEntryMode: TimePickerEntryMode.dial,
+    );
+    if (timeOfDay != null && timeOfDay != selectedTime) {
+      setState(() {
+        selectedTime = timeOfDay;
+      });
+    }
+  }
+
+  _selectDate(BuildContext context) async {
+    final DateTime? dateTimeFinal = await showDatePicker(
+      context: context,
+      initialDate: dateTime,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.utc(DateTime.now().year + 5),
+      initialEntryMode: DatePickerEntryMode.calendar,
+    );
+    if (dateTimeFinal != null && dateTimeFinal != dateTime) {
+      setState(() {
+        dateTime = dateTimeFinal;
+      });
+    }
   }
 }
