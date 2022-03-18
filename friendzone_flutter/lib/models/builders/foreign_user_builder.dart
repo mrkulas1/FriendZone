@@ -14,8 +14,11 @@ class ForeignUserBuilder extends JsonBuilder<ForeignUser>
 
   @override
   ForeignUser fromJson(Map<String, dynamic> json) {
-    // TODO: implement fromJson
-    throw UnimplementedError();
+    return ForeignUser(
+        email: json["email"] ?? "",
+        name: json["name"] ?? "",
+        introduction: json["introduction"] ?? "",
+        contact: json["additional_contact"] ?? "");
   }
 
   @override
@@ -26,7 +29,12 @@ class ForeignUserBuilder extends JsonBuilder<ForeignUser>
 
   @override
   List<ForeignUser> listFromJson(List json) {
-    // TODO: implement listFromJson
-    throw UnimplementedError();
+    List<ForeignUser> users = [];
+
+    for (var user in json) {
+      users.add(fromJson(user));
+    }
+
+    return users;
   }
 }

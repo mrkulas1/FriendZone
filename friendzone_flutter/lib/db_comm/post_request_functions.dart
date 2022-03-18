@@ -1,10 +1,12 @@
 import 'package:friendzone_flutter/models/auth_result.dart';
+import 'package:friendzone_flutter/models/builders/foreign_user_builder.dart';
 import 'package:friendzone_flutter/models/current_user.dart';
 import 'package:friendzone_flutter/models/event.dart';
 
 import 'package:friendzone_flutter/models/builders/auth_result_builder.dart';
 import 'package:friendzone_flutter/models/builders/current_user_builder.dart';
 import 'package:friendzone_flutter/models/builders/event_builder.dart';
+import 'package:friendzone_flutter/models/foreign_user.dart';
 
 import 'make_post_request.dart';
 import 'dart:async';
@@ -133,4 +135,13 @@ Future<void> leaveEvent(String userEmail, int eventID) async {
   Map<String, dynamic> input = {"email": userEmail, "id": eventID};
 
   await makeVoidPostRequest(PHPFunction.leaveEvent, input);
+}
+
+Future<List<ForeignUser>> getSignedUpUsers(int eventID) async {
+  Map<String, dynamic> input = {"id": eventID};
+
+  List<ForeignUser> users = await makeListPostRequest(
+      PHPFunction.getEventUsers, input, ForeignUserBuilder());
+
+  return users;
 }

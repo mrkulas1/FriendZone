@@ -20,6 +20,8 @@ enum PHPFunction {
 
   joinEvent,
   leaveEvent,
+
+  getEventUsers
 }
 
 // Path for all POST requests
@@ -35,8 +37,6 @@ const int phpInternalErrorCode = 202;
 /// that can build type T from JSON.
 ///
 /// [inputData] is a Map of parameters that will be passed to the POST
-/// [errMessages] is the Map of messages to print on POST request failure,
-/// depending on the response code (thrown as exception)
 /// [builder] is an instance of type U used to build the returned object
 Future<T> makePostRequest<T, U extends JsonBuilder<T>>(
     PHPFunction functionID, Map<String, dynamic> inputData, U builder) async {
@@ -71,8 +71,6 @@ Future<T> makePostRequest<T, U extends JsonBuilder<T>>(
 /// JsonListBuilder derived class that can build type List<T> from JSON.
 ///
 /// [inputData] is a Map of parameters that will be passed to the POST
-/// [errMessages] is the Map of messages to print on POST request failure,
-/// depending on the response code (thrown as exception)
 /// [builder] is an instance of type U used to build the returned list
 Future<List<T>> makeListPostRequest<T, U extends JsonListBuilder<T>>(
     PHPFunction functionID, Map<String, dynamic> inputData, U builder) async {
