@@ -16,10 +16,9 @@ import 'dart:async';
 /// [password]
 Future<AuthResult> authenticate(String email, String password) async {
   Map<String, dynamic> input = {"email": email, "password": password};
-  Map<int, String> errorMessages = buildErrorMessages();
 
-  AuthResult authResult = await makePostRequest(
-      PHPFunction.auth, input, errorMessages, AuthResultBuilder());
+  AuthResult authResult =
+      await makePostRequest(PHPFunction.auth, input, AuthResultBuilder());
 
   if (!authResult.success()) {
     return authResult;
@@ -29,7 +28,7 @@ Future<AuthResult> authenticate(String email, String password) async {
   input = {"email": email};
 
   CurrentUser user = await makePostRequest(
-      PHPFunction.getCurrentUser, input, errorMessages, CurrentUserBuilder());
+      PHPFunction.getCurrentUser, input, CurrentUserBuilder());
 
   authResult.setUser(user);
 
@@ -48,14 +47,8 @@ Future<CurrentUser> register(String email, String password, String name,
     "contact": contactInfo
   };
 
-  Map<int, String> errorMessages = buildErrorMessages(
-      alreadyThereMessage:
-          "A user with this email is already registered. Try logging in",
-      internalErrorMessage: "Failed to create the user."
-          " Check your internet connection and try again");
-
   CurrentUser user = await makePostRequest(
-      PHPFunction.createUser, input, errorMessages, CurrentUserBuilder());
+      PHPFunction.createUser, input, CurrentUserBuilder());
 
   return user;
 }
@@ -63,12 +56,9 @@ Future<CurrentUser> register(String email, String password, String name,
 /// Get a list of the basic info for all Events. Throw an exception on failure.
 Future<List<Event>> getAllEvents() async {
   Map<String, dynamic> input = {};
-  Map<int, String> errorMessages = buildErrorMessages(
-      internalErrorMessage: "Failed to retrieve events."
-          " Check your internet connection and try again.");
 
   List<Event> events = await makeListPostRequest(
-      PHPFunction.getAllEvents, input, errorMessages, EventBuilder());
+      PHPFunction.getAllEvents, input, EventBuilder());
 
   return events;
 }
@@ -77,13 +67,8 @@ Future<List<Event>> getAllEvents() async {
 Future<Event> getDetailedEvent(int eventID) async {
   Map<String, dynamic> input = {"id": eventID};
 
-  Map<int, String> errorMessages = buildErrorMessages(
-      notFoundMessage: "Requested event was not found.",
-      internalErrorMessage: "Failed to retrieve event data."
-          " Check your internet connection and try again.");
-
   Event event = await makePostRequest(
-      PHPFunction.getDetailedEvent, input, errorMessages, EventBuilder());
+      PHPFunction.getDetailedEvent, input, EventBuilder());
 
   return event;
 }
@@ -102,12 +87,8 @@ Future<Event> createEvent(String userEmail, String title, String description,
     "category": category
   };
 
-  Map<int, String> errorMessages = buildErrorMessages(
-      internalErrorMessage: "Failed to create the event."
-          " Check your internet connection and try again.");
-
-  Event event = await makePostRequest(
-      PHPFunction.createEvent, input, errorMessages, EventBuilder());
+  Event event =
+      await makePostRequest(PHPFunction.createEvent, input, EventBuilder());
 
   return event;
 }
@@ -126,20 +107,30 @@ Future<Event> updateEvent(int eventID, String title, String description,
     "category": category
   };
 
-  Map<int, String> errorMessages = buildErrorMessages(
-      notFoundMessage: "No event with the provided ID exists",
-      internalErrorMessage: "Failed to update the event."
-          " Check your internet connection and try again.");
-
-  Event event = await makePostRequest(
-      PHPFunction.updateEvent, input, errorMessages, EventBuilder());
+  Event event =
+      await makePostRequest(PHPFunction.updateEvent, input, EventBuilder());
 
   return event;
 }
 
 /// Add the user with email [userEmail] to the event with ID [eventID], with
 /// a given [comment]. Will update the existing join comment if the user has
-/// already joined the event.
-Future<bool> joinEvent(String userEmail, int eventID, String comment) async {
-  throw UnimplementedError();
+/// already joined the event. Returns nothing on success, throws an exception
+/// on failure.
+Future<void> joinEvent(String userEmail, int eventID, String comment) async {
+  Map<String, dynamic> input = {
+    "email": userEmail,
+    "id": eventID,
+    "comment": comment
+  };
+
+  await makeVoidPostRequest(PHPFunction.joinEvent, input);
+}
+
+/// Remove the user with email [userEmail] from the event with ID [eventID]
+/// Returns nothing on success, throws an exception on failure.
+Future<void> leaveEvent(String userEmail, int eventID) async {
+  Map<String, dynamic> input = {"email": userEmail, "id": eventID};
+
+  await makeVoidPostRequest(PHPFunction.leaveEvent, input);
 }

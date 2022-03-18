@@ -90,15 +90,7 @@ switch ($functionID) {
         $e = $data["email"];
         //Output specified user based upon input data
         $user = Get_User($e);
-
-        if (isset($user["error"])) {
-            echo json_encode($user);
-            if ($user["error"] == "No user with this email") {
-                fail_notFound();
-            }
-            fail_general();
-        }
-
+ 
         echo json_encode($user);
         break;
 
@@ -116,13 +108,6 @@ switch ($functionID) {
         //Performs and outputs Create_User Function
         $user = Create_User($e, $p, $n, $i, $c);
 
-        if (isset($user["error"])) {
-            if ($user["error"] == "User Already Exists") {
-                fail_alreadyThere();
-            }
-            fail_general();
-        }
-
         echo json_encode($user);
         break;
 
@@ -130,10 +115,6 @@ switch ($functionID) {
         //Return Get_All_Events Function
         $events = Get_All_Events();
 
-        if (isset($events["error"])) {
-            echo json_encode($events);
-            fail_general();
-        }
 
         echo json_encode($events);
         break;
@@ -146,14 +127,6 @@ switch ($functionID) {
 
         $i = $data["id"];
         $event = Get_Detailed_Event($i);
-
-        if (isset($event["error"])) {
-            echo json_encode($event);
-            if ($event["error"] == "No event with this ID") {
-                fail_notFound();
-            }
-            fail_general();
-        }
 
         echo json_encode($event);
         break;
@@ -175,15 +148,15 @@ switch ($functionID) {
         //Variables input to Create_Event function, performed, and returned
         $event = Create_Event($e, $t, $d, $time, $l, $s, $c);
 
-        if (isset($event["error"])) {
-            echo json_encode($event);
-            fail_general();
-        }
-
         echo json_encode($event);
         break;
 
     case PHPFunctions::UPDATE_EVENT:
+        if (!bulk_isset(array("id", "title", "description",
+            "location", "time", "slots", "category"), $data)) {
+            fail_general();
+        }
+
         $i = $data["id"];
         $t = $data["title"];
         $d = $data["description"];
@@ -195,31 +168,42 @@ switch ($functionID) {
         //Variables input to Create_Event function, performed, and returned
         $event = Update_Event($i, $t, $d, $time, $l, $s, $c);
 
-        if (isset($event["error"])) {
-            echo json_encode($event);
-            if ($event["error"] == "No event with this ID") {
-                fail_notFound();
-            }
-            fail_general();
-        }
-
         echo json_encode($event);
         break;
 
     case PHPFunctions::JOIN_EVENT:
-        //Receives POST input and assigns to variables
+        if (!bulk_isset(array("id", "email", "comment"), $data)) {
+            fail_general();
+        }
+
         $i = $data["id"];
         $e = $data["email"];
         $c = $data["comment"];
         //Returns and performs Join_Event function
-        return Join_Event($i, $e, $c);
+        $joined = Join_Event($i, $e, $c);
+
+        if (isset($joined["error"])) {
+            return json_encode($joined);
+        }
+
+        return json_encode(array("status" => $joined));
         break;
 
     case PHPFunctions::LEAVE_EVENT:
-        // DO SOMETHING HERE
+        if (!bulk_isset(array("id", "email"), $data)) {
+            fail_general();
+        }
+
         $i = $date["id"];
         $e = $data["email"];
-        return Leave_Event($i, $e);
+
+        $left = Leave_Event($i, $e);
+
+        if (isset($left["error"])) {
+            return json_encode($left);
+        }
+
+        return json_encode(array("status" => $left));
         break;
 
     default:

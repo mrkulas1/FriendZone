@@ -306,13 +306,13 @@
 
       // Check if user already sign up for an event
       if($result > 0){
-        echo("Hasdjoasp\n");
+        //echo("Hasdjoasp\n");
         $statement = $dbh->prepare("UPDATE Joins set comment = :comment where id = :id and email = :email");
         $statement->bindParam(":id", $id);
         $statement->bindParam(":email", $email);
         $statement->bindParam(":comment", $comment);
         $statement->execute();
-        return "Updated Event Comment";
+        return 1; //"Updated Event Comment";
       }
 
 
@@ -328,24 +328,23 @@
 
       // Check if there are any slots left.
       if($result1 == $result2){
-        return "Event has no remaining slots";
+        return errorReturn("Event has no remaining slots");
       } else {
         $statement = $dbh->prepare("INSERT INTO Joins values(:id, :email, :comment)");
         $statement->bindParam(":id", $id);
         $statement->bindParam(":email", $email);
         $statement->bindParam(":comment", $comment);
         $statement->execute();
-        return "Event Joined Successfully";
+        return 1; //"Event Joined Successfully";
       }
     }
     catch (PDOException $exception){
-      echo 'Errors Occurred in Join_Event Function function.php';
-      echo $exception->getMessage();
+      //echo 'Errors Occurred in Join_Event Function function.php';
+      return errorReturn($exception->getMessage());
     }
   }
 
   function Leave_Event(int $id, String $email){
-
     try{
       $dbh = connectDB();
 
@@ -356,18 +355,18 @@
       $result = $statement->fetchColumn(0);
       // Check if user is signed up to the event
       if ($result == 0) {
-        return "Already left the event";
+        return errorReturn("Already left the event");
       }
 
       $statement = $dbh->prepare("DELETE from Joins where id=:id and Email = :email");
       $statement->bindParam(":id", $id);
       $statement->bindParam(":email", $email);
       $result = $statement->execute();
-      return "Event leave successfully";
+      return 1; //"Event leave successfully";
     }
     catch (PDOException $exception) {
-      echo 'Errors Occurred in Leave_Event Function function.php';
-      echo $exception->getMessage();
+      //echo 'Errors Occurred in Leave_Event Function function.php';
+      return errorReturn($exception->getMessage());
     }
   }
 
@@ -381,8 +380,8 @@
       return $result;
     }
     catch (PDOException $exception){
-      echo 'Errors Occurred in Get_Event_Attendees Function function.php';
-      echo $exception->getMessage();
+      //echo 'Errors Occurred in Get_Event_Attendees Function function.php';
+      return errorReturn($exception->getMessage());
     }
   }
 ?>
