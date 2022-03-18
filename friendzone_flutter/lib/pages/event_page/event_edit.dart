@@ -38,7 +38,6 @@ class EventEditPageState extends State<EventEditPage> {
     _categoryEdit.text = widget.event.category.toString();
     _numSlotsEdit.text = widget.event.slots.toString();
     _descriptionEdit.text = widget.event.description ?? "";
-    _datetimeEdit.text = widget.event.time;
   }
 
   final _postFormKey = GlobalKey<FormState>();
