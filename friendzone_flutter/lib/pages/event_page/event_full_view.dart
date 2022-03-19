@@ -1,13 +1,17 @@
 /// TODO: Figure out a better UI layout for this page
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:async';
+import 'package:flutter_titled_container/flutter_titled_container.dart';
 
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/models/event.dart';
 import 'package:friendzone_flutter/global_header.dart';
 import 'package:friendzone_flutter/globals.dart' as globals;
 import 'package:friendzone_flutter/pages/event_page/event_edit.dart';
+import '../../models/foreign_user.dart';
 import 'event_viewing.dart';
 
 class DetailEventViewPage extends StatefulWidget {
@@ -18,6 +22,15 @@ class DetailEventViewPage extends StatefulWidget {
 }
 
 class _DetailEventViewPageState extends State<DetailEventViewPage> {
+  Future<List<ForeignUser>>? _signUpUser;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _signUpUser = getSignedUpUsers(widget.data.id);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,13 +71,26 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ElevatedButton(
-                            onPressed: () {/*TODO: Join Logic*/},
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  globals.friendzoneYellow),
-                            ),
-                            child: const Text("Join")),
+                        Row(
+                          children: [
+                            ElevatedButton(
+                                onPressed: () {/*TODO: Join Logic*/},
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          globals.friendzoneYellow),
+                                ),
+                                child: const Text("Join")),
+                            ElevatedButton(
+                                onPressed: () {/*TODO: Leave Logic*/},
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          globals.friendzoneYellow),
+                                ),
+                                child: const Text("Leave")),
+                          ],
+                        ),
                         Text(
                             "Posted on ${widget.data.dateCreated ?? ""}\n"
                             "Posted by ${widget.data.userEmail}",
@@ -171,13 +197,40 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          "Signed Up Users",
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
-                        )),
+                    TitledContainer(
+                      titleColor: Colors.black,
+                      title: 'Signed Up',
+                      textAlign: TextAlignTitledContainer.Center,
+                      fontSize: 16.0,
+                      backgroundColor: Colors.white,
+                      child: Container(
+                        width:
+                            500.0, // Change here to change the width of the box
+                        height: 200.0, // Change to change the height of the box
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black,
+                          ),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
+                        ),
+                        child: _signUpUser == null
+                            ? Container()
+                            : FutureBuilder(
+                                future: _signUpUser,
+                                builder: (context, snapshot) {
+                                  // TODO implement the stuff here
+                                  return const Center(
+                                    child: Text(
+                                      'PUT YOUR STUFF HERE',
+                                      style: TextStyle(fontSize: 29.0),
+                                    ),
+                                  );
+                                },
+                              ),
+                      ),
+                    ),
                     // TODO: Logic to figure out who is signed up for an event
                     // TODO: Add Category once the enum is set up
                   ],

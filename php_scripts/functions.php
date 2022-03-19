@@ -306,7 +306,6 @@
 
       // Check if user already sign up for an event
       if($result > 0){
-        //echo("Hasdjoasp\n");
         $statement = $dbh->prepare("UPDATE Joins set comment = :comment where id = :id and email = :email");
         $statement->bindParam(":id", $id);
         $statement->bindParam(":email", $email);
