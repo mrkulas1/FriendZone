@@ -89,9 +89,9 @@ class EventPostPageState extends State<EventPostPage> {
                     const SizedBox(
                       height: 20,
                     ),
-                    const Text(
-                      "Create an Event",
-                      style: TextStyle(
+                    Text(
+                      widget.editable ? "Update Event" : "Create an Event",
+                      style: const TextStyle(
                         color: Color.fromARGB(66, 5, 5, 5),
                         fontSize: 20,
                       ),
