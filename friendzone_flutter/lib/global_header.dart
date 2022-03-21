@@ -5,7 +5,6 @@ import 'package:friendzone_flutter/pages/login_page/login.dart';
 
 import 'globals.dart' as globals;
 import 'pages/event_page/event_post.dart';
-import 'main.dart';
 
 class Header extends AppBar {
   Header({Key? key})
@@ -50,19 +49,25 @@ class CustomDrawer extends StatelessWidget {
       // through the options in the drawer if there isn't enough vertical
       // space to fit everything.
       child: ListView(
-        // Important: Remove any padding from the ListView.
-        padding: EdgeInsets.zero,
+        padding: const EdgeInsets.all(12),
         children: [
           const DrawerHeader(
             // We can add a logo/picture here for decoration
             decoration: BoxDecoration(
-              color: Colors.amberAccent,
+              color: Colors.black,
+              image: DecorationImage(
+                  image: AssetImage("images/Drawer_img.png"),
+                  fit: BoxFit.contain),
             ),
             child: Text(''),
           ),
           ListTile(
-            textColor: const Color(0xFFFFCC00),
-            title: const Text('Home'),
+            tileColor: const Color(0xFFFFCC00),
+            textColor: Colors.black,
+            title: const Text(
+              'Home',
+              style: TextStyle(fontSize: 20),
+            ),
             onTap: () {
               // TAKE ME HOMEEEEEEEEEEEEEEEEEEEEE
               Navigator.push(
@@ -72,8 +77,12 @@ class CustomDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            textColor: const Color(0xFFFFCC00),
-            title: const Text('Post Event'),
+            tileColor: const Color(0xFFFFCC00),
+            textColor: Colors.black,
+            title: const Text(
+              'Post Event',
+              style: TextStyle(fontSize: 20),
+            ),
             onTap: () {
               Navigator.push(
                 context,
@@ -84,8 +93,12 @@ class CustomDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            textColor: const Color(0xFFFFCC00),
-            title: const Text('Logout'),
+            tileColor: const Color(0xFFFFCC00),
+            textColor: Colors.black,
+            title: const Text(
+              'Logout',
+              style: TextStyle(fontSize: 20),
+            ),
             onTap: () {
               globals.activeUser = null;
               Navigator.pushReplacement(context,
