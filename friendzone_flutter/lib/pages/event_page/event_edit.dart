@@ -130,10 +130,13 @@ class EventEditPageState extends State<EventEditPage> {
                           try {
                             if (value != null) {
                               int a = int.parse(value);
+                              if (a < 1) {
+                                throw new Exception();
+                              }
                             }
                             return null;
                           } on Exception catch (_) {
-                            return 'Please enter a whole number';
+                            return 'Please enter a positive whole number';
                           }
                         },
                         controller: _numSlotsEdit,

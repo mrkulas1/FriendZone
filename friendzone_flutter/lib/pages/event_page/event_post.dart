@@ -121,10 +121,13 @@ class EventPostPageState extends State<EventPostPage> {
                           try {
                             if (value != null) {
                               int a = int.parse(value);
+                              if (a < 1) {
+                                throw new Exception();
+                              }
                             }
                             return null;
                           } on Exception catch (_) {
-                            return 'Please enter a whole number';
+                            return 'Please enter a positive whole number';
                           }
                         },
                         controller: _numSlots,
@@ -184,22 +187,6 @@ class EventPostPageState extends State<EventPostPage> {
                               "${selectedTime.hour}:${selectedTime.minute}"),
                         ),
                       ],
-                    ),
-                    Container(
-                      width: 260,
-                      height: 80,
-                      child: TextFormField(
-                        validator: (value) {
-                          return null;
-                        },
-                        controller: _datetime,
-                        decoration: const InputDecoration(
-                            labelText: "Date/Time",
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(3)),
-                            )),
-                      ),
                     ),
                     Container(
                       width: 260,
