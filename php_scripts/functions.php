@@ -186,12 +186,12 @@
     try {
       $dbh = connectDB();
 
-      $statement = $dbh->prepare("INSERT INTO Event(email, title, description, /*time,*/ location, slots, category)
-        values(:email, :title, :description, /*:time,*/ :location, :slots, :category)");
+      $statement = $dbh->prepare("INSERT INTO Event(email, title, description, time, location, slots, category)
+        values(:email, :title, :description, :time, :location, :slots, :category)");
       $statement->bindParam(":email", $email);
       $statement->bindParam(":title", $title);
       $statement->bindParam(":description", $description);
-      //$statement->bindParam(":time", $time);
+      $statement->bindParam(":time", $time);
       $statement->bindParam(":location", $location);
       $statement->bindParam(":slots", $slots);
       $statement->bindParam(":category", $category);
@@ -229,11 +229,11 @@
       }
 
       $statement = $dbh->prepare("UPDATE Event SET title = :title, description = :description,
-        /*time = :time,*/ location = :location, slots = :slots, category = :category WHERE id = :id");
+        time = :time, location = :location, slots = :slots, category = :category WHERE id = :id");
       $statement->bindParam(":id", $id);
       $statement->bindParam(":title", $title);
       $statement->bindParam(":description", $description);
-      //$statement->bindParam(":time", $time);
+      $statement->bindParam(":time", $time);
       $statement->bindParam(":location", $location);
       $statement->bindParam(":slots", $slots);
       $statement->bindParam(":category", $category);

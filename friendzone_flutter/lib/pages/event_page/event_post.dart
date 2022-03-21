@@ -4,15 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/models/event.dart';
-import 'package:friendzone_flutter/pages/event_page/event_edit.dart';
 import 'package:friendzone_flutter/global_header.dart';
 import 'package:friendzone_flutter/pages/event_page/event_full_view.dart';
 
 class EventPostPage extends StatefulWidget {
   static const String routeName = '/post';
 
+  final Event? event;
+  final bool editable;
+
   void click() {}
-  const EventPostPage({Key? key}) : super(key: key);
+  const EventPostPage({Key? key, required this.editable, this.event})
+      : super(key: key);
 
   @override
   EventPostPageState createState() {
@@ -24,12 +27,35 @@ class EventPostPageState extends State<EventPostPage> {
   final TextEditingController _eventName = TextEditingController();
   final TextEditingController _location = TextEditingController();
   final TextEditingController _numSlots = TextEditingController();
-  final TextEditingController _datetime = TextEditingController();
   final TextEditingController _category = TextEditingController();
   final TextEditingController _description = TextEditingController();
 
-  TimeOfDay selectedTime = TimeOfDay.now();
-  DateTime dateTime = DateTime.now();
+  TimeOfDay _selectedTime = TimeOfDay.now();
+  DateTime _dateTime = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (!widget.editable || widget.event == null) {
+      return;
+    }
+
+    _eventName.text = widget.event!.title;
+    _location.text = widget.event!.location;
+    _category.text = widget.event!.category.toString();
+    _numSlots.text = widget.event!.slots.toString();
+    _description.text = widget.event!.description ?? "";
+
+    try {
+      _dateTime = DateTime.parse(widget.event!.time);
+      _selectedTime =
+          TimeOfDay.fromDateTime(DateTime.parse(widget.event!.time));
+    } catch (e) {
+      TimeOfDay _selectedTime = TimeOfDay.now();
+      DateTime _dateTime = DateTime.now();
+    }
+  }
 
   final _postFormKey = GlobalKey<FormState>();
   @override
@@ -139,54 +165,35 @@ class EventPostPageState extends State<EventPostPage> {
                             )),
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: 70,
-                          width: 64,
-                          padding: const EdgeInsets.only(bottom: 35),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  globals.friendzoneYellow),
-                            ),
-                            onPressed: () {
-                              _selectDate(context);
-                            },
-                            child: const Text("Date"),
+                    Container(
+                      width: 260,
+                      height: 80,
+                      padding: const EdgeInsets.only(bottom: 35),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              globals.friendzoneYellow),
+                        ),
+                        onPressed: () {
+                          _selectDate(context);
+                        },
+                        child: Text(
+                            "${_dateTime.month}/${_dateTime.day}/${_dateTime.year}"),
+                      ),
+                    ),
+                    Container(
+                      width: 260,
+                      height: 80,
+                      padding: const EdgeInsets.only(bottom: 35),
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                globals.friendzoneYellow),
                           ),
-                        ),
-                        Container(
-                          height: 70,
-                          width: 90,
-                          padding: const EdgeInsets.only(left: 10, top: 10),
-                          child: Text(
-                              "${dateTime.month}/${dateTime.day}/${dateTime.year}"),
-                        ),
-                        Container(
-                          height: 70,
-                          width: 64,
-                          padding: const EdgeInsets.only(bottom: 35),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  globals.friendzoneYellow),
-                            ),
-                            onPressed: () {
-                              _selectTime(context);
-                            },
-                            child: const Text("Time"),
-                          ),
-                        ),
-                        Container(
-                          height: 70,
-                          width: 60,
-                          padding: const EdgeInsets.only(left: 8, top: 10),
-                          child: Text(
-                              "${selectedTime.hour}:${selectedTime.minute}"),
-                        ),
-                      ],
+                          onPressed: () {
+                            _selectTime(context);
+                          },
+                          child: Text(_selectedTime.format(context))),
                     ),
                     Container(
                       width: 260,
@@ -223,17 +230,32 @@ class EventPostPageState extends State<EventPostPage> {
                     ElevatedButton(
                       onPressed: () {
                         if (_postFormKey.currentState!.validate()) {
+                          String formattedDateTime =
+                              "${_dateTime.year.toString().padLeft(4, '0')}-"
+                              "${_dateTime.month.toString().padLeft(2, '0')}-"
+                              "${_dateTime.day.toString().padLeft(2, '0')} "
+                              "${_selectedTime.hour.toString().padLeft(2, '0')}:"
+                              "${_selectedTime.minute.toString().padLeft(2, '0')}:00";
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                   content: Text("Creating Event...")));
-                          Future<Event> event = createEvent(
-                              globals.activeUser?.email ?? "",
-                              _eventName.text,
-                              _description.text,
-                              _location.text,
-                              _datetime.text,
-                              int.parse(_numSlots.text),
-                              0 /*TODO: Category enum */);
+                          Future<Event> event = widget.editable
+                              ? updateEvent(
+                                  widget.event!.id,
+                                  _eventName.text,
+                                  _description.text,
+                                  _location.text,
+                                  formattedDateTime,
+                                  int.parse(_numSlots.text),
+                                  0)
+                              : createEvent(
+                                  globals.activeUser?.email ?? "",
+                                  _eventName.text,
+                                  _description.text,
+                                  _location.text,
+                                  formattedDateTime,
+                                  int.parse(_numSlots.text),
+                                  0 /*TODO: Category enum */);
 
                           event.then((value) {
                             ScaffoldMessenger.of(context).clearSnackBars();
@@ -257,11 +279,11 @@ class EventPostPageState extends State<EventPostPage> {
                         width: 220,
                         height: 60,
                         alignment: Alignment.center,
-                        child: const Padding(
-                          padding: EdgeInsets.all(12.0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
                           child: Text(
-                            'Create Event',
-                            style: TextStyle(
+                            widget.editable ? 'Update' : 'Create Event',
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold),
@@ -285,12 +307,12 @@ class EventPostPageState extends State<EventPostPage> {
   _selectTime(BuildContext context) async {
     final TimeOfDay? timeOfDay = await showTimePicker(
       context: context,
-      initialTime: selectedTime,
+      initialTime: _selectedTime,
       initialEntryMode: TimePickerEntryMode.dial,
     );
-    if (timeOfDay != null && timeOfDay != selectedTime) {
+    if (timeOfDay != null && timeOfDay != _selectedTime) {
       setState(() {
-        selectedTime = timeOfDay;
+        _selectedTime = timeOfDay;
       });
     }
   }
@@ -298,14 +320,14 @@ class EventPostPageState extends State<EventPostPage> {
   _selectDate(BuildContext context) async {
     final DateTime? dateTimeFinal = await showDatePicker(
       context: context,
-      initialDate: dateTime,
+      initialDate: _dateTime,
       firstDate: DateTime.now(),
       lastDate: DateTime.utc(DateTime.now().year + 5),
       initialEntryMode: DatePickerEntryMode.calendar,
     );
-    if (dateTimeFinal != null && dateTimeFinal != dateTime) {
+    if (dateTimeFinal != null && dateTimeFinal != _dateTime) {
       setState(() {
-        dateTime = dateTimeFinal;
+        _dateTime = dateTimeFinal;
       });
     }
   }

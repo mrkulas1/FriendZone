@@ -10,7 +10,7 @@ import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/models/event.dart';
 import 'package:friendzone_flutter/global_header.dart';
 import 'package:friendzone_flutter/globals.dart' as globals;
-import 'package:friendzone_flutter/pages/event_page/event_edit.dart';
+import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import '../../models/foreign_user.dart';
 import 'event_viewing.dart';
 
@@ -108,7 +108,9 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (BuildContext context) =>
-                                            EventEditPage(event: widget.data)));
+                                            EventPostPage(
+                                                editable: true,
+                                                event: widget.data)));
                               },
                               style: ButtonStyle(
                                 backgroundColor:
