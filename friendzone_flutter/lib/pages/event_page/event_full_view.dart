@@ -53,7 +53,7 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                   borderRadius: BorderRadius.all(Radius.circular(15)),
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(
                       height: 5,
@@ -74,7 +74,46 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                         Row(
                           children: [
                             ElevatedButton(
-                                onPressed: () {/*TODO: Join Logic*/},
+                                onPressed: () {/*TODO: Join Logic*/
+                                showDialog (
+                                  context: context,
+                                  builder: (context) {
+                                    var messageController = TextEditingController();
+                                    return AlertDialog(
+                                      title: const Text('Please confirm you would like to join this event'),
+                                      content: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Form(
+                                          child: Column(
+                                            children: <Widget> [
+                                              TextFormField(
+                                                controller: messageController,
+                                                decoration: InputDecoration(
+                                                  labelText: 'Is there anything you would like to let the event creator know?'
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      actions: [
+                                        ElevatedButton(
+                                          child: const Text("Join"),
+                                          onPressed: () {
+                                            var comment = messageController.text;
+                                            joinEvent(widget.data.userEmail, widget.data.id, comment);
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                 builder: (BuildContext context) =>
+                                                   const EventViewAllPage()));
+                                          }
+                                          )
+                                      ],
+                                    );
+                                  }
+                                );
+                                },
                                 style: ButtonStyle(
                                   backgroundColor:
                                       MaterialStateProperty.all<Color>(
@@ -206,6 +245,7 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                       fontSize: 16.0,
                       backgroundColor: Colors.white,
                       child: Container(
+                        
                         width:
                             500.0, // Change here to change the width of the box
                         height: 200.0, // Change to change the height of the box
