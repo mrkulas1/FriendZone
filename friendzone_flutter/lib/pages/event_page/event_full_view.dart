@@ -74,7 +74,7 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                         Row(
                           children: [
                             ElevatedButton(
-                                onPressed: () {/*TODO: Join Logic*/
+                                onPressed: () {
                                 showDialog (
                                   context: context,
                                   builder: (context) {
@@ -92,12 +92,17 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                                   labelText: 'Is there anything you would like to let the event creator know?'
                                                 ),
                                               ),
-                                            ],
+                                              ],
                                           ),
                                         ),
                                       ),
                                       actions: [
                                         ElevatedButton(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                               MaterialStateProperty.all<Color>(
+                                               globals.friendzoneYellow),
+                                          ),
                                           child: const Text("Join"),
                                           onPressed: () {
                                             var comment = messageController.text;
