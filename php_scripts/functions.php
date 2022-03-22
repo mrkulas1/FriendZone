@@ -306,7 +306,7 @@
 
       // Check if user already sign up for an event
       if($result > 0){
-        $statement = $dbh->prepare("UPDATE Joins set comment = :comment where id = :id and email = :email");
+        $statement = $dbh->prepare("UPDATE Joins set comment = :comment WHERE id = :id AND email = :email");
         $statement->bindParam(":id", $id);
         $statement->bindParam(":email", $email);
         $statement->bindParam(":comment", $comment);
@@ -347,17 +347,17 @@
     try{
       $dbh = connectDB();
 
-      $statement = $dbh->prepare("SELECT ifnull(Count(*), 0) From Joins where id = :id and email = :email");
+      $statement = $dbh->prepare("SELECT Count(*) FROM Joins WHERE id = :id AND email = :email");
       $statement->bindParam(":id", $id);
       $statement->bindParam(":email", $email);
       $statement->execute();
       $result = $statement->fetchColumn(0);
       // Check if user is signed up to the event
       if ($result == 0) {
-        return errorReturn("Already left the event");
+        return 1;
       }
 
-      $statement = $dbh->prepare("DELETE from Joins where id=:id and Email = :email");
+      $statement = $dbh->prepare("DELETE FROM Joins WHERE id = :id AND email = :email");
       $statement->bindParam(":id", $id);
       $statement->bindParam(":email", $email);
       $result = $statement->execute();
@@ -375,8 +375,9 @@
       $dbh = connectDB();
       $statement = $dbh->prepare("SELECT * from Joins where id = :id");
       $statement->bindParam(":id", $id);
-      $result = $statement->execute();
-      return $result;
+      $statement->execute();
+      $row = $statement->fetchall(PDO::FETCH_ASSOC);
+      return $row;
     }
     catch (PDOException $exception){
       //echo 'Errors Occurred in Get_Event_Attendees Function function.php';

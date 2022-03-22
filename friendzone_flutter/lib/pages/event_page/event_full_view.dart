@@ -121,7 +121,12 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                 ),
                                 child: const Text("Join")),
                             ElevatedButton(
-                                onPressed: () {/*TODO: Leave Logic*/},
+                                onPressed: () {
+                                  /*TODO: Leave Logic*/
+                                  // JUST FOR TESTIN PURPOSE NOTHING OFFICIAL HERE
+                                  leaveEvent(globals.activeUser!.email,
+                                      widget.data.id);
+                                },
                                 style: ButtonStyle(
                                   backgroundColor:
                                       MaterialStateProperty.all<Color>(
