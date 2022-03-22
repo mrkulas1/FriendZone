@@ -106,7 +106,7 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                           child: const Text("Join"),
                                           onPressed: () {
                                             var comment = messageController.text;
-                                            joinEvent(widget.data.userEmail, widget.data.id, comment);
+                                            joinEvent(globals.activeUser!.email, widget.data.id, comment);
                                             Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
