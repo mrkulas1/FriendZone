@@ -373,7 +373,7 @@
    //Returns list of attendees of particular event
     try{
       $dbh = connectDB();
-      $statement = $dbh->prepare("SELECT email, comment from Joins where id = :id");
+      $statement = $dbh->prepare("SELECT * from Joins where id = :id");
       $statement->bindParam(":id", $id);
       $statement->execute();
       $row = $statement->fetchall(PDO::FETCH_ASSOC);
