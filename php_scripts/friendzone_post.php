@@ -16,6 +16,10 @@ class PHPFunctions
 
     const JOIN_EVENT = 7;
     const LEAVE_EVENT = 8;
+
+    const GET_EVENT_USERS = 9;
+    const GET_MY_EVENTS = 10;
+    const GET_JOINED_EVENTS = 11;
 }
 
 // Main entry point for a Flutter page to make a POST request. The Flutter code
@@ -204,6 +208,30 @@ switch ($functionID) {
         }
 
         return json_encode(array("status" => $left));
+        break;
+
+    case PHPFunctions::GET_MY_EVENTS:
+        //Return Get_My_Events Function
+        if (!isset($data["email"])) {
+            fail_general();
+        }
+
+        $i = $data["email"];
+        $events = Get_My_Events($i);
+
+        echo json_encode($events);
+        break;
+
+    case PHPFunctions::GET_JOINED_EVENTS:
+        //Return Get_Joined_Events Function
+        if (!isset($data["email"])) {
+            fail_general();
+        }
+
+        $i = $data["email"];
+        $events = Get_Joined_Events($i);
+
+        echo json_encode($events);
         break;
 
     default:
