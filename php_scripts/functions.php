@@ -31,7 +31,7 @@
     for ($x = 0; $x < strlen(str); $x++){
       $letter = substr($str, $x, 1);
       if($letter != " ") {
-        $newEmail = $newEmail . letter;
+        $newEmail = $newEmail . $letter;
       }
     }
 
