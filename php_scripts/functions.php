@@ -373,11 +373,14 @@
    //Returns list of attendees of particular event
     try{
       $dbh = connectDB();
-      $statement = $dbh->prepare("SELECT * from Joins where id = :id");
+      $statement = $dbh->prepare("SELECT email, name, introduction, additional_contact FROM User NATURAL JOIN Joins WHERE id = :id");
       $statement->bindParam(":id", $id);
       $statement->execute();
-      $row = $statement->fetchall(PDO::FETCH_ASSOC);
-      return $row;
+      $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+      
+      $dbh = null;
+
+      return $rows;
     }
     catch (PDOException $exception){
       //echo 'Errors Occurred in Get_Event_Attendees Function function.php';
