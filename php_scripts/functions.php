@@ -433,7 +433,7 @@
       $statement = $dbh->prepare("SELECT * FROM Event WHERE email = :email");
       $statement->bindParam(":email", $email);
       $result = $statement->execute();
-      $row = $statement->fetch(PDO::FETCH_ASSOC);
+      $row = $statement->fetchAll(PDO::FETCH_ASSOC);
 
       $dbh = null;
 
@@ -449,14 +449,13 @@
   }
 
   function Get_Joined_Events(String $email) {
-    //Returns the user info from the user with the given email
+    //Returns events that a user has joined
     try {
       $dbh = connectDB();
-      //$statement = $dbh->prepare("SELECT e.id id, j.email email, title, description, time, location, slots, category, reported, date_created FROM Joins j JOIN Event e WHERE e.id = j.id && j.email = :email");
       $statement = $dbh->prepare("SELECT e.id id, j.email email, title, description, time, location, slots, category, reported, date_created FROM Joins j JOIN Event e WHERE e.id = j.id && j.email = :email");
       $statement->bindParam(":email", $email);
       $result = $statement->execute();
-      $row = $statement->fetch(PDO::FETCH_ASSOC);
+      $row = $statement->fetchAll(PDO::FETCH_ASSOC);
 
       $dbh = null;
 
