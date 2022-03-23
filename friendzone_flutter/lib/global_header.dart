@@ -90,9 +90,6 @@ class CustomDrawer extends StatelessWidget {
           ),
           ListTile(
             textColor: const Color(0xFFFFCC00),
-            title: const Text('Post Event'),
-            tileColor: const Color(0xFFFFCC00),
-            textColor: Colors.black,
             title: const Text(
               'Post Event',
               style: TextStyle(fontSize: 20),
