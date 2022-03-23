@@ -31,12 +31,19 @@ class EventPostPageState extends State<EventPostPage> {
   final TextEditingController _description = TextEditingController();
 
   TimeOfDay _selectedTime = TimeOfDay.now();
+
   DateTime _dateTime = DateTime.now();
 
   @override
   void initState() {
     super.initState();
-
+    if (_selectedTime.hour == 23) {
+      _selectedTime = const TimeOfDay(hour: 0, minute: 0);
+      _dateTime = DateTime.utc(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day + 1);
+    } else {
+      _selectedTime = TimeOfDay(hour: _selectedTime.hour + 1, minute: 0);
+    }
     if (!widget.editable || widget.event == null) {
       return;
     }
@@ -312,7 +319,13 @@ class EventPostPageState extends State<EventPostPage> {
     );
     if (timeOfDay != null && timeOfDay != _selectedTime) {
       setState(() {
-        _selectedTime = timeOfDay;
+        if (timeOfDay.hour > TimeOfDay.now().hour ||
+            (timeOfDay.hour == TimeOfDay.now().hour &&
+                timeOfDay.minute > TimeOfDay.now().minute)) {
+          _selectedTime = timeOfDay;
+        } else {
+          print("NOPE"); //SNACK BAR
+        }
       });
     }
   }
@@ -320,7 +333,7 @@ class EventPostPageState extends State<EventPostPage> {
   _selectDate(BuildContext context) async {
     final DateTime? dateTimeFinal = await showDatePicker(
       context: context,
-      initialDate: _dateTime,
+      initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime.utc(DateTime.now().year + 5),
       initialEntryMode: DatePickerEntryMode.calendar,
