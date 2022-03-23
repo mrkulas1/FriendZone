@@ -30,7 +30,7 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
   }
 
   // Date selector
-  Future<Null> _selectDate(BuildContext context) async {
+  Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,

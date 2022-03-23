@@ -116,6 +116,9 @@ Future<void> makeVoidPostRequest(
     body: jsonEncode(inputData),
   );
 
+  // Uncomment this when testing join and leave because JSON NOT WORKING PROPERLY
+  // return;
+  // COMMENT THE BELOW CODE OUT WHEN TESTING.
   switch (response.statusCode) {
     case phpSuccessCode:
       Map<String, dynamic> json = jsonDecode(response.body);

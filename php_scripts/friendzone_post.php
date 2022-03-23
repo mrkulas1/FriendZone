@@ -198,7 +198,7 @@ switch ($functionID) {
             fail_general();
         }
 
-        $i = $date["id"];
+        $i = $data["id"];
         $e = $data["email"];
 
         $left = Leave_Event($i, $e);
