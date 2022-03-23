@@ -26,26 +26,16 @@
 
   function eliminateSpaces($str){
 
-    $newEmail = "";
-
-    for ($x = 0; $x < strlen(str); $x++){
-      $letter = substr($str, $x, 1);
-      if($letter != " ") {
-        $newEmail = $newEmail . $letter;
-      }
-    }
-
-    echo "<p>" . $newEmail . "</p>";
-    return $newEmail;
+    return trim($str);
   }
 
   function Auth(String $email, String $password) {
     //Authenticates User for login function
     try{
       $dbh = connectDB();
-
-
-
+      if(strlen($email) < strlen("@mtu.edu")) {
+        return 1;
+      }
       $email = eliminateSpaces($email);
       // Determine whether user exists
       $statement = $dbh->prepare("select count(*) from User where email = :email");
