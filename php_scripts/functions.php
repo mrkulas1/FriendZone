@@ -34,6 +34,8 @@
         $newEmail = $newEmail . letter;
       }
     }
+
+    echo "<p>" . $newEmail . "</p>";
     return $newEmail;
   }
 
