@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:friendzone_flutter/models/current_user.dart';
 import 'package:friendzone_flutter/models/foreign_user.dart';
 import 'package:http/http.dart' as http;
 
@@ -25,17 +27,15 @@ Future<String> runSql(String query, bool fetch) async {
   }
 }
 
+// GO COMMENT OUT SOME CODE ON THE FILE make_post_request.dart. Under the db_comm directory.
+
 void main() {
   late int specificJoinSize;
   late int eventSlotSize;
   const int id = 58; // Change here for testing different event.
-  // Future<List<ForeignUser>> _signedUp;
-  // List<ForeignUser> UserList;
 
   /// Set up the tables from the test data, and backup the existing tables
   setUpAll(() async {
-    await runSql("DELETE FROM Joins WHERE id=$id", false);
-
     specificJoinSize = int.parse(jsonDecode(await runSql(
         "SELECT COUNT(*) AS size FROM Joins WHERE id=$id", true))["size"]);
     eventSlotSize = int.parse(jsonDecode(await runSql(
@@ -45,109 +45,94 @@ void main() {
   });
 
   test('Set Up', () async {
+    // Reset
+    await runSql("DELETE FROM Joins WHERE id=$id", false);
+
     expect(specificJoinSize, 0);
+    // TEMP USER;
+    for (int i = 0; i < eventSlotSize + 1; i++) {
+      await register("$i@mtu.edu", "1", "T", " ", " ");
+    }
   });
 
   test('Join and Leave 1 time', () async {
-    // Reset the join
+    // Reset
     await runSql("DELETE FROM Joins WHERE id=$id", false);
 
-    joinEvent("1@mtu.edu", id, "");
-    // _signedUp = getSignedUpUsers(id);
-    // UserList = await _signedUp;
-    // expect(UserList.length, 1);
+    await joinEvent("1@mtu.edu", id, "");
     int result = int.parse(jsonDecode(await runSql(
         "SELECT COUNT(*) AS size FROM Joins WHERE id=$id", true))["size"]);
     expect(result, 1);
-    leaveEvent("1@mtu.edu", id);
-    // _signedUp = getSignedUpUsers(id);
-    // UserList = await _signedUp;
-    // expect(UserList.length, 0);
+    await leaveEvent("1@mtu.edu", id);
     result = int.parse(jsonDecode(await runSql(
         "SELECT COUNT(*) AS size FROM Joins WHERE id=$id", true))["size"]);
     expect(result, 0);
   });
 
   test('Join 2 and Leave 1 time', () async {
-    joinEvent("1@mtu.edu", id, "");
-    joinEvent("2@mtu.edu", id, "");
-    // _signedUp = getSignedUpUsers(id);
-    // UserList = await _signedUp;
-    // expect(UserList.length, 2);
+    // Reset
+    await runSql("DELETE FROM Joins WHERE id=$id", false);
+
+    await joinEvent("1@mtu.edu", id, "");
+    await joinEvent("2@mtu.edu", id, "");
     int result = int.parse(jsonDecode(await runSql(
         "SELECT COUNT(*) AS size FROM Joins WHERE id=$id", true))["size"]);
     expect(result, 2);
-    leaveEvent("1@mtu.edu", id);
-    // _signedUp = getSignedUpUsers(id);
-    // UserList = await _signedUp;
-    // expect(UserList.length, 0);
+    await leaveEvent("1@mtu.edu", id);
     result = int.parse(jsonDecode(await runSql(
         "SELECT COUNT(*) AS size FROM Joins WHERE id=$id", true))["size"]);
     expect(result, 1);
-    // Reset the join
-    await runSql("DELETE FROM Joins WHERE id=$id", false);
   });
 
   test('Join and Leave MAX TIME', () async {
-    // Reset the join
+    // Reset
     await runSql("DELETE FROM Joins WHERE id=$id", false);
 
     for (var i = 0; i < eventSlotSize; i++) {
-      joinEvent("$i@mtu.edu", id, "");
+      await joinEvent("$i@mtu.edu", id, "");
     }
 
-    // _signedUp = getSignedUpUsers(id);
-    // UserList = await _signedUp;
-    // expect(UserList.length, 5);
     int result = int.parse(jsonDecode(await runSql(
         "SELECT COUNT(*) AS size FROM Joins WHERE id=$id", true))["size"]);
     expect(result, 5);
 
     for (var i = 0; i < eventSlotSize; i++) {
-      leaveEvent("$i@mtu.edu", id);
+      await leaveEvent("$i@mtu.edu", id);
     }
-    // _signedUp = getSignedUpUsers(id);
-    // UserList = await _signedUp;
-    // expect(UserList.length, 0);
     result = int.parse(jsonDecode(await runSql(
         "SELECT COUNT(*) AS size FROM Joins WHERE id=$id", true))["size"]);
     expect(result, 0);
   });
 
   test("Leave item with no id", () async {
-    // Reset the join
+    // Reset
     await runSql("DELETE FROM Joins WHERE id=$id", false);
-    leaveEvent("1@mtu.edu", id);
-    // _signedUp = getSignedUpUsers(id);
-    // UserList = await _signedUp;
-    // expect(UserList.length, 0);
+
+    await leaveEvent("1@mtu.edu", id);
     int result = int.parse(jsonDecode(await runSql(
         "SELECT COUNT(*) AS size FROM Joins WHERE id=$id", true))["size"]);
     expect(result, 0);
   });
 
   test("JOIN MAX + 1", () async {
-    // Reset the join
+    // Reset
     await runSql("DELETE FROM Joins WHERE id=$id", false);
+
     for (var i = 0; i < eventSlotSize + 1; i++) {
-      joinEvent("$i@mtu.edu", id, "");
+      await joinEvent("$i@mtu.edu", id, "");
     }
-    // _signedUp = getSignedUpUsers(id);
-    // UserList = await _signedUp;
-    // expect(UserList.length, 5);
     int result = int.parse(jsonDecode(await runSql(
         "SELECT COUNT(*) AS size FROM Joins WHERE id=$id", true))["size"]);
     expect(result, 5);
   });
 
-  /// Reset the tables to their initial state
-  // tearDownAll(() async {
-  //   // Remove the test data
-  //   await runSql("DELETE FROM Joins WHERE id=$id", false);
+  //Reset the tables to their initial state
+  tearDownAll(() async {
+    // Remove the test data
+    await runSql("DELETE FROM Joins WHERE id=$id", false);
 
-  //   // Restore User first to not violate foreign key
-  //   await runSql("INSERT IGNORE INTO Joins SELECT * FROM Join_Backup", false);
-
-  //   await runSql("DROP TABLE Join_Backup", false);
-  // });
+    for (int i = 0; i < eventSlotSize + 1; i++) {
+      await runSql("DELETE FROM User where email = '$i@mtu.edu'", false);
+    }
+  });
 }
