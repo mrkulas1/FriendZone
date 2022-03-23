@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:friendzone_flutter/pages/event_page/event_viewing.dart';
@@ -78,18 +80,20 @@ class CustomDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            textColor: const Color(0xFFFFCC00),
-            title: const Text('Profile'),
+            tileColor: const Color(0xFFFFCC00),
+            textColor: Colors.black,
+            title: const Text(
+              'Profile',
+              style: TextStyle(fontSize: 20),
+            ),
             onTap: () {
-              // TAKE ME HOMEEEEEEEEEEEEEEEEEEEEE
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ProfilePage()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()));
             },
           ),
           ListTile(
-            textColor: const Color(0xFFFFCC00),
+            tileColor: const Color(0xFFFFCC00),
+            textColor: Colors.black,
             title: const Text(
               'Post Event',
               style: TextStyle(fontSize: 20),
