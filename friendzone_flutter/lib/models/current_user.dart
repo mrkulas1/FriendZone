@@ -11,6 +11,7 @@ class CurrentUser {
   String contact;
 
   List<Event> joinedEvents = [];
+  List<Event> createdEvents = [];
 
   bool _admin = false;
 

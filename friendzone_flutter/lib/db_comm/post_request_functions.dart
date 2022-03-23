@@ -145,3 +145,22 @@ Future<List<ForeignUser>> getSignedUpUsers(int eventID) async {
 
   return users;
 }
+
+Future<List<Event>> getMyEvents(String email) async {
+  Map<String, dynamic> input = {"email": email};
+
+  List<Event> events = await makeListPostRequest(
+      PHPFunction.getMyEvents, input, EventBuilder());
+
+  return events;
+}
+
+/// Get a list of the basic info for all Events. Throw an exception on failure.
+Future<List<Event>> getJoinedEvents(String email) async {
+  Map<String, dynamic> input = {"email": email};
+
+  List<Event> events = await makeListPostRequest(
+      PHPFunction.getJoinedEvents, input, EventBuilder());
+
+  return events;
+}

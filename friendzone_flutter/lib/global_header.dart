@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:friendzone_flutter/pages/event_page/event_viewing.dart';
 import 'package:friendzone_flutter/pages/login_page/login.dart';
+import 'package:friendzone_flutter/pages/profile_page/profile.dart';
 
 import 'globals.dart' as globals;
 import 'pages/event_page/event_post.dart';
@@ -69,6 +70,17 @@ class CustomDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => const EventViewAllPage()));
+            },
+          ),
+          ListTile(
+            textColor: const Color(0xFFFFCC00),
+            title: const Text('Profile'),
+            onTap: () {
+              // TAKE ME HOMEEEEEEEEEEEEEEEEEEEEE
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ProfilePage()));
             },
           ),
           ListTile(
