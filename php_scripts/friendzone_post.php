@@ -210,6 +210,18 @@ switch ($functionID) {
         return json_encode(array("status" => $left));
         break;
 
+    case PHPFunctions::GET_EVENT_USERS:
+        if (!isset($data["id"])) {
+            fail_general();
+        }
+
+        $id = $data["id"];
+
+        $users = Get_Event_Attendees($id);
+
+        return json_encode($users);
+        break;
+
     case PHPFunctions::GET_MY_EVENTS:
         //Return Get_My_Events Function
         if (!isset($data["email"])) {
