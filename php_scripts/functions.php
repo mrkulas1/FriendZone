@@ -23,14 +23,20 @@
   3 - Locked Out
   4 - Error
   */
+
+  function eliminateSpaces($str){
+
+    return trim($str);
+  }
+
   function Auth(String $email, String $password) {
     //Authenticates User for login function
     try{
       $dbh = connectDB();
-
+      $parsedEmail = eliminateSpaces($email);
       // Determine whether user exists
       $statement = $dbh->prepare("select count(*) from User where email = :email");
-      $statement->bindParam(":email", $email);
+      $statement->bindParam(":email", $parsedEmail);
       $result = $statement->execute();
       $row = $statement->fetch();
       if ($row[0] == 0)
@@ -68,6 +74,7 @@
     //Returns the user info from the user with the given email
     try {
       $dbh = connectDB();
+      $email = eliminateSpaces($email);
       $statement = $dbh->prepare("SELECT email, name, introduction, additional_contact from User where email = :email");
       $statement->bindParam(":email", $email);
       $result = $statement->execute();
@@ -90,6 +97,10 @@
     //Creates user in DB, then return that user
     try {
       $dbh = connectDB();
+      if(strlen($email) <= strlen("@mtu.edu")) {
+        return errorReturn("User Needs Valid MTU Email");
+      }
+      $email = eliminateSpaces($email);
       $statement = $dbh->prepare("SELECT count(*) from User where email = :email");
       $statement->bindParam(":email", $email);
       $result = $statement->execute();
