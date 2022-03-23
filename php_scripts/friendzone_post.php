@@ -187,10 +187,10 @@ switch ($functionID) {
         $joined = Join_Event($i, $e, $c);
 
         if (isset($joined["error"])) {
-            return json_encode($joined);
+            echo json_encode($joined);
         }
 
-        return json_encode(array("status" => $joined));
+        echo json_encode(array("status" => $joined));
         break;
 
     case PHPFunctions::LEAVE_EVENT:
@@ -204,10 +204,10 @@ switch ($functionID) {
         $left = Leave_Event($i, $e);
 
         if (isset($left["error"])) {
-            return json_encode($left);
+            echo json_encode($left);
         }
 
-        return json_encode(array("status" => $left));
+        echo json_encode(array("status" => $left));
         break;
 
     case PHPFunctions::GET_EVENT_USERS:
