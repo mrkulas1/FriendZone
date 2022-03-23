@@ -219,7 +219,7 @@ switch ($functionID) {
 
         $users = Get_Event_Attendees($id);
 
-        return json_encode($users);
+        echo json_encode($users);
         break;
 
     case PHPFunctions::GET_MY_EVENTS:
