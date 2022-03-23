@@ -85,6 +85,7 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Form(
                                           child: Column(
+                                            mainAxisSize: MainAxisSize.min,
                                             children: <Widget> [
                                               TextFormField(
                                                 controller: messageController,
