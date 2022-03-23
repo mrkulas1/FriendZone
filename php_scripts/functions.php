@@ -28,6 +28,15 @@
     try{
       $dbh = connectDB();
 
+      $newEmail = "";
+
+      for ($x = 0; $x < strlen($email); $x++){
+        if($email{$x} != " ") {
+          $newEmail = $newEmail . $email{$x};
+        }
+      }
+
+      $email = $newEmail;
       // Determine whether user exists
       $statement = $dbh->prepare("select count(*) from User where email = :email");
       $statement->bindParam(":email", $email);
