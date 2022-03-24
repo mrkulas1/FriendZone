@@ -128,8 +128,6 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                 child: const Text("Join")),
                             ElevatedButton(
                                 onPressed: () {
-                                  /*TODO: Leave Logic*/
-                                  // JUST FOR TESTIN PURPOSE NOTHING OFFICIAL HERE
                                   leaveEvent(globals.activeUser!.email,
                                       widget.data.id);
                                 },
@@ -270,17 +268,26 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                         ),
                         child: _signUpUser == null
                             ? Container()
-                            : FutureBuilder(
+                            : FutureBuilder<List<ForeignUser>>(
                                 future: _signUpUser,
                                 builder: (context, snapshot) {
                                   // TODO implement the stuff here
-                                  return const Center(
-                                    child: Text(
-                                      'PUT YOUR STUFF HERE',
-                                      style: TextStyle(fontSize: 29.0),
-                                    ),
-                                  );
-                                },
+                                  if (snapshot.hasData) {
+                                  return Expanded(
+                                    child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, int index) {
+                              return ListTile(
+                                title: Text(snapshot.data![index].name),
+                                subtitle: Text(
+                                    "${snapshot.data![index].email}\n")
+                              );},
+                          ));
+                          } else if (snapshot.hasError) {
+                          return Text("${snapshot.error!}");
+                          }
+                                return const CircularProgressIndicator();},
                               ),
                       ),
                     ),
