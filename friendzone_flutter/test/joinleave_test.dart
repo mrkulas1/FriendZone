@@ -27,7 +27,7 @@ Future<String> runSql(String query, bool fetch) async {
   }
 }
 
-// GO COMMENT OUT SOME CODE ON THE FILE make_post_request.dart. Under the db_comm directory.
+// !! GO COMMENT OUT SOME CODE ON THE FILE make_post_request.dart. Under the db_comm directory.
 
 void main() {
   late int specificJoinSize;
