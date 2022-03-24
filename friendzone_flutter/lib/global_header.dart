@@ -9,36 +9,51 @@ import 'package:friendzone_flutter/pages/profile_page/profile.dart';
 import 'globals.dart' as globals;
 import 'pages/event_page/event_post.dart';
 
-class Header extends AppBar {
-  Header({Key? key})
-      : super(
-          key: key,
-          iconTheme: const IconThemeData(
-            color: Color(0xFFFFCC00), //change your color here
-          ),
-          backgroundColor: Colors.black,
-          centerTitle: true,
-          title: const Text(
-            "Friend Zone",
-            style: TextStyle(
+class Header extends StatefulWidget implements PreferredSizeWidget {
+  const Header({Key? key})
+      : preferredSize = const Size.fromHeight(kToolbarHeight),
+        super(key: key);
+
+  @override
+  final Size preferredSize; // default is 56.0
+
+  @override
+  _CustomAppBarState createState() => _CustomAppBarState();
+}
+
+class _CustomAppBarState extends State<Header> {
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      iconTheme: const IconThemeData(
+        color: Color(0xFFFFCC00), //change your color here
+      ),
+      backgroundColor: Colors.black,
+      centerTitle: true,
+      title: const Text(
+        "Friend Zone",
+        style: TextStyle(
+          color: Color(0xFFFFCC00),
+        ),
+      ),
+      actions: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(right: 20.0),
+          child: IconButton(
+            onPressed: () {
+              // DIRECT TO ACCOUNT INFORMATION PAGE
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()));
+            },
+            icon: const Icon(
+              FontAwesomeIcons.user,
               color: Color(0xFFFFCC00),
             ),
           ),
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 20.0),
-              child: IconButton(
-                onPressed: () {
-                  // DIRECT TO ACCOUNT INFORMATION PAGE
-                },
-                icon: const Icon(
-                  FontAwesomeIcons.user,
-                  color: Color(0xFFFFCC00),
-                ),
-              ),
-            ),
-          ],
-        );
+        ),
+      ],
+    );
+  }
 }
 
 class CustomDrawer extends StatelessWidget {
