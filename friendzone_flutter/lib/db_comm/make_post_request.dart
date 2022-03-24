@@ -90,6 +90,11 @@ Future<List<T>> makeListPostRequest<T, U extends JsonListBuilder<T>>(
   switch (response.statusCode) {
     case phpSuccessCode:
       List<dynamic> json = jsonDecode(response.body);
+
+      if (json.isEmpty) {
+        return [];
+      }
+
       if (json[0].containsKey("error")) {
         throw Exception(json[0]["error"]);
       }

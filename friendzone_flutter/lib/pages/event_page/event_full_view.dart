@@ -75,50 +75,81 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                           children: [
                             ElevatedButton(
                                 onPressed: () {
-                                showDialog (
-                                  context: context,
-                                  builder: (context) {
-                                    var messageController = TextEditingController();
-                                    return AlertDialog(
-                                      title: const Text('Please confirm you would like to join this event'),
-                                      content: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Form(
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: <Widget> [
-                                              TextFormField(
-                                                controller: messageController,
-                                                decoration: InputDecoration(
-                                                  labelText: 'Is there anything you would like to let the event creator know?'
-                                                ),
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        var messageController =
+                                            TextEditingController();
+                                        return AlertDialog(
+                                          title: const Text(
+                                              'Please confirm you would like to join this event'),
+                                          content: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Form(
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  TextFormField(
+                                                    controller:
+                                                        messageController,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                            labelText:
+                                                                'Is there anything you would like to let the event creator know?'),
+                                                  ),
+                                                ],
                                               ),
-                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                      actions: [
-                                        ElevatedButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                               MaterialStateProperty.all<Color>(
-                                               globals.friendzoneYellow),
-                                          ),
-                                          child: const Text("Join"),
-                                          onPressed: () {
-                                            var comment = messageController.text;
-                                            joinEvent(globals.activeUser!.email, widget.data.id, comment);
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                 builder: (BuildContext context) =>
-                                                   const EventViewAllPage()));
-                                          }
-                                          )
-                                      ],
-                                    );
-                                  }
-                                );
+                                          actions: [
+                                            ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty
+                                                          .all<Color>(globals
+                                                              .friendzoneYellow),
+                                                ),
+                                                child: const Text("Join"),
+                                                onPressed: () {
+                                                  var comment =
+                                                      messageController.text;
+                                                  Future<void> joined =
+                                                      joinEvent(
+                                                          globals.activeUser!
+                                                              .email,
+                                                          widget.data.id,
+                                                          comment);
+
+                                                  joined.then((value) {
+                                                    setState(() {
+                                                      _signUpUser =
+                                                          getSignedUpUsers(
+                                                              widget.data.id);
+                                                    });
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .clearSnackBars();
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                            const SnackBar(
+                                                                content: Text(
+                                                                    "Joined successfully")));
+                                                  }).catchError((error) {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .clearSnackBars();
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(SnackBar(
+                                                            content: Text(error
+                                                                .toString())));
+                                                  });
+                                                  Navigator.pop(context);
+                                                })
+                                          ],
+                                        );
+                                      });
                                 },
                                 style: ButtonStyle(
                                   backgroundColor:
@@ -128,8 +159,28 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                 child: const Text("Join")),
                             ElevatedButton(
                                 onPressed: () {
-                                  leaveEvent(globals.activeUser!.email,
+                                  Future<void> left = leaveEvent(
+                                      globals.activeUser!.email,
                                       widget.data.id);
+
+                                  left.then((value) {
+                                    setState(() {
+                                      _signUpUser =
+                                          getSignedUpUsers(widget.data.id);
+                                    });
+                                    ScaffoldMessenger.of(context)
+                                        .clearSnackBars();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content:
+                                                Text("Left successfully")));
+                                  }).catchError((error) {
+                                    ScaffoldMessenger.of(context)
+                                        .clearSnackBars();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(error.toString())));
+                                  });
                                 },
                                 style: ButtonStyle(
                                   backgroundColor:
@@ -254,7 +305,6 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                       fontSize: 16.0,
                       backgroundColor: Colors.white,
                       child: Container(
-                        
                         width:
                             500.0, // Change here to change the width of the box
                         height: 200.0, // Change to change the height of the box
@@ -273,21 +323,23 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                 builder: (context, snapshot) {
                                   // TODO implement the stuff here
                                   if (snapshot.hasData) {
-                                  return Expanded(
-                                    child: ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, int index) {
-                              return ListTile(
-                                title: Text(snapshot.data![index].name),
-                                subtitle: Text(
-                                    "${snapshot.data![index].email}\n")
-                              );},
-                          ));
-                          } else if (snapshot.hasError) {
-                          return Text("${snapshot.error!}");
-                          }
-                                return const CircularProgressIndicator();},
+                                    return Expanded(
+                                        child: ListView.builder(
+                                      scrollDirection: Axis.vertical,
+                                      itemCount: snapshot.data!.length,
+                                      itemBuilder: (context, int index) {
+                                        return ListTile(
+                                            title: Text(
+                                                snapshot.data![index].name),
+                                            subtitle: Text(
+                                                "${snapshot.data![index].email}\n"));
+                                      },
+                                    ));
+                                  } else if (snapshot.hasError) {
+                                    return Text("${snapshot.error!}");
+                                  }
+                                  return const CircularProgressIndicator();
+                                },
                               ),
                       ),
                     ),

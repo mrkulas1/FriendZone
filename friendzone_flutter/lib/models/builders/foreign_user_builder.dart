@@ -28,7 +28,7 @@ class ForeignUserBuilder extends JsonBuilder<ForeignUser>
   }
 
   @override
-  List<ForeignUser> listFromJson(List json) {
+  List<ForeignUser> listFromJson(List<dynamic> json) {
     List<ForeignUser> users = [];
 
     for (var user in json) {
