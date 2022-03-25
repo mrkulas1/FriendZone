@@ -237,7 +237,6 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                     Flexible(
                                         child: Text(
                                       widget.data.description ?? "",
-                                      overflow: TextOverflow.ellipsis,
                                     )),
                                   ],
                                 ),
