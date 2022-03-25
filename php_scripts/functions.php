@@ -448,7 +448,7 @@
     try {
       $dbh = connectDB();
 
-      $statement = $dbh->prepare("UPDATE Users SET introduction = :introduction, additional_contact = :additional_contact WHERE email = :email");
+      $statement = $dbh->prepare("UPDATE User SET introduction = :introduction, additional_contact = :additional_contact WHERE email = :email");
       $statement->bindParam(":introduction", $introduction);
       $statement->bindParam(":additional_contact", $additional_contact);
       $statement->bindParam(":email", $email);
