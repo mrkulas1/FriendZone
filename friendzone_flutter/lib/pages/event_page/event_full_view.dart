@@ -209,145 +209,159 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                     ),
                     // Buttons and post information
                     const SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
-
-                    const SizedBox(height: 15),
-
-                    // Description
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TitledContainer(
-                      title: "Description",
-                      textAlign: TextAlignTitledContainer.Center,
-                      fontSize: 16.0,
-                      backgroundColor: Colors.white,
-                      child: Container(
-                        width: 500,
-                        height: 200,
-                        child: Text(
-                          widget.data.description ?? "",
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                          ),
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(10.0),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    // Location
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          "Location",
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
-                        )),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(widget.data.location)),
-
-                    // Time
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          "Time",
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
-                        )),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(widget.data.time)),
-
-                    // Slots
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          "Slots",
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
-                        )),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                            "Available: ${widget.data.slots}\n" // TODO: Logic for # of users signed up
-                            "Total: ${widget.data.slots}")),
-
-                    // Signed Up Users
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TitledContainer(
-                      titleColor: Colors.black,
-                      title: 'Signed Up',
-                      textAlign: TextAlignTitledContainer.Center,
-                      fontSize: 16.0,
-                      backgroundColor: Colors.white,
-                      child: Container(
-                        width:
-                            500.0, // Change here to change the width of the box
-                        height: 200.0, // Change to change the height of the box
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                          ),
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(10.0),
-                          ),
-                        ),
-                        child: _signUpUser == null
-                            ? Container()
-                            : FutureBuilder<List<ForeignUser>>(
-                                future: _signUpUser,
-                                builder: (context, snapshot) {
-                                  // TODO implement the stuff here
-                                  if (snapshot.hasData) {
-                                    return Expanded(
-                                        child: ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      itemCount: snapshot.data!.length,
-                                      itemBuilder: (context, int index) {
-                                        return ListTile(
-                                            title: Text(
-                                                snapshot.data![index].name),
-                                            subtitle: Text(
-                                                "${snapshot.data![index].email}\n"));
-                                      },
-                                    ));
-                                  } else if (snapshot.hasError) {
-                                    return Text("${snapshot.error!}");
-                                  }
-                                  return const CircularProgressIndicator();
-                                },
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TitledContainer(
+                          title: "Description",
+                          textAlign: TextAlignTitledContainer.Center,
+                          fontSize: 16.0,
+                          backgroundColor: Colors.white,
+                          child: Container(
+                            width: 500,
+                            height: 500,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Flexible(
+                                        child: Text(
+                                      widget.data.description ?? "",
+                                      overflow: TextOverflow.ellipsis,
+                                    )),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black,
                               ),
-                      ),
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(10.0),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: const Text(
+                                  "Location",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                )),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(widget.data.location)),
+
+                            // Time
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: const Text(
+                                  "Time",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                )),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(widget.data.time)),
+
+                            // Slots
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: const Text(
+                                  "Slots",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                )),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                    "Available: ${widget.data.slots}\n" // TODO: Logic for # of users signed up
+                                    "Total: ${widget.data.slots}")),
+                          ],
+                        ),
+                        TitledContainer(
+                          titleColor: Colors.black,
+                          title: 'Signed Up',
+                          textAlign: TextAlignTitledContainer.Center,
+                          fontSize: 16.0,
+                          backgroundColor: Colors.white,
+                          child: Container(
+                            width:
+                                500.0, // Change here to change the width of the box
+                            height:
+                                500.0, // Change to change the height of the box
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black,
+                              ),
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(10.0),
+                              ),
+                            ),
+                            child: _signUpUser == null
+                                ? Container()
+                                : FutureBuilder<List<ForeignUser>>(
+                                    future: _signUpUser,
+                                    builder: (context, snapshot) {
+                                      // TODO implement the stuff here
+                                      if (snapshot.hasData) {
+                                        return Expanded(
+                                            child: ListView.builder(
+                                          scrollDirection: Axis.vertical,
+                                          itemCount: snapshot.data!.length,
+                                          itemBuilder: (context, int index) {
+                                            return ListTile(
+                                                title: Text(
+                                                    snapshot.data![index].name),
+                                                subtitle: Text(
+                                                    "${snapshot.data![index].email}\n"));
+                                          },
+                                        ));
+                                      } else if (snapshot.hasError) {
+                                        return Text("${snapshot.error!}");
+                                      }
+                                      return const CircularProgressIndicator();
+                                    },
+                                  ),
+                          ),
+                        ),
+                      ],
                     ),
+                    // Signed Up Users
                     // TODO: Logic to figure out who is signed up for an event
                     // TODO: Add Category once the enum is set up
                   ],
