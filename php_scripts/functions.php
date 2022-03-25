@@ -399,47 +399,6 @@
     }
   }
 
-/*
-// Returns list of events with the basic info
-    function Get_All_Events(){
-    // TODO: maybe filter these to only events that are in the future?
-    try {
-      $dbh = connectDB();
-
-      $statement = $dbh->prepare("Select id, email, title, time, location, slots, category from Event");
-      $return = $statement->execute();
-      $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-      $dbh = null;
-
-      return $rows;
-    } catch (PDOException $exception){
-      return errorReturn($exception->getMessage());
-    }
-
-    
-  function Get_Detailed_Event(int $id){
-    //Returns detailed information from specific event
-    try {
-      $dbh = connectDB();
-      $statement = $dbh->prepare("Select * from Event where id = :id");
-      $statement->bindParam(":id", $id);
-      $result = $statement->execute();
-      $row = $statement->fetch(PDO::FETCH_ASSOC);
-
-      $dbh = null;
-
-      if (empty($row)) {
-        return errorReturn("No event with this ID");
-      }
-
-      return $row;
-    }
-    catch (PDOException $exception){
-      return errorReturn($exception->getMessage());
-    }
-  }
-*/
   function Get_My_Events(String $email) {
     //Returns the events registered under a given user email
     try {
@@ -447,15 +406,15 @@
       $statement = $dbh->prepare("SELECT * FROM Event WHERE email = :email");
       $statement->bindParam(":email", $email);
       $result = $statement->execute();
-      $row = $statement->fetchAll(PDO::FETCH_ASSOC);
+      $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 
       $dbh = null;
 
-      if (empty($row)) {
+      if (empty($rows)) {
         return errorReturn("User hasn't created any events");
       }
 
-      return $row;
+      return $rows;
     }
     catch (PDOException $exception){
       return errorReturn($exception->getMessage());
@@ -469,17 +428,36 @@
       $statement = $dbh->prepare("SELECT e.id id, j.email email, title, description, time, location, slots, category, reported, date_created FROM Joins j JOIN Event e WHERE e.id = j.id && j.email = :email");
       $statement->bindParam(":email", $email);
       $result = $statement->execute();
-      $row = $statement->fetchAll(PDO::FETCH_ASSOC);
+      $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 
       $dbh = null;
 
-      if (empty($row)) {
+      if (empty($rows)) {
         return errorReturn("User hasn't registered for any events");
       }
 
-      return $row;
+      return $rows;
     }
     catch (PDOException $exception){
+      return errorReturn($exception->getMessage());
+    }
+  }
+
+  function Update_Profile(String $email, String $introduction, String $additional_contact) {
+    //email, password, name, introduction, additional_contact, admin
+    try {
+      $dbh = connectDB();
+
+      $statement = $dbh->prepare("UPDATE Users SET introduction = :introduction, additional_contact = :additional_contact WHERE email = :email");
+      $statement->bindParam(":introduction", $introduction);
+      $statement->bindParam(":additional_contact", $additional_contact);
+      $statement->bindParam(":email", $email);
+      $result = $statement->execute();
+
+      $dbh = null;
+      
+      return Get_User($email);
+    } catch (PDOException $exception) {
       return errorReturn($exception->getMessage());
     }
   }

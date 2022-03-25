@@ -20,6 +20,8 @@ class PHPFunctions
     const GET_EVENT_USERS = 9;
     const GET_MY_EVENTS = 10;
     const GET_JOINED_EVENTS = 11;
+
+    const UPDATE_PROFILE = 12;
 }
 
 // Main entry point for a Flutter page to make a POST request. The Flutter code
@@ -244,6 +246,21 @@ switch ($functionID) {
         $events = Get_Joined_Events($i);
 
         echo json_encode($events);
+        break;
+
+    case PHPFunctions::UPDATE_PROFILE:
+        if (!bulk_isset(array("email", "introduction", "additional_contact"), $data)) {
+            fail_general();
+        }
+
+        $e = $data["email"];
+        $i = $data["introduction"];
+        $a = $data["additional_contact"];
+
+        //Variables input to Create_Event function, performed, and returned
+        $user = Update_Profile($e, $i, $a);
+
+        echo json_encode($user);
         break;
 
     default:

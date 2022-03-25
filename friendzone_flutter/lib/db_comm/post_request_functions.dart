@@ -164,3 +164,16 @@ Future<List<Event>> getJoinedEvents(String email) async {
 
   return events;
 }
+
+Future<CurrentUser> updateProfile(String email, String introduction, String additional_contact) async {
+  Map<String, dynamic> input = {
+    "email": email,
+    "introduction": introduction,
+    "additional_contact": additional_contact
+  };
+
+  CurrentUser user =
+      await makePostRequest(PHPFunction.updateProfile, input, CurrentUserBuilder());
+
+  return user;
+}
