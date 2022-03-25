@@ -34,7 +34,7 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Header(),
+      appBar: const Header(),
       body: SingleChildScrollView(
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
@@ -58,186 +58,191 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                     const SizedBox(
                       height: 5,
                     ),
-                    Text(
-                      widget.data.title,
-                      style: const TextStyle(
-                          fontSize: 28, fontWeight: FontWeight.bold),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          widget.data.title,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              fontSize: 28, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Container(
+                          child: globals.activeUser!.email ==
+                                  widget.data.userEmail
+                              ? ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                EventPostPage(
+                                                    editable: true,
+                                                    event: widget.data)));
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            globals.friendzoneYellow),
+                                  ),
+                                  child: const Text("Edit"))
+                              : Container(),
+                        ),
+                      ],
                     ),
-
-                    // Buttons and post information
                     const SizedBox(
                       height: 10,
                     ),
+
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(
-                          children: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        var messageController =
-                                            TextEditingController();
-                                        return AlertDialog(
-                                          title: const Text(
-                                              'Please confirm you would like to join this event'),
-                                          content: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Form(
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  TextFormField(
-                                                    controller:
-                                                        messageController,
-                                                    decoration:
-                                                        const InputDecoration(
-                                                            labelText:
-                                                                'Is there anything you would like to let the event creator know?'),
-                                                  ),
-                                                ],
+                        ElevatedButton(
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    var messageController =
+                                        TextEditingController();
+                                    return AlertDialog(
+                                      title: const Text(
+                                          'Please confirm you would like to join this event'),
+                                      content: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Form(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              TextFormField(
+                                                controller: messageController,
+                                                decoration: const InputDecoration(
+                                                    labelText:
+                                                        'Is there anything you would like to let the event creator know?'),
                                               ),
-                                            ),
+                                            ],
                                           ),
-                                          actions: [
-                                            ElevatedButton(
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStateProperty
-                                                          .all<Color>(globals
-                                                              .friendzoneYellow),
-                                                ),
-                                                child: const Text("Join"),
-                                                onPressed: () {
-                                                  var comment =
-                                                      messageController.text;
-                                                  Future<void> joined =
-                                                      joinEvent(
-                                                          globals.activeUser!
-                                                              .email,
-                                                          widget.data.id,
-                                                          comment);
+                                        ),
+                                      ),
+                                      actions: [
+                                        ElevatedButton(
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all<
+                                                          Color>(
+                                                      globals.friendzoneYellow),
+                                            ),
+                                            child: const Text("Join"),
+                                            onPressed: () {
+                                              var comment =
+                                                  messageController.text;
+                                              Future<void> joined = joinEvent(
+                                                  globals.activeUser!.email,
+                                                  widget.data.id,
+                                                  comment);
 
-                                                  joined.then((value) {
-                                                    setState(() {
-                                                      _signUpUser =
-                                                          getSignedUpUsers(
-                                                              widget.data.id);
-                                                    });
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .clearSnackBars();
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(
-                                                            const SnackBar(
-                                                                content: Text(
-                                                                    "Joined successfully")));
-                                                  }).catchError((error) {
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .clearSnackBars();
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(SnackBar(
-                                                            content: Text(error
-                                                                .toString())));
-                                                  });
-                                                  Navigator.pop(context);
-                                                })
-                                          ],
-                                        );
-                                      });
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          globals.friendzoneYellow),
-                                ),
-                                child: const Text("Join")),
-                            ElevatedButton(
-                                onPressed: () {
-                                  Future<void> left = leaveEvent(
-                                      globals.activeUser!.email,
-                                      widget.data.id);
-
-                                  left.then((value) {
-                                    setState(() {
-                                      _signUpUser =
-                                          getSignedUpUsers(widget.data.id);
-                                    });
-                                    ScaffoldMessenger.of(context)
-                                        .clearSnackBars();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content:
-                                                Text("Left successfully")));
-                                  }).catchError((error) {
-                                    ScaffoldMessenger.of(context)
-                                        .clearSnackBars();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(error.toString())));
+                                              joined.then((value) {
+                                                setState(() {
+                                                  _signUpUser =
+                                                      getSignedUpUsers(
+                                                          widget.data.id);
+                                                });
+                                                ScaffoldMessenger.of(context)
+                                                    .clearSnackBars();
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(const SnackBar(
+                                                        content: Text(
+                                                            "Joined successfully")));
+                                              }).catchError((error) {
+                                                ScaffoldMessenger.of(context)
+                                                    .clearSnackBars();
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(
+                                                        content: Text(
+                                                            error.toString())));
+                                              });
+                                              Navigator.pop(context);
+                                            })
+                                      ],
+                                    );
                                   });
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          globals.friendzoneYellow),
-                                ),
-                                child: const Text("Leave")),
-                          ],
-                        ),
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  globals.friendzoneYellow),
+                            ),
+                            child: const Text("Join")),
+                        const SizedBox(width: 25),
                         Text(
                             "Posted on ${widget.data.dateCreated ?? ""}\n"
                             "Posted by ${widget.data.userEmail}",
                             style: const TextStyle(fontSize: 14)),
+                        const SizedBox(width: 25),
+                        ElevatedButton(
+                            onPressed: () {
+                              Future<void> left = leaveEvent(
+                                  globals.activeUser!.email, widget.data.id);
+
+                              left.then((value) {
+                                setState(() {
+                                  _signUpUser =
+                                      getSignedUpUsers(widget.data.id);
+                                });
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text("Left successfully")));
+                              }).catchError((error) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(error.toString())));
+                              });
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  globals.friendzoneYellow),
+                            ),
+                            child: const Text("Leave")),
                       ],
+                    ),
+                    // Buttons and post information
+                    const SizedBox(
+                      height: 10,
                     ),
 
                     const SizedBox(height: 15),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: globals.activeUser!.email == widget.data.userEmail
-                          ? ElevatedButton(
-                              onPressed: () {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            EventPostPage(
-                                                editable: true,
-                                                event: widget.data)));
-                              },
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        globals.friendzoneYellow),
-                              ),
-                              child: const Text("Edit"))
-                          : Container(),
-                    ),
 
                     // Description
                     const SizedBox(
                       height: 20,
                     ),
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          "Description",
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
-                        )),
+                    TitledContainer(
+                      title: "Description",
+                      textAlign: TextAlignTitledContainer.Center,
+                      fontSize: 16.0,
+                      backgroundColor: Colors.white,
+                      child: Container(
+                        width: 500,
+                        height: 200,
+                        child: Text(
+                          widget.data.description ?? "",
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black,
+                          ),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
+                        ),
+                      ),
+                    ),
+
                     const SizedBox(
                       height: 10,
                     ),
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(widget.data.description ?? "")),
-
                     // Location
                     const SizedBox(
                       height: 20,
