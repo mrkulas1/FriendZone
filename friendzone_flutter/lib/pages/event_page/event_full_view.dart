@@ -307,9 +307,10 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                         fontSize: 16.0,
                         backgroundColor: const Color(0xFFDCDCDC),
                         child: Container(
-                          constraints: BoxConstraints(
-                            minHeight: MediaQuery.of(context).size.height / 2,
-                          ),
+                          height: MediaQuery.of(context).size.height / 2,
+                          // constraints: BoxConstraints(
+                          //   minHeight: MediaQuery.of(context).size.height / 2,
+                          // ),
                           width: MediaQuery.of(context).size.width / 4,
                           decoration: BoxDecoration(
                             border: Border.all(
@@ -325,22 +326,20 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                   future: _signUpUser,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      return Expanded(
-                                        child: ListView.builder(
-                                          padding: EdgeInsets.zero,
-                                          shrinkWrap: true,
-                                          physics: const ScrollPhysics(),
-                                          scrollDirection: Axis.vertical,
-                                          itemCount: snapshot.data!.length,
-                                          itemBuilder: (context, int index) {
-                                            return ListTile(
-                                              title: Text(
-                                                  snapshot.data![index].name),
-                                              subtitle: Text(
-                                                  "${snapshot.data![index].email}\n"),
-                                            );
-                                          },
-                                        ),
+                                      return ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        shrinkWrap: true,
+                                        physics: const ScrollPhysics(),
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: snapshot.data!.length,
+                                        itemBuilder: (context, int index) {
+                                          return ListTile(
+                                            title: Text(
+                                                snapshot.data![index].name),
+                                            subtitle: Text(
+                                                "${snapshot.data![index].email}\n"),
+                                          );
+                                        },
                                       );
                                     } else if (snapshot.hasError) {
                                       return Text("${snapshot.error!}");
