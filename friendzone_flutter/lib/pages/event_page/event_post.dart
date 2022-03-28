@@ -315,21 +315,26 @@ class EventPostPageState extends State<EventPostPage> {
     );
     if (timeOfDay != null && timeOfDay != _selectedTime) {
       setState(() {
-        if (timeOfDay.hour > TimeOfDay.now().hour ||
-            (timeOfDay.hour == TimeOfDay.now().hour &&
-                timeOfDay.minute > TimeOfDay.now().minute)) {
-          _selectedTime = timeOfDay;
+        if (_dateTime.isBefore(DateTime.now())) {
+          if (timeOfDay.hour > TimeOfDay.now().hour ||
+              (timeOfDay.hour == TimeOfDay.now().hour &&
+                  timeOfDay.minute > TimeOfDay.now().minute)) {
+            _selectedTime = timeOfDay;
+          }
         } else {
-          print("NOPE"); //SNACK BAR
+          // SNACK BAR
         }
       });
     }
   }
 
   _selectDate(BuildContext context) async {
+    if (_dateTime.isBefore(DateTime.now())) {
+      _dateTime = DateTime.now();
+    }
     final DateTime? dateTimeFinal = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _dateTime,
       firstDate: DateTime.now(),
       lastDate: DateTime.utc(DateTime.now().year + 5),
       initialEntryMode: DatePickerEntryMode.calendar,

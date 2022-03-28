@@ -1,6 +1,3 @@
-import 'dart:html';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_titled_container/flutter_titled_container.dart';
@@ -11,7 +8,6 @@ import 'package:friendzone_flutter/global_header.dart';
 import 'package:friendzone_flutter/globals.dart' as globals;
 import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'package:friendzone_flutter/models/foreign_user.dart';
-import 'event_viewing.dart';
 
 class DetailEventViewPage extends StatefulWidget {
   final Event data;
@@ -29,8 +25,6 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
 
     _signUpUser = getSignedUpUsers(widget.data.id);
   }
-
-  final ScrollController _firstController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
