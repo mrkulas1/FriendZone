@@ -124,10 +124,8 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                                       getDetailedEvent(
                                           snapshot.data![index].id);
 
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content:
-                                              Text("Getting Event Details")));
+                                  globals.makeSnackbar(
+                                      context, "Getting Event Details");
 
                                   detailedEvent.then((value) {
                                     ScaffoldMessenger.of(context)
@@ -139,11 +137,8 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                                                 DetailEventViewPage(
                                                     data: value)));
                                   }).catchError((error) {
-                                    ScaffoldMessenger.of(context)
-                                        .clearSnackBars();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(error.toString())));
+                                    globals.makeSnackbar(
+                                        context, error.toString());
                                   });
                                 },
                               );

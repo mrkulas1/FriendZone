@@ -185,7 +185,7 @@ class EventPostPageState extends State<EventPostPage> {
                           _selectDate(context);
                         },
                         child: Text(
-                            "${_dateTime.month}/${_dateTime.day}/${_dateTime.year}"),
+                            "${_dateTime.month}/${_dateTime.day.toString().padLeft(2, '0')}/${_dateTime.year}"),
                       ),
                     ),
                     Container(
@@ -243,9 +243,7 @@ class EventPostPageState extends State<EventPostPage> {
                               "${_dateTime.day.toString().padLeft(2, '0')} "
                               "${_selectedTime.hour.toString().padLeft(2, '0')}:"
                               "${_selectedTime.minute.toString().padLeft(2, '0')}:00";
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("Creating Event...")));
+                          globals.makeSnackbar(context, "Creating Event...");
                           Future<Event> event = widget.editable
                               ? updateEvent(
                                   widget.event!.id,
@@ -272,9 +270,7 @@ class EventPostPageState extends State<EventPostPage> {
                                     builder: (BuildContext context) =>
                                         DetailEventViewPage(data: value)));
                           }).catchError((error) {
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(error.toString())));
+                            globals.makeSnackbar(context, error.toString());
                           });
                         }
                       },
@@ -318,22 +314,31 @@ class EventPostPageState extends State<EventPostPage> {
       initialEntryMode: TimePickerEntryMode.dial,
     );
     if (timeOfDay != null && timeOfDay != _selectedTime) {
-      setState(() {
+      if (_dateTime.isBefore(DateTime.now())) {
         if (timeOfDay.hour > TimeOfDay.now().hour ||
             (timeOfDay.hour == TimeOfDay.now().hour &&
                 timeOfDay.minute > TimeOfDay.now().minute)) {
-          _selectedTime = timeOfDay;
+          setState(() {
+            _selectedTime = timeOfDay;
+          });
         } else {
-          print("NOPE"); //SNACK BAR
+          globals.makeSnackbar(context, "Cannot set event time to the past");
         }
-      });
+      } else {
+        setState(() {
+          _selectedTime = timeOfDay;
+        });
+      }
     }
   }
 
   _selectDate(BuildContext context) async {
+    if (_dateTime.isBefore(DateTime.now())) {
+      _dateTime = DateTime.now();
+    }
     final DateTime? dateTimeFinal = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _dateTime,
       firstDate: DateTime.now(),
       lastDate: DateTime.utc(DateTime.now().year + 5),
       initialEntryMode: DatePickerEntryMode.calendar,

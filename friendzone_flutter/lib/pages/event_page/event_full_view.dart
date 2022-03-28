@@ -1,6 +1,3 @@
-import 'dart:html';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_titled_container/flutter_titled_container.dart';
@@ -11,7 +8,6 @@ import 'package:friendzone_flutter/global_header.dart';
 import 'package:friendzone_flutter/globals.dart' as globals;
 import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'package:friendzone_flutter/models/foreign_user.dart';
-import 'event_viewing.dart';
 
 class DetailEventViewPage extends StatefulWidget {
   final Event data;
@@ -29,8 +25,6 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
 
     _signUpUser = getSignedUpUsers(widget.data.id);
   }
-
-  final ScrollController _firstController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -149,26 +143,11 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                               _signUpUser = getSignedUpUsers(
                                                   widget.data.id);
                                             });
-                                            ScaffoldMessenger.of(context)
-                                                .clearSnackBars();
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              const SnackBar(
-                                                content:
-                                                    Text("Joined successfully"),
-                                              ),
-                                            );
+                                            globals.makeSnackbar(
+                                                context, "Joined successfully");
                                           }).catchError((error) {
-                                            ScaffoldMessenger.of(context)
-                                                .clearSnackBars();
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  error.toString(),
-                                                ),
-                                              ),
-                                            );
+                                            globals.makeSnackbar(
+                                                context, error.toString());
                                           });
                                           Navigator.pop(context);
                                         })
@@ -198,21 +177,9 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                             setState(() {
                               _signUpUser = getSignedUpUsers(widget.data.id);
                             });
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Left successfully"),
-                              ),
-                            );
+                            globals.makeSnackbar(context, "Left successfully");
                           }).catchError((error) {
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  error.toString(),
-                                ),
-                              ),
-                            );
+                            globals.makeSnackbar(context, error.toString());
                           });
                         },
                         style: ButtonStyle(
@@ -340,9 +307,10 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                         fontSize: 16.0,
                         backgroundColor: const Color(0xFFDCDCDC),
                         child: Container(
-                          constraints: BoxConstraints(
-                            minHeight: MediaQuery.of(context).size.height / 2,
-                          ),
+                          height: MediaQuery.of(context).size.height / 2,
+                          // constraints: BoxConstraints(
+                          //   minHeight: MediaQuery.of(context).size.height / 2,
+                          // ),
                           width: MediaQuery.of(context).size.width / 4,
                           decoration: BoxDecoration(
                             border: Border.all(
@@ -358,22 +326,20 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                   future: _signUpUser,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      return Expanded(
-                                        child: ListView.builder(
-                                          padding: EdgeInsets.zero,
-                                          shrinkWrap: true,
-                                          physics: const ScrollPhysics(),
-                                          scrollDirection: Axis.vertical,
-                                          itemCount: snapshot.data!.length,
-                                          itemBuilder: (context, int index) {
-                                            return ListTile(
-                                              title: Text(
-                                                  snapshot.data![index].name),
-                                              subtitle: Text(
-                                                  "${snapshot.data![index].email}\n"),
-                                            );
-                                          },
-                                        ),
+                                      return ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        shrinkWrap: true,
+                                        physics: const ScrollPhysics(),
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: snapshot.data!.length,
+                                        itemBuilder: (context, int index) {
+                                          return ListTile(
+                                            title: Text(
+                                                snapshot.data![index].name),
+                                            subtitle: Text(
+                                                "${snapshot.data![index].email}\n"),
+                                          );
+                                        },
                                       );
                                     } else if (snapshot.hasError) {
                                       return Text("${snapshot.error!}");
