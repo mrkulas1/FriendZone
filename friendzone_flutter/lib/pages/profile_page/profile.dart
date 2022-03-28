@@ -16,10 +16,8 @@ import 'package:friendzone_flutter/pages/profile_page/profile_edit.dart';
 class ProfilePage extends StatefulWidget {
   ForeignUser? user;
   bool owner = false;
-  ProfilePage({Key? key, this.user}) : super(key: key)
-  {
-    if(user == null)
-    {
+  ProfilePage({Key? key, this.user}) : super(key: key) {
+    if (user == null) {
       user = globals.activeUser;
       owner = true;
     }
@@ -37,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    
+
     _myEvents = getMyEvents(widget.user!.email);
     _joinedEvents = getJoinedEvents(widget.user!.email);
   }
@@ -54,32 +52,28 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             Text(
               widget.user!.name,
-              style: const TextStyle(
-                  fontSize: 40, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   widget.user!.email,
-                  style: const TextStyle(
-                  fontSize: 20),
+                  style: const TextStyle(fontSize: 20),
                 ),
                 const SizedBox(
                   width: 60,
                 ),
                 Text(
                   widget.user!.contact,
-                  style: const TextStyle(
-                  fontSize: 20),
+                  style: const TextStyle(fontSize: 20),
                 )
               ],
             ),
             Text(
               widget.user!.introduction,
               textAlign: TextAlign.justify,
-              style: const TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
             Container(
               alignment: Alignment.centerLeft,
@@ -93,107 +87,113 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ProfileEditPage()));
                       },
                       style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(
-                                globals.friendzoneYellow),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            globals.friendzoneYellow),
                       ),
                       child: const Text("Edit"))
                   : Container(),
             ),
             Expanded(
-              child:
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        children: [ 
-                          const Text("Created Events"),
-                          Container(
-                            child: _myEvents == null
-                                ? const Text("No Created Events")
-                                : FutureBuilder<List<Event>>(
-                                    future: _myEvents,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        return Expanded(
-                                            child: ListView.builder(
-                                          scrollDirection: Axis.vertical,
-                                          itemCount: snapshot.data!.length,
-                                          itemBuilder: (context, int index) {
-                                            return ListTile(
-                                              leading: const Icon(FontAwesomeIcons.atom),
-                                              title: Text(snapshot.data![index].title),
-                                              subtitle: Text(
-                                                  "Where: ${snapshot.data![index].location}\n"
-                                                  "When: ${snapshot.data![index].time}\n"
-                                                  "# of Slots: ${snapshot.data![index].slots}"),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                        const Text("Created Events"),
+                        Container(
+                          child: _myEvents == null
+                              ? const Text("No Created Events")
+                              : FutureBuilder<List<Event>>(
+                                  future: _myEvents,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      return Expanded(
+                                          child: ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: snapshot.data!.length,
+                                        itemBuilder: (context, int index) {
+                                          return ListTile(
+                                            leading: const Icon(
+                                                FontAwesomeIcons.atom),
+                                            title: Text(
+                                                snapshot.data![index].title),
+                                            subtitle: Text(
+                                                "Where: ${snapshot.data![index].location}\n"
+                                                "When: ${snapshot.data![index].time}\n"
+                                                "# of Slots: ${snapshot.data![index].slots}"),
                                             onTap: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            DetailEventViewPage(
-                                                                data: snapshot.data![index])));
-                                              }, 
-                                            );
-                                          },
-                                        ));
-                                      } else if (snapshot.hasError) {
-                                        return Text("${snapshot.error!}");
-                                      }
-                                      return const CircularProgressIndicator();
-                                    },
-                                  ),
-                          ),
-                        ],
-                      ),
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          DetailEventViewPage(
+                                                              data: snapshot
+                                                                      .data![
+                                                                  index])));
+                                            },
+                                          );
+                                        },
+                                      ));
+                                    } else if (snapshot.hasError) {
+                                      return Text("${snapshot.error!}");
+                                    }
+                                    return const CircularProgressIndicator();
+                                  },
+                                ),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      child: Column(
-                        children: [ 
-                          const Text("Joined Events"),
-                          Container(
-                            child: _joinedEvents == null
-                                ? const Text("No Joined Events")
-                                : FutureBuilder<List<Event>>(
-                                    future: _joinedEvents,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        return Expanded(
-                                            child: ListView.builder(
-                                          scrollDirection: Axis.vertical,
-                                          itemCount: snapshot.data!.length,
-                                          itemBuilder: (context, int index) {
-                                            return ListTile(
-                                              leading: const Icon(FontAwesomeIcons.atom),
-                                              title: Text(snapshot.data![index].title),
-                                              subtitle: Text(
-                                                  "Where: ${snapshot.data![index].location}\n"
-                                                  "When: ${snapshot.data![index].time}\n"
-                                                  "# of Slots: ${snapshot.data![index].slots}"),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        const Text("Joined Events"),
+                        Container(
+                          child: _joinedEvents == null
+                              ? const Text("No Joined Events")
+                              : FutureBuilder<List<Event>>(
+                                  future: _joinedEvents,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      return Expanded(
+                                          child: ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: snapshot.data!.length,
+                                        itemBuilder: (context, int index) {
+                                          return ListTile(
+                                            leading: const Icon(
+                                                FontAwesomeIcons.atom),
+                                            title: Text(
+                                                snapshot.data![index].title),
+                                            subtitle: Text(
+                                                "Where: ${snapshot.data![index].location}\n"
+                                                "When: ${snapshot.data![index].time}\n"
+                                                "# of Slots: ${snapshot.data![index].slots}"),
                                             onTap: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            DetailEventViewPage(
-                                                                data: snapshot.data![index])));
-                                              }, 
-                                            );
-                                          },
-                                        ));
-                                      } else if (snapshot.hasError) {
-                                        return Text("${snapshot.error!}");
-                                      }
-                                      return const CircularProgressIndicator();
-                                    },
-                                  ),
-                          ),
-                        ],
-                      ),
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          DetailEventViewPage(
+                                                              data: snapshot
+                                                                      .data![
+                                                                  index])));
+                                            },
+                                          );
+                                        },
+                                      ));
+                                    } else if (snapshot.hasError) {
+                                      return Text("${snapshot.error!}");
+                                    }
+                                    return const CircularProgressIndicator();
+                                  },
+                                ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

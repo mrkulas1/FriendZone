@@ -9,10 +9,8 @@ import 'package:friendzone_flutter/global_header.dart';
 import 'package:friendzone_flutter/pages/profile_page/profile.dart';
 
 class ProfileEditPage extends StatefulWidget {
-
   void click() {}
-  const ProfileEditPage({Key? key})
-      : super(key: key);
+  const ProfileEditPage({Key? key}) : super(key: key);
 
   @override
   ProfileEditPageState createState() {
@@ -27,7 +25,7 @@ class ProfileEditPageState extends State<ProfileEditPage> {
   @override
   void initState() {
     super.initState();
-    
+
     if (globals.activeUser == null) {
       return;
     }
@@ -119,15 +117,11 @@ class ProfileEditPageState extends State<ProfileEditPage> {
                     ElevatedButton(
                       onPressed: () {
                         if (_postFormKey.currentState!.validate()) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("Updating Profile")));
-                          Future<CurrentUser> user = 
-                                  updateProfile(
-                                  globals.activeUser!.email,
-                                  _intro.text,
-                                  _addContact.text
-                                  );
+                          globals.makeSnackbar(context, "Updating Profile...");
+                          Future<CurrentUser> user = updateProfile(
+                              globals.activeUser!.email,
+                              _intro.text,
+                              _addContact.text);
                           user.then((value) {
                             globals.activeUser = value;
                             ScaffoldMessenger.of(context).clearSnackBars();
@@ -137,9 +131,7 @@ class ProfileEditPageState extends State<ProfileEditPage> {
                                     builder: (BuildContext context) =>
                                         ProfilePage()));
                           }).catchError((error) {
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(error.toString())));
+                            globals.makeSnackbar(context, error.toString());
                           });
                         }
                       },

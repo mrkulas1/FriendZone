@@ -91,17 +91,29 @@ Future<List<T>> makeListPostRequest<T, U extends JsonListBuilder<T>>(
 
   switch (response.statusCode) {
     case phpSuccessCode:
-      List<dynamic> json = jsonDecode(response.body);
+      // Kind of hacky, but fixes the type mismatch error
+      // TODO: Make code less gross
+      try {
+        List<dynamic> json = jsonDecode(response.body);
 
-      if (json.isEmpty) {
-        return [];
+        if (json.isEmpty) {
+          return [];
+        }
+
+        if (json[0].containsKey("error")) {
+          throw Exception(json[0]["error"]);
+        }
+
+        return builder.listFromJson(jsonDecode(response.body));
+      } catch (e) {
+        Map<String, dynamic> json = jsonDecode(response.body);
+
+        if (json.containsKey("error")) {
+          throw Exception(json["error"]);
+        } else {
+          rethrow;
+        }
       }
-
-      if (json[0].containsKey("error")) {
-        throw Exception(json[0]["error"]);
-      }
-
-      return builder.listFromJson(jsonDecode(response.body));
     case phpInternalErrorCode:
       throw Exception("PHP Error occurred");
     default:

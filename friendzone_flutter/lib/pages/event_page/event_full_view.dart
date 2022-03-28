@@ -149,26 +149,11 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                               _signUpUser = getSignedUpUsers(
                                                   widget.data.id);
                                             });
-                                            ScaffoldMessenger.of(context)
-                                                .clearSnackBars();
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              const SnackBar(
-                                                content:
-                                                    Text("Joined successfully"),
-                                              ),
-                                            );
+                                            globals.makeSnackbar(
+                                                context, "Joined successfully");
                                           }).catchError((error) {
-                                            ScaffoldMessenger.of(context)
-                                                .clearSnackBars();
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  error.toString(),
-                                                ),
-                                              ),
-                                            );
+                                            globals.makeSnackbar(
+                                                context, error.toString());
                                           });
                                           Navigator.pop(context);
                                         })
@@ -198,21 +183,9 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                             setState(() {
                               _signUpUser = getSignedUpUsers(widget.data.id);
                             });
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Left successfully"),
-                              ),
-                            );
+                            globals.makeSnackbar(context, "Left successfully");
                           }).catchError((error) {
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  error.toString(),
-                                ),
-                              ),
-                            );
+                            globals.makeSnackbar(context, error.toString());
                           });
                         },
                         style: ButtonStyle(

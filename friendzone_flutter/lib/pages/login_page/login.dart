@@ -147,9 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                               _futureAuth = authenticate(_emailController.text,
                                   _passwordController.text);
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text("Logging In ...")));
+                              globals.makeSnackbar(context, "Logging In...");
 
                               _futureAuth?.then((value) {
                                 if (value.success()) {
@@ -162,17 +160,11 @@ class _LoginPageState extends State<LoginPage> {
                                           builder: (BuildContext context) =>
                                               const EventViewAllPage()));
                                 } else {
-                                  ScaffoldMessenger.of(context)
-                                      .clearSnackBars();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content:
-                                              Text(value.getStatusMessage())));
+                                  globals.makeSnackbar(
+                                      context, value.getStatusMessage());
                                 }
                               }).catchError((error) {
-                                ScaffoldMessenger.of(context).clearSnackBars();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(error.toString())));
+                                globals.makeSnackbar(context, error.toString());
                               });
                             });
                           }

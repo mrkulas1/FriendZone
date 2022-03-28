@@ -185,7 +185,7 @@ class EventPostPageState extends State<EventPostPage> {
                           _selectDate(context);
                         },
                         child: Text(
-                            "${_dateTime.month}/${_dateTime.day}/${_dateTime.year}"),
+                            "${_dateTime.month}/${_dateTime.day.toString().padLeft(2, '0')}/${_dateTime.year}"),
                       ),
                     ),
                     Container(
@@ -243,9 +243,7 @@ class EventPostPageState extends State<EventPostPage> {
                               "${_dateTime.day.toString().padLeft(2, '0')} "
                               "${_selectedTime.hour.toString().padLeft(2, '0')}:"
                               "${_selectedTime.minute.toString().padLeft(2, '0')}:00";
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("Creating Event...")));
+                          globals.makeSnackbar(context, "Creating Event...");
                           Future<Event> event = widget.editable
                               ? updateEvent(
                                   widget.event!.id,
@@ -272,9 +270,7 @@ class EventPostPageState extends State<EventPostPage> {
                                     builder: (BuildContext context) =>
                                         DetailEventViewPage(data: value)));
                           }).catchError((error) {
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(error.toString())));
+                            globals.makeSnackbar(context, error.toString());
                           });
                         }
                       },
