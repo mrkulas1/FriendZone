@@ -18,7 +18,7 @@ class ProfilePage extends StatefulWidget {
   bool owner = false;
   ProfilePage({Key? key, this.user}) : super(key: key)
   {
-    if(user == null)
+    if(user == null || (user?.email == globals.activeUser!.email))
     {
       user = globals.activeUser;
       owner = true;
@@ -32,7 +32,6 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   Future<List<Event>>? _myEvents;
   Future<List<Event>>? _joinedEvents;
-  DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {

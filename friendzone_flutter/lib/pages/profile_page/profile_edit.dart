@@ -10,7 +10,6 @@ import 'package:friendzone_flutter/pages/profile_page/profile.dart';
 
 class ProfileEditPage extends StatefulWidget {
 
-  void click() {}
   const ProfileEditPage({Key? key})
       : super(key: key);
 
