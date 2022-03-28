@@ -7,6 +7,7 @@ import 'package:friendzone_flutter/pages/login_page/login.dart';
 import 'package:friendzone_flutter/pages/profile_page/profile.dart';
 
 import 'globals.dart' as globals;
+import 'models/foreign_user.dart';
 import 'pages/event_page/event_post.dart';
 
 class Header extends StatefulWidget implements PreferredSizeWidget {
@@ -43,7 +44,7 @@ class _CustomAppBarState extends State<Header> {
             onPressed: () {
               // DIRECT TO ACCOUNT INFORMATION PAGE
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const ProfilePage()));
+                  MaterialPageRoute(builder: (context) => ProfilePage()));
             },
             icon: const Icon(
               FontAwesomeIcons.user,
@@ -102,8 +103,12 @@ class CustomDrawer extends StatelessWidget {
               style: TextStyle(fontSize: 20),
             ),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const ProfilePage()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: ((context) => ProfilePage())
+                  )
+              );
             },
           ),
           ListTile(

@@ -4,15 +4,26 @@ import 'dart:async';
 
 import 'package:friendzone_flutter/db_comm/make_post_request.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
+import 'package:friendzone_flutter/models/current_user.dart';
 import 'package:friendzone_flutter/models/event.dart';
 import 'package:friendzone_flutter/globals.dart' as globals;
 import 'package:friendzone_flutter/global_header.dart';
+import 'package:friendzone_flutter/models/foreign_user.dart';
 import 'package:friendzone_flutter/pages/event_page/event_full_view.dart';
 import 'package:friendzone_flutter/pages/modules.dart';
 import 'package:friendzone_flutter/pages/profile_page/profile_edit.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  ForeignUser? user;
+  bool owner = false;
+  ProfilePage({Key? key, this.user}) : super(key: key)
+  {
+    if(user == null)
+    {
+      user = globals.activeUser;
+      owner = true;
+    }
+  }
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -27,14 +38,14 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     
-    _myEvents = getMyEvents(globals.activeUser!.email);
-    _joinedEvents = getJoinedEvents(globals.activeUser!.email);
+    _myEvents = getMyEvents(widget.user!.email);
+    _joinedEvents = getJoinedEvents(widget.user!.email);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Header(),
+      appBar: const Header(),
       drawer: const CustomDrawer(),
       backgroundColor: const Color(0xFFDCDCDC), // Background color
       body: Container(
@@ -42,7 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           children: [
             Text(
-              globals.activeUser!.name,
+              widget.user!.name,
               style: const TextStyle(
                   fontSize: 40, fontWeight: FontWeight.bold),
             ),
@@ -50,7 +61,7 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  globals.activeUser!.email,
+                  widget.user!.email,
                   style: const TextStyle(
                   fontSize: 20),
                 ),
@@ -58,24 +69,24 @@ class _ProfilePageState extends State<ProfilePage> {
                   width: 60,
                 ),
                 Text(
-                  globals.activeUser!.contact,
+                  widget.user!.contact,
                   style: const TextStyle(
                   fontSize: 20),
                 )
               ],
             ),
             Text(
-              globals.activeUser!.introduction,
+              widget.user!.introduction,
               textAlign: TextAlign.justify,
               style: const TextStyle(
                   fontSize: 14, fontWeight: FontWeight.bold),
             ),
             Container(
               alignment: Alignment.centerLeft,
-              child: globals.activeUser!.email == globals.activeUser!.email
+              child: widget.owner
                   ? ElevatedButton(
                       onPressed: () {
-                        Navigator.pushReplacement(
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
@@ -96,10 +107,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     Expanded(
                       child: Column(
                         children: [ 
-                          const Text("My Events"),
+                          const Text("Created Events"),
                           Container(
                             child: _myEvents == null
-                                ? Container()
+                                ? const Text("No Created Events")
                                 : FutureBuilder<List<Event>>(
                                     future: _myEvents,
                                     builder: (context, snapshot) {
@@ -143,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           const Text("Joined Events"),
                           Container(
                             child: _joinedEvents == null
-                                ? Container()
+                                ? const Text("No Joined Events")
                                 : FutureBuilder<List<Event>>(
                                     future: _joinedEvents,
                                     builder: (context, snapshot) {
@@ -190,8 +201,8 @@ class _ProfilePageState extends State<ProfilePage> {
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             setState(() {
-              _myEvents = getMyEvents(globals.activeUser!.email);
-              _joinedEvents = getJoinedEvents(globals.activeUser!.email);
+              _myEvents = getMyEvents(widget.user!.email);
+              _joinedEvents = getJoinedEvents(widget.user!.email);
             });
           },
           backgroundColor: globals.friendzoneYellow,

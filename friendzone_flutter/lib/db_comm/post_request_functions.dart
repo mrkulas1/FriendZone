@@ -17,6 +17,9 @@ import 'dart:async';
 /// Authenticate the attempted login with the credentials of [email] and
 /// [password]
 Future<AuthResult> authenticate(String email, String password) async {
+
+  email = email.replaceAll(" ", "");
+
   Map<String, dynamic> input = {"email": email, "password": password};
 
   AuthResult authResult =
@@ -41,6 +44,9 @@ Future<AuthResult> authenticate(String email, String password) async {
 /// [contactInfo]. Throw an exception on failure.
 Future<CurrentUser> register(String email, String password, String name,
     String intro, String contactInfo) async {
+
+    email = email.replaceAll(" ", "");
+
   Map<String, dynamic> input = {
     "email": email,
     "password": password,

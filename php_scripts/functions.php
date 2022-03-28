@@ -33,7 +33,7 @@
     //Authenticates User for login function
     try{
       $dbh = connectDB();
-      $parsedEmail = eliminateSpaces($email);
+      $parsedEmail = trim($email, [" "]);
       // Determine whether user exists
       $statement = $dbh->prepare("select count(*) from User where email = :email");
       $statement->bindParam(":email", $parsedEmail);
@@ -74,7 +74,7 @@
     //Returns the user info from the user with the given email
     try {
       $dbh = connectDB();
-      $email = eliminateSpaces($email);
+      $email = trim($email, [" "]);
       $statement = $dbh->prepare("SELECT email, name, introduction, additional_contact from User where email = :email");
       $statement->bindParam(":email", $email);
       $result = $statement->execute();
@@ -100,7 +100,7 @@
       if(strlen($email) <= strlen("@mtu.edu")) {
         return errorReturn("User Needs Valid MTU Email");
       }
-      $email = eliminateSpaces($email);
+      $email = trim($email, [" "]);
       $statement = $dbh->prepare("SELECT count(*) from User where email = :email");
       $statement->bindParam(":email", $email);
       $result = $statement->execute();
