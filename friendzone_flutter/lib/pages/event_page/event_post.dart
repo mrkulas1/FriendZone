@@ -314,17 +314,21 @@ class EventPostPageState extends State<EventPostPage> {
       initialEntryMode: TimePickerEntryMode.dial,
     );
     if (timeOfDay != null && timeOfDay != _selectedTime) {
-      setState(() {
-        if (_dateTime.isBefore(DateTime.now())) {
-          if (timeOfDay.hour > TimeOfDay.now().hour ||
-              (timeOfDay.hour == TimeOfDay.now().hour &&
-                  timeOfDay.minute > TimeOfDay.now().minute)) {
+      if (_dateTime.isBefore(DateTime.now())) {
+        if (timeOfDay.hour > TimeOfDay.now().hour ||
+            (timeOfDay.hour == TimeOfDay.now().hour &&
+                timeOfDay.minute > TimeOfDay.now().minute)) {
+          setState(() {
             _selectedTime = timeOfDay;
-          }
+          });
         } else {
-          // SNACK BAR
+          globals.makeSnackbar(context, "Cannot set event time to the past");
         }
-      });
+      } else {
+        setState(() {
+          _selectedTime = timeOfDay;
+        });
+      }
     }
   }
 
