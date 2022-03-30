@@ -336,7 +336,6 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                 : FutureBuilder<List<ForeignUser>>(
                                     future: _signUpUser,
                                     builder: (context, snapshot) {
-                                      // TODO implement the stuff here
                                       if (snapshot.hasData) {
                                         return Expanded(
                                             child: ListView.builder(
@@ -363,7 +362,7 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                     // Signed Up Users
                     // TODO: Logic to figure out who is signed up for an event
                     // TODO: Add Category once the enum is set up
-                  ],
+                    ],
                 ),
               )
             ],
