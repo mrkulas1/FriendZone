@@ -6,13 +6,10 @@ import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/models/current_user.dart';
 import 'package:friendzone_flutter/models/event.dart';
 import 'package:friendzone_flutter/global_header.dart';
-import 'package:friendzone_flutter/pages/event_page/event_full_view.dart';
 import 'package:friendzone_flutter/pages/profile_page/profile.dart';
 
 class ProfileEditPage extends StatefulWidget {
-  static const String routeName = '/post';
 
-  void click() {}
   const ProfileEditPage({Key? key})
       : super(key: key);
 
@@ -29,20 +26,20 @@ class ProfileEditPageState extends State<ProfileEditPage> {
   @override
   void initState() {
     super.initState();
-    
+
     if (globals.activeUser == null) {
       return;
     }
 
     _intro.text = globals.activeUser?.introduction ?? "";
-    _addContact.text = globals.activeUser?.introduction ?? "";
+    _addContact.text = globals.activeUser?.contact ?? "";
   }
 
   final _postFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Header(),
+      appBar: const Header(),
       body: SingleChildScrollView(
         child: Form(
           key: _postFormKey,
@@ -51,7 +48,7 @@ class ProfileEditPageState extends State<ProfileEditPage> {
             children: <Widget>[
               Container(
                 width: double.infinity,
-                height: 1000,
+                height: 500,
                 decoration: const BoxDecoration(
                   color: Colors.white70,
                   borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -104,7 +101,7 @@ class ProfileEditPageState extends State<ProfileEditPage> {
                       height: 80,
                       child: TextFormField(
                         validator: (value) {
-                          if ((value?.length ?? 0) > 100) {
+                          if ((value?.length ?? 0) > 40) {
                             return 'Too long';
                           }
                           return null;
@@ -121,15 +118,11 @@ class ProfileEditPageState extends State<ProfileEditPage> {
                     ElevatedButton(
                       onPressed: () {
                         if (_postFormKey.currentState!.validate()) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("Updating Profile")));
-                          Future<CurrentUser> user = 
-                                  updateProfile(
-                                  globals.activeUser!.email,
-                                  _intro.text,
-                                  _addContact.text
-                                  );
+                          globals.makeSnackbar(context, "Updating Profile...");
+                          Future<CurrentUser> user = updateProfile(
+                              globals.activeUser!.email,
+                              _intro.text,
+                              _addContact.text);
                           user.then((value) {
                             globals.activeUser = value;
                             ScaffoldMessenger.of(context).clearSnackBars();
@@ -139,9 +132,7 @@ class ProfileEditPageState extends State<ProfileEditPage> {
                                     builder: (BuildContext context) =>
                                         ProfilePage()));
                           }).catchError((error) {
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(error.toString())));
+                            globals.makeSnackbar(context, error.toString());
                           });
                         }
                       },

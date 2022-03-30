@@ -277,9 +277,7 @@ class _SignUpPage extends State<SignUpPage> {
                                   _introController.text,
                                   _contactInfoController.text);
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text("Registering ...")));
+                              globals.makeSnackbar(context, "Registering...");
 
                               _futureUser?.then((value) {
                                 globals.activeUser = value;
@@ -290,9 +288,7 @@ class _SignUpPage extends State<SignUpPage> {
                                         builder: (BuildContext context) =>
                                             const EventViewAllPage()));
                               }).catchError((error) {
-                                ScaffoldMessenger.of(context).clearSnackBars();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(error.toString())));
+                                globals.makeSnackbar(context, error.toString());
                               });
                             });
                           }
