@@ -12,8 +12,7 @@ class MySearchDelegate extends SearchDelegate<String> {
   // Changing the variables name may be a good idea.
   // Suggestions + initial suggestions
   // ignore: non_constant_identifier_names
-  final id = [];
-  final pr = [];
+  final List<Event> EventList = [];
 
   @override
   List<Widget>? buildActions(BuildContext context) => [
@@ -62,9 +61,9 @@ class MySearchDelegate extends SearchDelegate<String> {
         future: getAllEvents(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            EventList.clear();
             for (int i = 0; i < snapshot.data!.length; i++) {
-              pr.add(snapshot.data![i].title);
-              id.add(snapshot.data![i].id);
+              EventList.add(snapshot.data![i]);
             }
             return Expanded(
                 child: ListView.builder(
@@ -101,8 +100,8 @@ class MySearchDelegate extends SearchDelegate<String> {
         },
       );
     } else {
-      final suggestion = pr.where((sugPl) {
-        final sugLower = sugPl.toLowerCase();
+      final suggestion = EventList.where((sugPl) {
+        final sugLower = sugPl.title.toLowerCase();
         final qLower = query.toLowerCase();
 
         return sugLower.startsWith(qLower);
@@ -112,16 +111,16 @@ class MySearchDelegate extends SearchDelegate<String> {
     }
   }
 
-  Widget buildSuggestionSuccess(List suggestions) => ListView.builder(
+  Widget buildSuggestionSuccess(List<Event> suggestions) => ListView.builder(
         itemCount: suggestions.length,
         itemBuilder: (context, index) {
+          print(suggestions.length);
           final suggestion = suggestions[index];
-          final queryText = suggestion.substring(0, query.length);
-          final remainingText = suggestion.substring(query.length);
-          final eventId = id[index];
+          final queryText = suggestion.title.substring(0, query.length);
+          final remainingText = suggestion.title.substring(query.length);
           return ListTile(
             onTap: () {
-              Future<Event> detailedEvent = getDetailedEvent(eventId);
+              Future<Event> detailedEvent = getDetailedEvent(suggestion.id);
 
               globals.makeSnackbar(context, "Getting Event Details");
 
