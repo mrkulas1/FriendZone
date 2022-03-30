@@ -62,13 +62,18 @@ class MySearchDelegate extends SearchDelegate<String> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             EventList.clear();
+            // Insert all the event data into the event List
             for (int i = 0; i < snapshot.data!.length; i++) {
               EventList.add(snapshot.data![i]);
             }
-            return Expanded(
-                child: ListView.builder(
+
+            int limit = 15;
+
+            if (snapshot.data!.length < 10) limit = snapshot.data!.length;
+
+            return ListView.builder(
               scrollDirection: Axis.vertical,
-              itemCount: snapshot.data!.length,
+              itemCount: limit,
               itemBuilder: (context, int index) {
                 return ListTile(
                   leading: const Icon(FontAwesomeIcons.magnifyingGlass),
@@ -92,7 +97,7 @@ class MySearchDelegate extends SearchDelegate<String> {
                   },
                 );
               },
-            ));
+            );
           } else if (snapshot.hasError) {
             return Text("${snapshot.error!}");
           }
@@ -114,7 +119,6 @@ class MySearchDelegate extends SearchDelegate<String> {
   Widget buildSuggestionSuccess(List<Event> suggestions) => ListView.builder(
         itemCount: suggestions.length,
         itemBuilder: (context, index) {
-          print(suggestions.length);
           final suggestion = suggestions[index];
           final queryText = suggestion.title.substring(0, query.length);
           final remainingText = suggestion.title.substring(query.length);
