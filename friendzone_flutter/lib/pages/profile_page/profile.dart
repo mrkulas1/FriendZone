@@ -16,8 +16,10 @@ import 'package:friendzone_flutter/pages/profile_page/profile_edit.dart';
 class ProfilePage extends StatefulWidget {
   ForeignUser? user;
   bool owner = false;
-  ProfilePage({Key? key, this.user}) : super(key: key) {
-    if (user == null) {
+  ProfilePage({Key? key, this.user}) : super(key: key)
+  {
+    if(user == null || (user?.email == globals.activeUser!.email))
+    {
       user = globals.activeUser;
       owner = true;
     }
@@ -30,7 +32,6 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   Future<List<Event>>? _myEvents;
   Future<List<Event>>? _joinedEvents;
-  DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {

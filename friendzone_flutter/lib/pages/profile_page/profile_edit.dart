@@ -9,8 +9,9 @@ import 'package:friendzone_flutter/global_header.dart';
 import 'package:friendzone_flutter/pages/profile_page/profile.dart';
 
 class ProfileEditPage extends StatefulWidget {
-  void click() {}
-  const ProfileEditPage({Key? key}) : super(key: key);
+
+  const ProfileEditPage({Key? key})
+      : super(key: key);
 
   @override
   ProfileEditPageState createState() {
