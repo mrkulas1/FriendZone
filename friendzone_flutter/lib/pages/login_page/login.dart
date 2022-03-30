@@ -248,21 +248,20 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-        // Commented out for build
-        // floatingActionButton: FloatingActionButton(
-        //   child: const Icon(Icons.web_rounded),
-        //   backgroundColor: globals.friendzoneYellow,
-        //   onPressed: () {
-        //     authenticate("test@mtu.edu", "Password123").then((value) {
-        //       globals.activeUser = value.getUser();
-        //       Navigator.pushReplacement(
-        //           context,
-        //           MaterialPageRoute(
-        //               builder: (BuildContext context) =>
-        //                   const EventViewAllPage()));
-        //     });
-        //   },
-        // ),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.web_rounded),
+          backgroundColor: globals.friendzoneYellow,
+          onPressed: () {
+            authenticate("test@mtu.edu", "Password123").then((value) {
+              globals.activeUser = value.getUser();
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          const EventViewAllPage()));
+            });
+          },
+        ),
       ),
     );
   }
