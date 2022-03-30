@@ -6,6 +6,7 @@ import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/models/event.dart';
 import 'package:friendzone_flutter/global_header.dart';
 import 'package:friendzone_flutter/pages/event_page/event_full_view.dart';
+import 'package:profanity_filter/profanity_filter.dart';
 
 class EventPostPage extends StatefulWidget {
   static const String routeName = '/post';
@@ -33,7 +34,7 @@ class EventPostPageState extends State<EventPostPage> {
   TimeOfDay _selectedTime = TimeOfDay.now();
 
   DateTime _dateTime = DateTime.now();
-
+  ProfanityFilter filter = ProfanityFilter();
   @override
   void initState() {
     super.initState();
@@ -115,6 +116,8 @@ class EventPostPageState extends State<EventPostPage> {
                             return 'Please add a name';
                           } else if (value.length > 100) {
                             return 'Too long';
+                          } else if (filter.hasProfanity(value)) {
+                            return 'Keep content FriendZone friendly!';
                           }
                           return null;
                         },
@@ -134,6 +137,8 @@ class EventPostPageState extends State<EventPostPage> {
                         validator: (value) {
                           if (value != null && value.length > 100) {
                             return 'Too long';
+                          } else if (filter.hasProfanity(value!)) {
+                            return 'Keep content FriendZone friendly!';
                           }
                           return null;
                         },
@@ -157,6 +162,8 @@ class EventPostPageState extends State<EventPostPage> {
                               if (a < 1) {
                                 throw new Exception();
                               }
+                            } else if (filter.hasProfanity(value!)) {
+                              return 'Keep content FriendZone friendly!';
                             }
                             return null;
                           } on Exception catch (_) {
@@ -223,6 +230,9 @@ class EventPostPageState extends State<EventPostPage> {
                       height: 80,
                       child: TextFormField(
                         validator: (value) {
+                          if (filter.hasProfanity(value!)) {
+                            return 'Keep content FriendZone friendly!';
+                          }
                           return null;
                         },
                         controller: _description,
