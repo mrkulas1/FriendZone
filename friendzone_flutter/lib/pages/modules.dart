@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'dart:async';
+
+import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
+import 'package:friendzone_flutter/models/event.dart';
+import 'package:friendzone_flutter/globals.dart' as globals;
+import 'package:friendzone_flutter/pages/event_page/event_full_view.dart';
 
 // Search System
 class MySearchDelegate extends SearchDelegate<String> {
   // Changing the variables name may be a good idea.
   // Suggestions + initial suggestions
-  final pr = ['Skiing', 'Soccer', 'Movie', 'Study', 'Hiking'];
   // ignore: non_constant_identifier_names
-  final sug_pr = ['Soccer', 'Movie'];
+  final id = [];
+  final pr = [];
 
   @override
   List<Widget>? buildActions(BuildContext context) => [
@@ -33,12 +40,12 @@ class MySearchDelegate extends SearchDelegate<String> {
   Widget buildResults(BuildContext context) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.abc, size: 120),
-            const SizedBox(height: 48),
+          children: const [
+            Icon(Icons.alarm, size: 120),
+            SizedBox(height: 48),
             Text(
-              query,
-              style: const TextStyle(
+              "NOTHING TO SEE HERE, WILL IMPLEMENT LATER",
+              style: TextStyle(
                 color: Colors.black,
                 fontSize: 64,
                 fontWeight: FontWeight.bold,
@@ -50,32 +57,86 @@ class MySearchDelegate extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // Changing some of the variable name may be a good idea.
-    final suggestion = query.isEmpty
-        ? sug_pr
-        : pr.where((sugPl) {
-            final sugLower = sugPl.toLowerCase();
-            final qLower = query.toLowerCase();
+    if (query.isEmpty) {
+      return FutureBuilder<List<Event>>(
+        future: getAllEvents(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            for (int i = 0; i < snapshot.data!.length; i++) {
+              pr.add(snapshot.data![i].title);
+              id.add(snapshot.data![i].id);
+            }
+            return Expanded(
+                child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, int index) {
+                return ListTile(
+                  leading: const Icon(FontAwesomeIcons.magnifyingGlass),
+                  title: Text(snapshot.data![index].title),
+                  onTap: () {
+                    Future<Event> detailedEvent =
+                        getDetailedEvent(snapshot.data![index].id);
 
-            return sugLower.startsWith(qLower);
-          }).toList();
+                    globals.makeSnackbar(context, "Getting Event Details");
 
-    return buildSuggestionSuccess(suggestion);
+                    detailedEvent.then((value) {
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  DetailEventViewPage(data: value)));
+                    }).catchError((error) {
+                      globals.makeSnackbar(context, error.toString());
+                    });
+                  },
+                );
+              },
+            ));
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error!}");
+          }
+          return const CircularProgressIndicator();
+        },
+      );
+    } else {
+      final suggestion = pr.where((sugPl) {
+        final sugLower = sugPl.toLowerCase();
+        final qLower = query.toLowerCase();
+
+        return sugLower.startsWith(qLower);
+      }).toList();
+
+      return buildSuggestionSuccess(suggestion);
+    }
   }
 
-  Widget buildSuggestionSuccess(List<String> suggestions) => ListView.builder(
+  Widget buildSuggestionSuccess(List suggestions) => ListView.builder(
         itemCount: suggestions.length,
         itemBuilder: (context, index) {
           final suggestion = suggestions[index];
           final queryText = suggestion.substring(0, query.length);
           final remainingText = suggestion.substring(query.length);
-
+          final eventId = id[index];
           return ListTile(
             onTap: () {
-              query = suggestion;
-              showResults(context);
+              Future<Event> detailedEvent = getDetailedEvent(eventId);
+
+              globals.makeSnackbar(context, "Getting Event Details");
+
+              detailedEvent.then((value) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            DetailEventViewPage(data: value)));
+              }).catchError((error) {
+                globals.makeSnackbar(context, error.toString());
+              });
             },
-            leading: const Icon(Icons.abc),
+            leading: const Icon(FontAwesomeIcons.magnifyingGlass),
             // title: Text(suggestion)
             title: RichText(
                 text: TextSpan(

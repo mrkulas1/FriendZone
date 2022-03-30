@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:async';
 
-import 'package:friendzone_flutter/db_comm/make_post_request.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/models/event.dart';
-import 'event_post.dart';
 import 'package:friendzone_flutter/globals.dart' as globals;
 import 'package:friendzone_flutter/global_header.dart';
 import 'event_full_view.dart';
