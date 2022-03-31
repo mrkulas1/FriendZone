@@ -351,7 +351,7 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                                           widget.data.id);
                                                 });
                                                 globals.makeSnackbar(context,
-                                                    "Report successfully");
+                                                    "Report successful");
                                               }).catchError((error) {
                                                 globals.makeSnackbar(
                                                     context, error.toString());

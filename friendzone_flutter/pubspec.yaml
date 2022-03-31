@@ -36,6 +36,7 @@ dependencies:
   font_awesome_flutter: ^10.1.0
   flutter_titled_container: ^1.0.7
   profanity_filter: ^2.0.0
+  google_fonts: ^2.3.1
 
 dev_dependencies:
   flutter_test:
