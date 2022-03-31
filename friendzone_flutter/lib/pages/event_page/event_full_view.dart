@@ -298,6 +298,76 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                             child: Text("Available: ${widget.data.slots}\n"
                                 "Total: ${widget.data.slots}"),
                           ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          ElevatedButton(
+                            onPressed: (() {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    var messageController =
+                                        TextEditingController();
+                                    return AlertDialog(
+                                      title: const Text(
+                                          'Please confirm you would like to report this event'),
+                                      content: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Form(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              TextFormField(
+                                                controller: messageController,
+                                                decoration: const InputDecoration(
+                                                    labelText:
+                                                        'Reason for report?'),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      actions: [
+                                        ElevatedButton(
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all<
+                                                          Color>(
+                                                      globals.friendzoneYellow),
+                                            ),
+                                            child: const Text("Join"),
+                                            onPressed: () {
+                                              var comment =
+                                                  messageController.text;
+                                              Future<void> joined = reportEvent(
+                                                  globals.activeUser!.email,
+                                                  widget.data.id,
+                                                  comment);
+
+                                              joined.then((value) {
+                                                setState(() {
+                                                  _signUpUser =
+                                                      getSignedUpUsers(
+                                                          widget.data.id);
+                                                });
+                                                globals.makeSnackbar(context,
+                                                    "Report successfully");
+                                              }).catchError((error) {
+                                                globals.makeSnackbar(
+                                                    context, error.toString());
+                                              });
+                                              Navigator.pop(context);
+                                            })
+                                      ],
+                                    );
+                                  });
+                            }),
+                            child: const Text("Report"),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        globals.friendzoneYellow)),
+                          )
                         ],
                       ),
                       TitledContainer(

@@ -284,7 +284,6 @@ switch ($functionID) {
         }
 
         echo json_encode(array("status" => $report));
-
         break;
 
     default:
