@@ -17,7 +17,6 @@ import 'dart:async';
 /// Authenticate the attempted login with the credentials of [email] and
 /// [password]
 Future<AuthResult> authenticate(String email, String password) async {
-
   email = email.replaceAll(" ", "");
 
   Map<String, dynamic> input = {"email": email, "password": password};
@@ -44,8 +43,7 @@ Future<AuthResult> authenticate(String email, String password) async {
 /// [contactInfo]. Throw an exception on failure.
 Future<CurrentUser> register(String email, String password, String name,
     String intro, String contactInfo) async {
-
-    email = email.replaceAll(" ", "");
+  email = email.replaceAll(" ", "");
 
   Map<String, dynamic> input = {
     "email": email,
@@ -155,8 +153,8 @@ Future<List<ForeignUser>> getSignedUpUsers(int eventID) async {
 Future<List<Event>> getMyEvents(String email) async {
   Map<String, dynamic> input = {"email": email};
 
-  List<Event> events = await makeListPostRequest(
-      PHPFunction.getMyEvents, input, EventBuilder());
+  List<Event> events =
+      await makeListPostRequest(PHPFunction.getMyEvents, input, EventBuilder());
 
   return events;
 }
@@ -171,15 +169,29 @@ Future<List<Event>> getJoinedEvents(String email) async {
   return events;
 }
 
-Future<CurrentUser> updateProfile(String email, String introduction, String additional_contact) async {
+Future<CurrentUser> updateProfile(
+    String email, String introduction, String additionalContact) async {
   Map<String, dynamic> input = {
     "email": email,
     "introduction": introduction,
-    "additional_contact": additional_contact
+    "additional_contact": additionalContact
   };
 
-  CurrentUser user =
-      await makePostRequest(PHPFunction.updateProfile, input, CurrentUserBuilder());
+  CurrentUser user = await makePostRequest(
+      PHPFunction.updateProfile, input, CurrentUserBuilder());
 
   return user;
+}
+
+/// Report an Event with the [userEmail], reporting the event [eventID], with
+/// the given [comment]. Will update the existing reporting comment if the user
+/// already reported the event.
+Future<void> reportEvent(String userEmail, int eventID, String comment) async {
+  Map<String, dynamic> input = {
+    "email": userEmail,
+    "id": eventID,
+    "comment": comment
+  };
+
+  await makeVoidPostRequest(PHPFunction.reportEvent, input);
 }

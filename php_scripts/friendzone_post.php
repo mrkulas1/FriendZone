@@ -22,6 +22,8 @@ class PHPFunctions
     const GET_JOINED_EVENTS = 11;
 
     const UPDATE_PROFILE = 12;
+
+    const REPORT_EVENT = 13;
 }
 
 // Main entry point for a Flutter page to make a POST request. The Flutter code
@@ -33,28 +35,32 @@ class PHPFunctions
 
 require "functions.php";
 
-function fail_notFound() {
+function fail_notFound()
+{
     http_response_code(404);
     die();
 }
 
-function fail_alreadyThere() {
+function fail_alreadyThere()
+{
     http_response_code(409);
     die();
 }
 
-function fail_general() {
+function fail_general()
+{
     http_response_code(202);
     die();
 }
 
-function bulk_isset($params, $map) {
-    foreach($params as $p) {
+function bulk_isset($params, $map)
+{
+    foreach ($params as $p) {
         if (!isset($map[$p])) {
-            return False;
+            return false;
         }
     }
-    return True;
+    return true;
 }
 
 // If these headers aren't here, Flutter errors in making the POST request
@@ -84,7 +90,7 @@ switch ($functionID) {
         //Output Auth function performed upon input
         $code = Auth($e, $p);
 
-        echo json_encode( array("status" => $code) );
+        echo json_encode(array("status" => $code));
         break;
 
     case PHPFunctions::GET_USER:
@@ -96,7 +102,7 @@ switch ($functionID) {
         $e = $data["email"];
         //Output specified user based upon input data
         $user = Get_User($e);
- 
+
         echo json_encode($user);
         break;
 
@@ -120,7 +126,6 @@ switch ($functionID) {
     case PHPFunctions::GET_ALL_EVENTS:
         //Return Get_All_Events Function
         $events = Get_All_Events();
-
 
         echo json_encode($events);
         break;
@@ -261,6 +266,24 @@ switch ($functionID) {
         $user = Update_Profile($e, $i, $a);
 
         echo json_encode($user);
+        break;
+
+    case PHPFunctions::REPORT_EVENT:
+        if (!bulk_isset(array("id", "email", "comment"), $data)) {
+            fail_general();
+        }
+
+        $i = $data["id"];
+        $e = $data["email"];
+        $c = $data["comment"];
+
+        $report = Report_Event($i, $e, $c);
+
+        if (isset($report["error"])) {
+            echo json_encode($report);
+        }
+
+        echo json_encode(array("status" => $report));
         break;
 
     default:

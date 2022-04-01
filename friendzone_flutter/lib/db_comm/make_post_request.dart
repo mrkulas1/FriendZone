@@ -25,7 +25,9 @@ enum PHPFunction {
   getMyEvents,
   getJoinedEvents,
 
-  updateProfile
+  updateProfile,
+
+  reportEvent
 }
 
 // Path for all POST requests
