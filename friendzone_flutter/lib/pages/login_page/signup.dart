@@ -8,7 +8,7 @@ import 'package:friendzone_flutter/models/current_user.dart';
 import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/pages/event_page/event_viewing.dart';
-
+import 'package:profanity_filter/profanity_filter.dart';
 import 'login.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -27,7 +27,7 @@ class _SignUpPage extends State<SignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   final _signupFormKey = GlobalKey<FormState>();
-
+  ProfanityFilter filter = ProfanityFilter();
   Future<CurrentUser>? _futureUser;
 
   @override
@@ -84,6 +84,8 @@ class _SignUpPage extends State<SignUpPage> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter a first name';
+                            } else if (filter.hasProfanity(value)) {
+                              return 'Enter a FriendZone appropriate name';
                             }
                             return null;
                           },
@@ -109,6 +111,8 @@ class _SignUpPage extends State<SignUpPage> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter a last name';
+                            } else if (filter.hasProfanity(value)) {
+                              return 'Enter a FriendZone appropriate name';
                             }
                             return null;
                           },
@@ -132,6 +136,9 @@ class _SignUpPage extends State<SignUpPage> {
                         child: TextFormField(
                           controller: _introController,
                           validator: (value) {
+                            if (filter.hasProfanity(value!)) {
+                              return 'Keep content appropriate';
+                            }
                             return null;
                           },
                           decoration: const InputDecoration(
@@ -157,6 +164,8 @@ class _SignUpPage extends State<SignUpPage> {
                           validator: (value) {
                             if (value != null && value.length > 40) {
                               return 'Contact Info must be under 40 characters';
+                            } else if (filter.hasProfanity(value!)) {
+                              return 'Keep your contact info appropriate';
                             }
                             return null;
                           },
@@ -189,6 +198,8 @@ class _SignUpPage extends State<SignUpPage> {
                             }
                             if (!value.endsWith('@mtu.edu')) {
                               return 'Please enter an MTU email';
+                            } else if (filter.hasProfanity(value)) {
+                              return 'Keep content appropriate';
                             }
                             return null;
                           },
@@ -221,6 +232,8 @@ class _SignUpPage extends State<SignUpPage> {
                             }
                             if (value.length > 100) {
                               return 'Password must be less than 100 characters';
+                            } else if (filter.hasProfanity(value)) {
+                              return 'Keep content appropriate';
                             }
                             return null;
                           },
