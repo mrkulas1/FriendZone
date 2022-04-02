@@ -9,8 +9,6 @@ import 'package:friendzone_flutter/models/current_user.dart';
 import 'package:friendzone_flutter/models/foreign_user.dart';
 import 'package:friendzone_flutter/pages/login_page/login.dart';
 import 'package:http/http.dart' as http;
-import 'package:integration_test/integration_test.dart';
-import 'package:integration_test/integration_test_driver.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 
 import 'package:friendzone_flutter/main.dart' as app;
@@ -18,18 +16,17 @@ import 'package:friendzone_flutter/main.dart' as app;
 void main(){
   
   group('Testing Login Class', () {
-    IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
     //Test 1: 
     testWidgets('Testing Successful Usecase FZ Text', (tester) async {   
       runApp(const MaterialApp(title: 'FriendZone', home: LoginPage()));
-      expect(find.text('Friend Zone'), findsNothing);
+      expect(find.text('Friend Zone'), findsOneWidget);
     });
     
     //Test 2:
     testWidgets('Testing FZ Text', (tester) async {   
       runApp(const MaterialApp(title: 'No Account? Sign Up', home: LoginPage()));
-      expect(find.text('Friend Zone'), findsNothing);
+      expect(find.text('No Account? Sign Up'), findsOneWidget);
     });
 
     //Test 3: 
@@ -41,7 +38,7 @@ void main(){
       //Test 4: 
     testWidgets('Testing Successful Usecase 6 Containers', (tester) async {   
       runApp(const MaterialApp(title: 'FriendZone', home: LoginPage()));
-      expect(find.byType(Container), findsOneWidget);
+      expect(find.byType(Container), findsNWidgets(6));
     });
 
       //Test 5: 
