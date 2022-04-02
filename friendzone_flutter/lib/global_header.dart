@@ -106,7 +106,7 @@ class CustomDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: ((context) => ProfilePage(email: "btdrees1@mtu.edu"))
+                  builder: ((context) => ProfilePage())
                   )
               );
             },

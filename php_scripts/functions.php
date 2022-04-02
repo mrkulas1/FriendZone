@@ -37,10 +37,10 @@ function Auth(String $email, String $password)
     //Authenticates User for login function
     try {
         $dbh = connectDB();
-        $parsedEmail = trim($email, " ");
+        $email = trim($email, " ");
         // Determine whether user exists
         $statement = $dbh->prepare("select count(*) from User where email = :email");
-        $statement->bindParam(":email", $parsedEmail);
+        $statement->bindParam(":email", $email);
         $result = $statement->execute();
         $row = $statement->fetch();
         if ($row[0] == 0) {
@@ -70,7 +70,7 @@ function Auth(String $email, String $password)
     }
 }
 
-function Get_Current_User(String $email)
+function Get_Cur_User(String $email)
 {
     //Returns the user info from the user with the given email
     try {
@@ -123,7 +123,7 @@ function Create_User(String $email, String $password, String $name, String $intr
 
         $dbh = null;
 
-        return Get_Current_User($email);
+        return Get_Cur_User($email);
     } catch (PDOException $exception) {
         return errorReturn($exception->getMessage());
     }
@@ -454,7 +454,7 @@ function Update_Profile(String $email, String $introduction, String $additional_
 
         $dbh = null;
 
-        return Get_Current_User($email);
+        return Get_Cur_User($email);
     } catch (PDOException $exception) {
         return errorReturn($exception->getMessage());
     }

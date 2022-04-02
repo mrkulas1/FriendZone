@@ -6,7 +6,7 @@
 class PHPFunctions
 {
     const AUTH = 0;
-    const GET_CURRENT_USER = 1;
+    const GET_CUR_USER = 1;
     const CREATE_USER = 2;
 
     const GET_ALL_EVENTS = 3;
@@ -95,7 +95,7 @@ switch ($functionID) {
         echo json_encode(array("status" => $code));
         break;
 
-    case PHPFunctions::GET_CURRENT_USER:
+    case PHPFunctions::GET_CUR_USER:
         //Get input from POST Request
         if (!isset($data["email"])) {
             fail_general();
@@ -103,7 +103,7 @@ switch ($functionID) {
 
         $e = $data["email"];
         //Output specified user based upon input data
-        $user = Get_Current_User($e);
+        $user = Get_Cur_User($e);
 
         echo json_encode($user);
         break;

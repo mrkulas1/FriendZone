@@ -39,6 +39,20 @@ Future<AuthResult> authenticate(String email, String password) async {
   return authResult;
 }
 
+/// Report an Event with the [userEmail], reporting the event [eventID], with
+/// the given [comment]. Will update the existing reporting comment if the user
+/// already reported the event.
+Future<ForeignUser> getCurrentUser(String userEmail) async {
+  Map<String, dynamic> input = {
+    "email": userEmail,
+  };
+
+  ForeignUser user = await makePostRequest(
+    PHPFunction.getForeignUser, input, ForeignUserBuilder());
+
+  return user;
+}
+
 /// Register a user with the given [email], [password], [name], [intro], and
 /// [contactInfo]. Throw an exception on failure.
 Future<CurrentUser> register(String email, String password, String name,

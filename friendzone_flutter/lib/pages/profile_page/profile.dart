@@ -14,15 +14,20 @@ import 'package:friendzone_flutter/pages/modules.dart';
 import 'package:friendzone_flutter/pages/profile_page/profile_edit.dart';
 
 class ProfilePage extends StatefulWidget {
-  ForeignUser? user;
   bool owner = false;
-  ProfilePage({Key? key, this.user}) : super(key: key)
+  String? email;
+  ForeignUser? user;
+  ProfilePage({Key? key, this.email}) : super(key: key)
   {
-    if(user == null || (user?.email == globals.activeUser!.email))
+    if(email == null || email == globals.activeUser!.email)
     {
-      user = globals.activeUser;
+      //user = globals.activeUser as Future<ForeignUser>?;
       owner = true;
     }
+    /*else
+    {
+      user = getForeignUser(email).then((value) => null);
+    }*/
   }
 
   @override
@@ -36,7 +41,17 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-
+    if(widget.owner)
+    {
+      widget.user = globals.activeUser;
+    }
+    else
+    {
+      getForeignUser(widget.email.toString()).then((value)
+      {
+        widget.user = value;
+      });
+    }
     _myEvents = getMyEvents(widget.user!.email);
     _joinedEvents = getJoinedEvents(widget.user!.email);
   }
