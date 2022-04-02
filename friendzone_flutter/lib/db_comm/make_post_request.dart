@@ -27,7 +27,9 @@ enum PHPFunction {
 
   updateProfile,
 
-  reportEvent
+  reportEvent,
+
+  getForeignUser
 }
 
 // Path for all POST requests

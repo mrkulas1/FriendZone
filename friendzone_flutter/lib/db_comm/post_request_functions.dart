@@ -150,6 +150,7 @@ Future<List<ForeignUser>> getSignedUpUsers(int eventID) async {
   return users;
 }
 
+//Get all the events a user has created
 Future<List<Event>> getMyEvents(String email) async {
   Map<String, dynamic> input = {"email": email};
 
@@ -159,7 +160,7 @@ Future<List<Event>> getMyEvents(String email) async {
   return events;
 }
 
-/// Get a list of the basic info for all Events. Throw an exception on failure.
+/// Get all the events a given user has joined.
 Future<List<Event>> getJoinedEvents(String email) async {
   Map<String, dynamic> input = {"email": email};
 
@@ -194,4 +195,18 @@ Future<void> reportEvent(String userEmail, int eventID, String comment) async {
   };
 
   await makeVoidPostRequest(PHPFunction.reportEvent, input);
+}
+
+/// Report an Event with the [userEmail], reporting the event [eventID], with
+/// the given [comment]. Will update the existing reporting comment if the user
+/// already reported the event.
+Future<ForeignUser> getForeignUser(String userEmail) async {
+  Map<String, dynamic> input = {
+    "email": userEmail,
+  };
+
+  ForeignUser user = await makePostRequest(
+    PHPFunction.getForeignUser, input, ForeignUserBuilder());
+
+  return user;
 }

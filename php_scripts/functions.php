@@ -37,7 +37,7 @@ function Auth(String $email, String $password)
     //Authenticates User for login function
     try {
         $dbh = connectDB();
-        $parsedEmail = trim($email, [" "]);
+        $parsedEmail = trim($email, " ");
         // Determine whether user exists
         $statement = $dbh->prepare("select count(*) from User where email = :email");
         $statement->bindParam(":email", $parsedEmail);
@@ -70,12 +70,12 @@ function Auth(String $email, String $password)
     }
 }
 
-function Get_User(String $email)
+function Get_Current_User(String $email)
 {
     //Returns the user info from the user with the given email
     try {
         $dbh = connectDB();
-        $email = trim($email, [" "]);
+        $email = trim($email, " ");
         $statement = $dbh->prepare("SELECT email, name, introduction, additional_contact from User where email = :email");
         $statement->bindParam(":email", $email);
         $result = $statement->execute();
@@ -101,7 +101,7 @@ function Create_User(String $email, String $password, String $name, String $intr
         if (strlen($email) <= strlen("@mtu.edu")) {
             return errorReturn("User Needs Valid MTU Email");
         }
-        $email = trim($email, [" "]);
+        $email = trim($email, " ");
         $statement = $dbh->prepare("SELECT count(*) from User where email = :email");
         $statement->bindParam(":email", $email);
         $result = $statement->execute();
@@ -123,7 +123,7 @@ function Create_User(String $email, String $password, String $name, String $intr
 
         $dbh = null;
 
-        return Get_User($email);
+        return Get_Current_User($email);
     } catch (PDOException $exception) {
         return errorReturn($exception->getMessage());
     }
@@ -454,7 +454,7 @@ function Update_Profile(String $email, String $introduction, String $additional_
 
         $dbh = null;
 
-        return Get_User($email);
+        return Get_Current_User($email);
     } catch (PDOException $exception) {
         return errorReturn($exception->getMessage());
     }
@@ -493,4 +493,26 @@ function Report_Event(int $id, String $email, String $comment)
     }
 }
 
+function Get_Foreign_User(String $email)
+{
+    //Returns the user info from the user with the given email
+    try {
+        $dbh = connectDB();
+        $email = trim($email, " ");
+        $statement = $dbh->prepare("SELECT email, name, introduction, additional_contact from User where email = :email");
+        $statement->bindParam(":email", $email);
+        $result = $statement->execute();
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+        $dbh = null;
+
+        if (empty($row)) {
+            return errorReturn("No user with this email");
+        }
+
+        return $row;
+    } catch (PDOException $exception) {
+        return errorReturn($exception->getMessage());
+    }
+}
 ?>

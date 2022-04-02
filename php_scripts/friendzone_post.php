@@ -6,7 +6,7 @@
 class PHPFunctions
 {
     const AUTH = 0;
-    const GET_USER = 1;
+    const GET_CURRENT_USER = 1;
     const CREATE_USER = 2;
 
     const GET_ALL_EVENTS = 3;
@@ -24,6 +24,8 @@ class PHPFunctions
     const UPDATE_PROFILE = 12;
 
     const REPORT_EVENT = 13;
+
+    const GET_FOREIGN_USER = 14;
 }
 
 // Main entry point for a Flutter page to make a POST request. The Flutter code
@@ -93,7 +95,7 @@ switch ($functionID) {
         echo json_encode(array("status" => $code));
         break;
 
-    case PHPFunctions::GET_USER:
+    case PHPFunctions::GET_CURRENT_USER:
         //Get input from POST Request
         if (!isset($data["email"])) {
             fail_general();
@@ -101,7 +103,7 @@ switch ($functionID) {
 
         $e = $data["email"];
         //Output specified user based upon input data
-        $user = Get_User($e);
+        $user = Get_Current_User($e);
 
         echo json_encode($user);
         break;
@@ -284,6 +286,19 @@ switch ($functionID) {
         }
 
         echo json_encode(array("status" => $report));
+        break;
+
+    case PHPFunctions::GET_FOREIGN_USER:
+        //Get input from POST Request
+        if (!isset($data["email"])) {
+            fail_general();
+        }
+
+        $e = $data["email"];
+        //Output specified user based upon input data
+        $user = Get_Foreign_User($e);
+
+        echo json_encode($user);
         break;
 
     default:
