@@ -8,6 +8,7 @@ import 'package:friendzone_flutter/global_header.dart';
 import 'package:friendzone_flutter/globals.dart' as globals;
 import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'package:friendzone_flutter/models/foreign_user.dart';
+import 'package:friendzone_flutter/pages/profile_page/profile.dart';
 
 class DetailEventViewPage extends StatefulWidget {
   final Event data;
@@ -176,10 +177,28 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                         ),
                       ),
                       const SizedBox(width: 25),
-                      Text(
-                        "Posted on ${widget.data.dateCreated ?? ""}\n"
-                        "Posted by ${widget.data.userEmail}",
-                        style: const TextStyle(fontSize: 14),
+                      Column(
+                        children: [
+                          Text(
+                            "Posted on ${widget.data.dateCreated ?? ""}",
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                          TextButton(
+                            child: Text("Posted by ${widget.data.userEmail}"),
+                            style: TextButton.styleFrom(
+                              textStyle: const TextStyle(fontSize: 14),
+                            ),
+                            onPressed: () 
+                            {
+                              Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProfilePage(
+                                                    email: widget.data.userEmail)));
+                            },
+                          ),
+                        ],
                       ),
                       const SizedBox(width: 25),
                       ElevatedButton(
