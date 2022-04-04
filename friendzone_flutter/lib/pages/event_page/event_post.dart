@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:friendzone_flutter/globals.dart' as globals;
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:friendzone_flutter/models/event.dart';
 import 'package:friendzone_flutter/global_header.dart';
 import 'package:friendzone_flutter/pages/event_page/event_full_view.dart';
 import 'package:profanity_filter/profanity_filter.dart';
+import 'package:flutter/material.dart';
 
 class EventPostPage extends StatefulWidget {
   static const String routeName = '/post';
@@ -35,6 +37,48 @@ class EventPostPageState extends State<EventPostPage> {
 
   DateTime _dateTime = DateTime.now();
   ProfanityFilter filter = ProfanityFilter();
+
+  final List<String> generalcat = [
+    'Academic',
+    'Active',
+    'Carpool',
+    'Clubs',
+    'Creative',
+    'Gaming',
+    'Volunteer',
+    'Other'
+  ];
+  final List<String> academicsubcat = [
+    'Study Group',
+    'Homework',
+    'Tutoring',
+    'Other'
+  ];
+  final List<String> activesubcat = [
+    'Winter Sports',
+    'Water Sports',
+    'Racquet Sports',
+    'Team Sports',
+    'Other'
+  ];
+  final List<String> carpoolsubcat = [
+    'Short Distances',
+    'Long Distances',
+    'Other'
+  ];
+  final List<String> clubsSubcat = [];
+  final List<String> creativeSubcat = ['Art', 'Music', 'Other'];
+  final List<String> gamingSubcat = [
+    'Video Games',
+    'Board Games',
+    'Card Games',
+    'Other'
+  ];
+  final List<String> volunteerSubcat = [];
+  List<String> subcat = [];
+  String? selectCat;
+  String? selectSubCat;
+
   @override
   void initState() {
     super.initState();
@@ -211,18 +255,37 @@ class EventPostPageState extends State<EventPostPage> {
                     ),
                     Container(
                       width: 260,
-                      height: 80,
-                      child: TextFormField(
-                        validator: (value) {
-                          return null;
+                      height: 60,
+                      child: DropdownButton<String>(
+                        hint: Text('Category'),
+                        value: selectCat,
+                        items: generalcat.map((String value) {
+                          return DropdownMenuItem(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: onChangedCallback,
+                      ),
+                    ),
+                    Container(
+                      width: 260,
+                      height: 90,
+                      padding: const EdgeInsets.only(bottom: 20, top: 10),
+                      child: DropdownButton<String>(
+                        hint: Text('Subcategory'),
+                        value: selectSubCat,
+                        items: subcat.map((String value) {
+                          return DropdownMenuItem(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (subcat) {
+                          setState(() {
+                            selectSubCat = subcat;
+                          });
                         },
-                        controller: _category,
-                        decoration: const InputDecoration(
-                            labelText: "Category",
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(3)),
-                            )),
                       ),
                     ),
                     Container(
@@ -356,6 +419,57 @@ class EventPostPageState extends State<EventPostPage> {
     if (dateTimeFinal != null && dateTimeFinal != _dateTime) {
       setState(() {
         _dateTime = dateTimeFinal;
+      });
+    }
+  }
+
+  void onChangedCallback(generalcat) {
+    if (generalcat == 'Academic') {
+      setState(() {
+        selectCat = "Academic";
+        subcat = academicsubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Active') {
+      setState(() {
+        selectCat = "Active";
+        subcat = activesubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Carpool') {
+      setState(() {
+        selectCat = "Carpool";
+        subcat = carpoolsubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Clubs') {
+      setState(() {
+        selectCat = "Clubs";
+        subcat = clubsSubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Creative') {
+      setState(() {
+        selectCat = "Creative";
+        subcat = creativeSubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Gaming') {
+      setState(() {
+        selectCat = "Gaming";
+        subcat = gamingSubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Volunteer') {
+      setState(() {
+        selectCat = "Volunteer";
+        subcat = volunteerSubcat;
+        selectSubCat = null;
+      });
+    } else {
+      setState(() {
+        subcat = [];
+        selectSubCat = null;
       });
     }
   }
