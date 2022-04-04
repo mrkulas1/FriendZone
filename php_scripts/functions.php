@@ -43,12 +43,13 @@ function Auth(String $email, String $password)
         $statement->bindParam(":email", $email);
         $result = $statement->execute();
         $row = $statement->fetch();
+        
+        //select count(*), if(ifnull(lock_time, 0) - now() > 0, 0, 1), login_attempts from User where email = "test@mtu.edu";
         if ($row[0] == 0) {
             $dbh = null;
             return 1;
         }
 
-        // Determine whether user is locked out - TODO
 
         // Determine that the password is correct
         $statement = $dbh->prepare("select count(*) from User where email = :email and password = sha2(:password, 256)");
@@ -58,9 +59,14 @@ function Auth(String $email, String $password)
         $row = $statement->fetch();
         $dbh = null;
 
+        //Incorrect Login
         if ($row[0] == 0) {
             return 2;
         }
+
+        //$curDate = date('m/d/Y h:i:s a', time()); 
+        //if($row[4].compare)
+        //date('Y-m-d H:i:s');
 
         return 0;
     } catch (PDOException $exception) {
@@ -423,7 +429,7 @@ function Get_Joined_Events(String $email)
     //Returns events that a user has joined
     try {
         $dbh = connectDB();
-        $statement = $dbh->prepare("SELECT e.id id, j.email email, title, description, time, location, slots, category, reported, date_created FROM Joins j JOIN Event e WHERE e.id = j.id && j.email = :email");
+        $statement = $dbh->prepare("SELECT e.id id, e.email email, title, description, time, location, slots, category, reported, date_created FROM Joins j JOIN Event e WHERE e.id = j.id && j.email = :email");
         $statement->bindParam(":email", $email);
         $result = $statement->execute();
         $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
