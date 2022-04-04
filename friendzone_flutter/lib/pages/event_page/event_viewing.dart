@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/models/event.dart';
 import 'package:friendzone_flutter/globals.dart' as globals;
@@ -19,6 +20,8 @@ class EventViewAllPage extends StatefulWidget {
 class _EventViewAllPageState extends State<EventViewAllPage> {
   Future<List<Event>>? _events;
   DateTime selectedDate = DateTime.now();
+  DateTime fromDate = DateTime.now();
+  DateTime toDate = DateTime.now();
 
   @override
   void initState() {
@@ -38,6 +41,36 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
       setState(
         () {
           selectedDate = picked;
+        },
+      );
+    }
+  }
+
+  Future<void> _selectDateTo(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2019, 1),
+        lastDate: DateTime(2111));
+    if (picked != null) {
+      setState(
+        () {
+          toDate = picked;
+        },
+      );
+    }
+  }
+
+  Future<void> _selectDateFrom(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2019, 1),
+        lastDate: DateTime(2111));
+    if (picked != null) {
+      setState(
+        () {
+          fromDate = picked;
         },
       );
     }
@@ -92,6 +125,11 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                     IconButton(
                         onPressed: () {
                           // Add some stuff here for filter list
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                _buildPopupDialog(context),
+                          );
                         },
                         icon: const Icon(FontAwesomeIcons.filter)),
                   ],
@@ -160,6 +198,79 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
           },
           backgroundColor: globals.friendzoneYellow,
           child: const Icon(Icons.restart_alt)),
+    );
+  }
+
+  Widget _buildPopupDialog(BuildContext context) {
+    int? selectedValue = 1;
+    return AlertDialog(
+      title: const Text("Filter Events"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          const TextField(
+            decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Event Name",
+                hintText: "Event Name Here"),
+            autofocus: false,
+          ),
+          Row(
+            children: [
+              const Text("Select Event Type: "),
+              DropdownButton(
+                  value: selectedValue,
+                  items: const [
+                    DropdownMenuItem(
+                      child: Text("Friend 1"),
+                      value: 1,
+                    ),
+                    DropdownMenuItem(
+                      child: Text("Friend 2"),
+                      value: 2,
+                    ),
+                    DropdownMenuItem(
+                      child: Text("Friend 3"),
+                      value: 3,
+                    ),
+                  ],
+                  onChanged: (int? value) {
+                    setState(() {
+                      selectedValue = value;
+                    });
+                  },
+                  hint: Text("Select Event Category"))
+            ],
+          ),
+          Row(children: [
+            Text("Events After: " + fromDate.toString()),
+            //Figure Out Tomorrow
+          ]),
+          Row(children: [
+            Text("Events Before: " + toDate.toString()),
+            //FIgure Out Tomorrow
+          ]),
+        ],
+      ),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: () {
+            //Filter Events by whatever Here
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text("Search"),
+        ),
+        FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Color.fromARGB(255, 254, 0, 0),
+          child: const Text("Cancel"),
+        ),
+      ],
     );
   }
 }

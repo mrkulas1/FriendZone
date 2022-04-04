@@ -17,10 +17,8 @@ class ProfilePage extends StatefulWidget {
   bool owner = false;
   String? email;
   ForeignUser? user;
-  ProfilePage({Key? key, this.email}) : super(key: key)
-  {
-    if(email == null || email == globals.activeUser!.email)
-    {
+  ProfilePage({Key? key, this.email}) : super(key: key) {
+    if (email == null || email == globals.activeUser!.email) {
       //user = globals.activeUser as Future<ForeignUser>?;
       owner = true;
     }
@@ -41,14 +39,10 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    if(widget.owner)
-    {
+    if (widget.owner) {
       widget.user = globals.activeUser;
-    }
-    else
-    {
-      getForeignUser(widget.email.toString()).then((value)
-      {
+    } else {
+      getForeignUser(widget.email.toString()).then((value) {
         widget.user = value;
       });
     }
@@ -147,6 +141,23 @@ class _ProfilePageState extends State<ProfilePage> {
                                                                       .data![
                                                                   index])));
                                             },
+                                            trailing: IconButton(
+                                              icon: const Icon(
+                                                  FontAwesomeIcons.x),
+                                              //color: globals.friendzoneYellow,
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          _buildDeleteDialogue(
+                                                              context,
+                                                              snapshot
+                                                                  .data![index]
+                                                                  .title),
+                                                );
+                                              },
+                                            ),
                                           );
                                         },
                                       ));
@@ -224,5 +235,28 @@ class _ProfilePageState extends State<ProfilePage> {
           backgroundColor: globals.friendzoneYellow,
           child: const Icon(Icons.restart_alt)),
     );
+  }
+
+  Widget _buildDeleteDialogue(BuildContext context, String eventName) {
+    return AlertDialog(
+        title: Text("Permenently Delete " + eventName + "?"),
+        content: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  textColor: const Color.fromARGB(255, 0, 0, 255),
+                  child: const Text("Confirm")),
+              FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  textColor: const Color.fromARGB(255, 254, 0, 0),
+                  child: const Text("Cancel")),
+            ]));
   }
 }
