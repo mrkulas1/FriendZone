@@ -16,19 +16,12 @@ import 'package:friendzone_flutter/pages/profile_page/profile_edit.dart';
 class ProfilePage extends StatefulWidget {
   bool owner = false;
   String? email;
-<<<<<<< HEAD
-  ForeignUser? user;
-  ProfilePage({Key? key, this.email}) : super(key: key) {
-    if (email == null || email == globals.activeUser!.email) {
-      //user = globals.activeUser as Future<ForeignUser>?;
-=======
   Future<ForeignUser>? user;
   
   ProfilePage({Key? key, this.email}) : super(key: key) {
     if (email == null || email == globals.activeUser!.email) {
       user = Future<ForeignUser>.value(globals.activeUser);
       email = globals.activeUser!.email;
->>>>>>> a59c23c289c5a73585fc8862cd95a321baac1ac6
       owner = true;
     }
   }
@@ -44,18 +37,9 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-<<<<<<< HEAD
-    if (widget.owner) {
-      widget.user = globals.activeUser;
-    } else {
-      getForeignUser(widget.email.toString()).then((value) {
-        widget.user = value;
-      });
-=======
 
     if (!widget.owner) {
       widget.user = getForeignUser(widget.email.toString());
->>>>>>> a59c23c289c5a73585fc8862cd95a321baac1ac6
     }
 
     _myEvents = getMyEvents(widget.email.toString());
