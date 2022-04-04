@@ -47,32 +47,28 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
   }
 
   Future<void> _selectDateTo(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+    final DateTime? pickedTo = await showDatePicker(
         context: context,
-        initialDate: selectedDate,
+        initialDate: toDate,
         firstDate: DateTime(2019, 1),
         lastDate: DateTime(2111));
-    if (picked != null) {
-      setState(
-        () {
-          toDate = picked;
-        },
-      );
+    if (pickedTo != null && pickedTo != toDate) {
+      setState(() {
+        toDate = pickedTo;
+      });
     }
   }
 
   Future<void> _selectDateFrom(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+    final DateTime? pickedFrom = await showDatePicker(
         context: context,
-        initialDate: selectedDate,
+        initialDate: fromDate,
         firstDate: DateTime(2019, 1),
         lastDate: DateTime(2111));
-    if (picked != null) {
-      setState(
-        () {
-          fromDate = picked;
-        },
-      );
+    if (pickedFrom != null && pickedFrom != fromDate) {
+      setState(() {
+        fromDate = pickedFrom;
+      });
     }
   }
 
@@ -204,7 +200,17 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
   Widget _buildPopupDialog(BuildContext context) {
     int? selectedValue = 1;
     return AlertDialog(
-      title: const Text("Filter Events"),
+      insetPadding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+      title: Container(
+        height: 50,
+        width: 200,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.all(0),
+        color: Colors.black,
+        child: const Text("Filter Events",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: globals.friendzoneYellow, fontSize: 25)),
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,6 +228,7 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
               const Text("Select Event Type: "),
               DropdownButton(
                   value: selectedValue,
+                  alignment: Alignment.topRight,
                   items: const [
                     DropdownMenuItem(
                       child: Text("Friend 1"),
@@ -244,12 +251,26 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                   hint: Text("Select Event Category"))
             ],
           ),
-          Row(children: [
-            Text("Events After: " + fromDate.toString()),
-            //Figure Out Tomorrow
-          ]),
-          Row(children: [
-            Text("Events Before: " + toDate.toString()),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text("Events After: "),
+            InkWell(
+              onTap: () {
+                _selectDateFrom(context);
+              },
+              child: Text('${fromDate.month}/${fromDate.day}/${fromDate.year}'),
+              key: const Key("fromDate"),
+            ),
+          ])
+          //Figure Out Tomorrow
+          ,
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text("Events Before: "),
+            InkWell(
+              onTap: () {
+                _selectDateTo(context);
+              },
+              child: Text('${toDate.month}/${toDate.day}/${toDate.year}'),
+            )
             //FIgure Out Tomorrow
           ]),
         ],
