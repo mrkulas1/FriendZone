@@ -428,33 +428,49 @@ class EventPostPageState extends State<EventPostPage> {
       setState(() {
         selectCat = "Academic";
         subcat = academicsubcat;
+        selectSubCat = null;
       });
     } else if (generalcat == 'Active') {
       setState(() {
         selectCat = "Active";
         subcat = activesubcat;
+        selectSubCat = null;
       });
     } else if (generalcat == 'Carpool') {
       setState(() {
         selectCat = "Carpool";
         subcat = carpoolsubcat;
+        selectSubCat = null;
       });
     } else if (generalcat == 'Clubs') {
       setState(() {
         selectCat = "Clubs";
         subcat = clubsSubcat;
+        selectSubCat = null;
       });
     } else if (generalcat == 'Creative') {
-      selectCat = "Creative";
-      subcat = creativeSubcat;
+      setState(() {
+        selectCat = "Creative";
+        subcat = creativeSubcat;
+        selectSubCat = null;
+      });
     } else if (generalcat == 'Gaming') {
-      selectCat = "Gaming";
-      subcat = gamingSubcat;
+      setState(() {
+        selectCat = "Gaming";
+        subcat = gamingSubcat;
+        selectSubCat = null;
+      });
     } else if (generalcat == 'Volunteer') {
-      selectCat = "Volunteer";
-      subcat = volunteerSubcat;
+      setState(() {
+        selectCat = "Volunteer";
+        subcat = volunteerSubcat;
+        selectSubCat = null;
+      });
     } else {
-      subcat = [];
+      setState(() {
+        subcat = [];
+        selectSubCat = null;
+      });
     }
   }
 }
