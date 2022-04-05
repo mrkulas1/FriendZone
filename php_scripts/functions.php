@@ -39,35 +39,54 @@ function Auth(String $email, String $password)
         $dbh = connectDB();
         $email = trim($email, " ");
         // Determine whether user exists
-        $statement = $dbh->prepare("select count(*) from User where email = :email");
+        $statement = $dbh->prepare("SELECT count(*), IF(IFNULL(TIMESTAMPDIFF(MINUTE, lock_time, now()) < 15, 0), 1, 0) locked_out, login_attempts FROM User WHERE email = :email");
         $statement->bindParam(":email", $email);
         $result = $statement->execute();
         $row = $statement->fetch();
         
-        //select count(*), if(ifnull(lock_time, 0) - now() > 0, 0, 1), login_attempts from User where email = "test@mtu.edu";
+        //User doesn't exist
         if ($row[0] == 0) {
             $dbh = null;
             return 1;
         }
 
-
+        //If the user is locked out
+        if($row[1] == 1)
+        {
+            $dbh = null;
+            return 3;
+        }
+        $login_attempts = $row[2];
+        
         // Determine that the password is correct
         $statement = $dbh->prepare("select count(*) from User where email = :email and password = sha2(:password, 256)");
         $statement->bindParam(":email", $email);
         $statement->bindParam(":password", $password);
         $result = $statement->execute();
         $row = $statement->fetch();
-        $dbh = null;
 
         //Incorrect Login
         if ($row[0] == 0) {
+            //Lockout user or increment their attempts
+            if($login_attempts >= 3)
+            {
+                $statement = $dbh->prepare("UPDATE User SET lock_time = now(), login_attempts = 0 WHERE email = :email");
+                $statement->bindParam(":email", $email);
+                $result = $statement->execute();
+                $dbh = null;
+                return 3;
+            }
+            else
+            {
+                $statement = $dbh->prepare("UPDATE User SET login_attempts = login_attempts + 1 WHERE email = :email");
+                $statement->bindParam(":email", $email);
+                $result = $statement->execute();
+                $dbh = null;
+            }
             return 2;
         }
 
-        //$curDate = date('m/d/Y h:i:s a', time()); 
-        //if($row[4].compare)
-        //date('Y-m-d H:i:s');
-
+        $dbh = null;
         return 0;
     } catch (PDOException $exception) {
         //echo 'Errors Occurred in Auth Function function.php';
