@@ -239,7 +239,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildDeleteDialogue(BuildContext context, String eventName) {
     return AlertDialog(
-        title: Text("Permenently Delete " + eventName + "?"),
+        title: Container(
+          padding: const EdgeInsets.all(15),
+          color: Colors.black,
+          child: Text("Permenently Delete " + eventName + "?",
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: globals.friendzoneYellow, fontSize: 25)),
+        ),
         content: Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,

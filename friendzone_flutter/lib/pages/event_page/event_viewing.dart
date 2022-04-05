@@ -200,7 +200,7 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
   Widget _buildPopupDialog(BuildContext context) {
     int? selectedValue = 1;
     return AlertDialog(
-      insetPadding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+      insetPadding: const EdgeInsets.all(15),
       title: Container(
         height: 50,
         width: 200,
@@ -217,6 +217,7 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           const TextField(
+            key: Key("Filter_Text"),
             decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: "Event Name",
@@ -228,7 +229,7 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
               const Text("Select Event Type: "),
               DropdownButton(
                   value: selectedValue,
-                  alignment: Alignment.topRight,
+                  alignment: Alignment.center,
                   items: const [
                     DropdownMenuItem(
                       child: Text("Friend 1"),
@@ -251,16 +252,21 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                   hint: Text("Select Event Category"))
             ],
           ),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text("Events After: "),
-            InkWell(
-              onTap: () {
-                _selectDateFrom(context);
-              },
-              child: Text('${fromDate.month}/${fromDate.day}/${fromDate.year}'),
-              key: const Key("fromDate"),
-            ),
-          ])
+          Padding(
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Events After: "),
+                    InkWell(
+                      onTap: () {
+                        _selectDateFrom(context);
+                      },
+                      child: Text(
+                          '${fromDate.month}/${fromDate.day}/${fromDate.year}'),
+                      key: const Key("fromDate"),
+                    ),
+                  ]))
           //Figure Out Tomorrow
           ,
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -276,21 +282,33 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
         ],
       ),
       actions: <Widget>[
-        FlatButton(
-          onPressed: () {
-            //Filter Events by whatever Here
-            Navigator.of(context).pop();
-          },
-          textColor: Theme.of(context).primaryColor,
-          child: const Text("Search"),
-        ),
-        FlatButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          textColor: Color.fromARGB(255, 254, 0, 0),
-          child: const Text("Cancel"),
-        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            FlatButton(
+                onPressed: () {
+                  //Key("Filter_Text").
+                },
+                color: globals.friendzoneYellow,
+                textColor: Colors.black,
+                child: const Text("Reset Filter")),
+            FlatButton(
+              onPressed: () {
+                //Filter Events by whatever Here
+                Navigator.of(context).pop();
+              },
+              textColor: Theme.of(context).primaryColor,
+              child: const Text("Search"),
+            ),
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              textColor: Color.fromARGB(255, 254, 0, 0),
+              child: const Text("Cancel"),
+            ),
+          ],
+        )
       ],
     );
   }
