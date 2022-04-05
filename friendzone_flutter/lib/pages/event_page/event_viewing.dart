@@ -144,8 +144,33 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                             scrollDirection: Axis.vertical,
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, int index) {
+                              IconData data = FontAwesomeIcons.atom;
+                              // TODO: Change when enum is finish
+                              // ignore: unrelated_type_equality_checks
+                              if (snapshot.data![index].category ==
+                                  "Academic") {
+                                data = FontAwesomeIcons.graduationCap;
+                              } else if (snapshot.data![index].category ==
+                                  "Active") {
+                                data = FontAwesomeIcons.futbol;
+                              } else if (snapshot.data![index].category ==
+                                  "Carpool") {
+                                data = FontAwesomeIcons.car;
+                              } else if (snapshot.data![index].category ==
+                                  "Clubs") {
+                                data = FontAwesomeIcons.puzzlePiece;
+                              } else if (snapshot.data![index].category ==
+                                  "Creative") {
+                                data = FontAwesomeIcons.brush;
+                              } else if (snapshot.data![index].category ==
+                                  "Gaming") {
+                                data = FontAwesomeIcons.dAndD;
+                              } else if (snapshot.data![index].category ==
+                                  "Volunteer") {
+                                data = FontAwesomeIcons.handshake;
+                              }
                               return ListTile(
-                                leading: const Icon(FontAwesomeIcons.atom),
+                                leading: Icon(data),
                                 title: Text(snapshot.data![index].title),
                                 subtitle: Text(
                                     "Where: ${snapshot.data![index].location}\n"
