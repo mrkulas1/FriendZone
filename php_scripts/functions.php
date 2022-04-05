@@ -86,6 +86,10 @@ function Auth(String $email, String $password)
             return 2;
         }
 
+        //Reset attempts on correct login
+        $statement = $dbh->prepare("UPDATE User SET login_attempts = 0 WHERE email = :email");
+        $statement->bindParam(":email", $email);
+        $result = $statement->execute();
         $dbh = null;
         return 0;
     } catch (PDOException $exception) {
