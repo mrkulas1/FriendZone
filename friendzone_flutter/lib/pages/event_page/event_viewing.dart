@@ -22,12 +22,17 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
   DateTime selectedDate = DateTime.now();
   DateTime fromDate = DateTime.now();
   DateTime toDate = DateTime.now();
+  bool fromPicked = false;
+  bool toPicked = false;
+  List<Event> newEvents = [];
+  final TextEditingController _nameControl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
     _events = getAllEvents();
+    _nameControl.text = "";
   }
 
   // Date selector
@@ -52,8 +57,9 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
         initialDate: toDate,
         firstDate: DateTime(2019, 1),
         lastDate: DateTime(2111));
-    if (pickedTo != null && pickedTo != toDate) {
+    if (pickedTo != null) {
       setState(() {
+        toPicked = true;
         toDate = pickedTo;
       });
     }
@@ -65,8 +71,9 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
         initialDate: fromDate,
         firstDate: DateTime(2019, 1),
         lastDate: DateTime(2111));
-    if (pickedFrom != null && pickedFrom != fromDate) {
+    if (pickedFrom != null) {
       setState(() {
+        fromPicked = true;
         fromDate = pickedFrom;
       });
     }
@@ -241,9 +248,10 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          const TextField(
-            key: Key("Filter_Text"),
-            decoration: InputDecoration(
+          TextFormField(
+            key: const Key("Filter_Text"),
+            controller: _nameControl,
+            decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: "Event Name",
                 hintText: "Event Name Here"),
@@ -277,31 +285,48 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                   hint: Text("Select Event Category"))
             ],
           ),
-          Padding(
+          /*Padding(
               padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Events After: "),
-                    InkWell(
-                      onTap: () {
-                        _selectDateFrom(context);
-                      },
-                      child: Text(
-                          '${fromDate.month}/${fromDate.day}/${fromDate.year}'),
-                      key: const Key("fromDate"),
-                    ),
-                  ]))
-          //Figure Out Tomorrow
-          ,
+              child: */
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text("Events After: "),
+            InkWell(
+              onTap: () {
+                setState(() {
+                  _selectDateFrom(context);
+                  fromDate = fromDate;
+                });
+              },
+              child: Text('${fromDate.month}/${fromDate.day}/${fromDate.year}'),
+              key: const Key("fromDate"),
+            ),
+            IconButton(
+                onPressed: () {
+                  fromDate = DateTime.now();
+                  fromPicked = false;
+                },
+                icon: const Icon(FontAwesomeIcons.xmark, color: Colors.red)),
+          ]) /*)*/,
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Text("Events Before: "),
             InkWell(
               onTap: () {
-                _selectDateTo(context);
+                setState(() {
+                  _selectDateTo(context);
+                  toDate = toDate;
+                });
               },
               child: Text('${toDate.month}/${toDate.day}/${toDate.year}'),
-            )
+            ),
+            IconButton(
+                onPressed: () {
+                  toDate = DateTime.now();
+                  toPicked = false;
+                  setState(() {
+                    toDate = DateTime.now();
+                  });
+                },
+                icon: const Icon(FontAwesomeIcons.xmark, color: Colors.red)),
             //FIgure Out Tomorrow
           ]),
         ],
@@ -313,6 +338,14 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
             FlatButton(
                 onPressed: () {
                   //Key("Filter_Text").
+                  setState(() {
+                    fromPicked = false;
+                    toPicked = false;
+                    toDate = DateTime.now();
+                    fromDate = DateTime.now();
+                    _events = getAllEvents();
+                    _nameControl.text = "";
+                  });
                 },
                 color: globals.friendzoneYellow,
                 textColor: Colors.black,
@@ -320,6 +353,52 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
             FlatButton(
               onPressed: () {
                 //Filter Events by whatever Here
+
+                _events = getAllEvents();
+                newEvents = [];
+                List<Event> events = [];
+
+                String eventName = _nameControl.text;
+
+                _events?.then((events) {
+                  for (Event e in events) {
+                    bool validEvent = true;
+                    if (!e.title
+                        .toLowerCase()
+                        .contains(eventName.toLowerCase())) {
+                      validEvent = false;
+                    }
+
+                    if (e.time.length > 5 && (toPicked || fromPicked)) {
+                      if (toPicked &&
+                          (!DateTime.parse(e.time).isBefore(toDate) &&
+                              DateTime.parse(e.time).day != toDate.day)) {
+                        validEvent = false;
+                      }
+                      if (fromPicked &&
+                          !DateTime.parse(e.time).isAfter(fromDate)) {
+                        validEvent = false;
+                      }
+                    } else if (e.time.length <= 5 && (toPicked || fromPicked)) {
+                      validEvent = false;
+                    }
+
+                    if (validEvent) {
+                      newEvents.add(e);
+                      setState(() {
+                        _events = Future.value(newEvents);
+                      });
+                    }
+                  }
+                });
+
+                setState(() {
+                  _events = Future.value(newEvents);
+                  setState(() {
+                    _events = Future.value(newEvents);
+                  });
+                });
+
                 Navigator.of(context).pop();
               },
               textColor: Theme.of(context).primaryColor,
