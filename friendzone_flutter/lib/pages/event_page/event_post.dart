@@ -37,7 +37,6 @@ class EventPostPageState extends State<EventPostPage> {
 
   DateTime _dateTime = DateTime.now();
   ProfanityFilter filter = ProfanityFilter();
-
   final List<String> generalcat = [
     'Academic',
     'Active',
@@ -74,7 +73,7 @@ class EventPostPageState extends State<EventPostPage> {
     'Card Games',
     'Other'
   ];
-  final List<String> volunteerSubcat = [];
+  final List<String> volunteerSubcat = ['Other'];
   List<String> subcat = [];
   String? selectCat;
   String? selectSubCat;
