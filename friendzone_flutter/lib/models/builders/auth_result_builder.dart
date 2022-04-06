@@ -43,6 +43,6 @@ class AuthResultBuilder extends JsonBuilder<AuthResult> {
       result.setUser(CurrentUserBuilder().fromJson(json["user"]));
     }
 
-    return AuthResult(status: status, token: json["token"] ?? "");
+    return result;
   }
 }

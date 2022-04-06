@@ -106,7 +106,8 @@ switch ($functionID) {
 
         $token = array();
         $user = array();
-        if ($code == 0) {
+        // On successful login, get the token
+        if ($code["status"] == 0) {
             $token = getToken($e, $p);
             $user = array("user" => Get_Cur_User($e));
         }
