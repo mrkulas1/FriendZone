@@ -12,10 +12,12 @@ class CurrentUserBuilder extends JsonBuilder<CurrentUser> {
 
   @override
   CurrentUser fromJson(Map<String, dynamic> json) {
-    return CurrentUser(
-        json["email"] ?? "",
-        json["name"] ?? "",
-        json["introduction"] ?? "",
-        json["additional_contact"] ?? "");
+    CurrentUser user = CurrentUser(json["email"] ?? "", json["name"] ?? "",
+        json["introduction"] ?? "", json["additional_contact"] ?? "");
+
+    if (json.containsKey("token")) {
+      user.setToken(json["token"]);
+    }
+    return user;
   }
 }

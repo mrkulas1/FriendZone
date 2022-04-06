@@ -6,7 +6,18 @@ import 'package:friendzone_flutter/models/foreign_user.dart';
 /// is authenticated.
 
 class CurrentUser extends ForeignUser {
+  CurrentUser(String email, String name, String introduction, String contact)
+      : super(
+            email: email,
+            name: name,
+            introduction: introduction,
+            contact: contact);
 
-  CurrentUser(String email, String name, String introduction, String contact) : super(email: email, name: name, introduction: introduction, contact: contact);
   bool _admin = false;
+
+  String token = "";
+
+  void setToken(String t) {
+    token = t;
+  }
 }

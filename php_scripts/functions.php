@@ -17,6 +17,75 @@ function errorReturn(String $message)
     return array("error" => $message);
 }
 
+function getToken(String $email, String $password) {
+    try {
+        $dbh = connectDB();
+        $authResult = Auth($email, $password);
+        if ($authResult != 0) {
+            $dbh = null;
+            return errorReturn("Failed to get token, bad authentication");
+        }
+
+        // Purge out-of-date tokens 
+        $statement = $dbh->prepare("DELETE FROM Tokens WHERE expires < NOW()");
+        $statement->execute();
+
+        $randnum = rand();
+        $time30min = time() + 1800;
+        $timestr = date("Y-m-d H:i:s", $time30min);
+
+        $statement = $dbh->prepare("INSERT INTO Tokens VALUES(:email, SHA2(:num, 256), :time)");
+        $statement->bindParam(":email", $email);
+        $statement->bindParam(":num", $randnum);
+        $statement->bindParam(":time", $timestr);
+        $statement->execute();
+
+        $dbh = null;
+
+        $token = hash("sha256", "$randnum");
+        return array("token" => $token);
+    } catch (PDOException $e) {
+        return errorReturn($e->getMessage());
+    }
+}
+
+function checkToken(String $token, String $email) {
+    try {
+        $dbh = connectDB();
+        // Check that the token exists and is unexpired
+        $statement = $dbh->prepare("SELECT COUNT(*) FROM Tokens WHERE email = :email AND token = :token AND expires > NOW()");
+        $statement->bindParam(":email", $email);
+        $statement->bindParam(":token", $token);
+        $statement->execute();
+        $row = $statement->fetch();
+
+        if ($row[0] != 1) {
+            $dbh = null;
+            return false;
+        }
+        
+        // Set the token to expire 30 minutes from now
+        $time30min = time() + 1800;
+        $timestr = date("Y-m-d H:i:s", $time30min);
+
+        $statement = $dbh->prepare("UPDATE Tokens SET expires = :time WHERE token = :token");
+        $statement->bindParam(":time", $timestr);
+        $statement->bindParam(":token", $token);
+        $statement->execute();
+        
+        $dbh = null;
+        return true;
+    } catch (PDOException $e) {
+        return false;
+    }
+}
+
+function eliminateSpaces($str)
+{
+
+    return trim($str);
+}
+
 /*
 Return Codes:
 0 - Success
@@ -25,13 +94,6 @@ Return Codes:
 3 - Locked Out
 4 - Error
  */
-
-function eliminateSpaces($str)
-{
-
-    return trim($str);
-}
-
 function Auth(String $email, String $password)
 {
     //Authenticates User for login function
