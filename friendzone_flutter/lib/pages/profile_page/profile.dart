@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:async';
@@ -16,16 +18,14 @@ import 'package:friendzone_flutter/pages/profile_page/profile_edit.dart';
 class ProfilePage extends StatefulWidget {
   bool owner = false;
   String? email;
-  ForeignUser? user;
+  Future<ForeignUser>? user;
+
   ProfilePage({Key? key, this.email}) : super(key: key) {
     if (email == null || email == globals.activeUser!.email) {
-      //user = globals.activeUser as Future<ForeignUser>?;
+      user = Future<ForeignUser>.value(globals.activeUser);
+      email = globals.activeUser!.email;
       owner = true;
     }
-    /*else
-    {
-      user = getForeignUser(email).then((value) => null);
-    }*/
   }
 
   @override
@@ -39,15 +39,13 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    if (widget.owner) {
-      widget.user = globals.activeUser;
-    } else {
-      getForeignUser(widget.email.toString()).then((value) {
-        widget.user = value;
-      });
+
+    if (!widget.owner) {
+      widget.user = getForeignUser(widget.email.toString());
     }
-    _myEvents = getMyEvents(widget.user!.email);
-    _joinedEvents = getJoinedEvents(widget.user!.email);
+
+    _myEvents = getMyEvents(widget.email.toString());
+    _joinedEvents = getJoinedEvents(widget.email.toString());
   }
 
   @override
@@ -60,48 +58,72 @@ class _ProfilePageState extends State<ProfilePage> {
         alignment: Alignment.center,
         child: Column(
           children: [
-            Text(
-              widget.user!.name,
-              style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  widget.user!.email,
-                  style: const TextStyle(fontSize: 20),
-                ),
-                const SizedBox(
-                  width: 60,
-                ),
-                Text(
-                  widget.user!.contact,
-                  style: const TextStyle(fontSize: 20),
-                )
-              ],
-            ),
-            Text(
-              widget.user!.introduction,
-              textAlign: TextAlign.justify,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-            ),
             Container(
-              alignment: Alignment.centerLeft,
-              child: widget.owner
-                  ? ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    ProfileEditPage()));
+              child: widget.user == null
+                  ? Container()
+                  : FutureBuilder<ForeignUser>(
+                      future: widget.user,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Column(children: [
+                            Text(
+                              snapshot.data!.name,
+                              style: const TextStyle(
+                                  fontSize: 40, fontWeight: FontWeight.bold),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  snapshot.data!.email,
+                                  style: const TextStyle(fontSize: 20),
+                                ),
+                                const SizedBox(
+                                  width: 60,
+                                ),
+                                Text(
+                                  snapshot.data!.contact,
+                                  style: const TextStyle(fontSize: 20),
+                                )
+                              ],
+                            ),
+                            Text(
+                              snapshot.data!.introduction,
+                              textAlign: TextAlign.justify,
+                              style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.bold),
+                            ),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: widget.owner
+                                  ? ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (BuildContext
+                                                        context) =>
+                                                    const ProfileEditPage()));
+                                      },
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                globals.friendzoneYellow),
+                                      ),
+                                      child: const Text(
+                                        "Edit",
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                    )
+                                  : Container(),
+                            ),
+                          ]);
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error!}");
+                        }
+                        return const CircularProgressIndicator();
                       },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            globals.friendzoneYellow),
-                      ),
-                      child: const Text("Edit"))
-                  : Container(),
+                    ),
             ),
             Expanded(
               child: Row(
@@ -143,7 +165,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                             },
                                             trailing: IconButton(
                                               icon: const Icon(
-                                                  FontAwesomeIcons.x),
+                                                FontAwesomeIcons.xmark,
+                                                color: Colors.black,
+                                              ),
                                               //color: globals.friendzoneYellow,
                                               onPressed: () {
                                                 showDialog(
@@ -228,8 +252,8 @@ class _ProfilePageState extends State<ProfilePage> {
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             setState(() {
-              _myEvents = getMyEvents(widget.user!.email);
-              _joinedEvents = getJoinedEvents(widget.user!.email);
+              _myEvents = getMyEvents(widget.email.toString());
+              _joinedEvents = getJoinedEvents(widget.email.toString());
             });
           },
           backgroundColor: globals.friendzoneYellow,
@@ -239,7 +263,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildDeleteDialogue(BuildContext context, String eventName) {
     return AlertDialog(
-        title: Text("Permenently Delete " + eventName + "?"),
+        title: Container(
+          padding: const EdgeInsets.all(15),
+          color: Colors.black,
+          child: Text("Permenently Delete " + eventName + "?",
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: globals.friendzoneYellow, fontSize: 25)),
+        ),
         content: Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
