@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:friendzone_flutter/globals.dart' as globals;
+
 import 'package:friendzone_flutter/models/builders/json_builder.dart';
 import 'package:friendzone_flutter/models/builders/json_list_builder.dart';
 import 'package:http/http.dart' as http;
@@ -10,7 +12,7 @@ import 'package:http/http.dart' as http;
 /// friendzone_post.php!!
 enum PHPFunction {
   auth,
-  getCurrentUser,
+  unused1,
   createUser,
 
   getAllEvents,
@@ -39,6 +41,7 @@ const String postPath =
 // List of status codes that can be returned by the PHP
 const int phpSuccessCode = 200; // Expected result will be available
 const int phpInternalErrorCode = 202;
+const int badTokenCode = 401;
 
 /// Make a POST request to a given [functionID]. T is the type that is
 /// decoded from the JSON response. U is the JsonBuilder derived class
@@ -50,6 +53,11 @@ Future<T> makePostRequest<T, U extends JsonBuilder<T>>(
     PHPFunction functionID, Map<String, dynamic> inputData, U builder) async {
   // Add the functionID to the inputData
   inputData.putIfAbsent("functionID", () => functionID.index);
+
+  if (globals.activeUser != null) {
+    inputData.putIfAbsent("email", () => globals.activeUser!.email);
+    inputData.putIfAbsent("token", () => globals.activeUser?.token ?? "");
+  }
 
   final response = await http.post(
     Uri.parse(postPath),
@@ -69,6 +77,8 @@ Future<T> makePostRequest<T, U extends JsonBuilder<T>>(
       return builder.fromJson(json);
     case phpInternalErrorCode:
       throw Exception("Internal PHP Error occurred");
+    case badTokenCode:
+      throw Exception("Token Authentication Failed");
     default:
       throw Exception("Unexpected error occurred");
   }
@@ -84,6 +94,11 @@ Future<List<T>> makeListPostRequest<T, U extends JsonListBuilder<T>>(
     PHPFunction functionID, Map<String, dynamic> inputData, U builder) async {
   // Add the functionID to the inputData
   inputData.putIfAbsent("functionID", () => functionID.index);
+
+  if (globals.activeUser != null) {
+    inputData.putIfAbsent("email", () => globals.activeUser!.email);
+    inputData.putIfAbsent("token", () => globals.activeUser!.token);
+  }
 
   final response = await http.post(
     Uri.parse(postPath),
@@ -120,6 +135,8 @@ Future<List<T>> makeListPostRequest<T, U extends JsonListBuilder<T>>(
       }
     case phpInternalErrorCode:
       throw Exception("PHP Error occurred");
+    case badTokenCode:
+      throw Exception("Token Authentication Failed");
     default:
       throw Exception("Unexpected error occurred");
   }
@@ -129,7 +146,13 @@ Future<List<T>> makeListPostRequest<T, U extends JsonListBuilder<T>>(
 /// [functionID] with the input [inputData].
 Future<void> makeVoidPostRequest(
     PHPFunction functionID, Map<String, dynamic> inputData) async {
+  // Add the functionID to the inputData
   inputData.putIfAbsent("functionID", () => functionID.index);
+
+  if (globals.activeUser != null) {
+    inputData.putIfAbsent("email", () => globals.activeUser!.email);
+    inputData.putIfAbsent("token", () => globals.activeUser?.token ?? "");
+  }
 
   final response = await http.post(
     Uri.parse(postPath),
@@ -152,6 +175,8 @@ Future<void> makeVoidPostRequest(
 
     case phpInternalErrorCode:
       throw Exception("PHP Error occurred");
+    case badTokenCode:
+      throw Exception("Token Authentication Failed");
     default:
       throw Exception("Unexpected error occurred");
   }

@@ -9,15 +9,17 @@ enum AuthStatus { valid, noUser, badCredentials, lockedOut, internalError }
 class AuthResult {
   AuthStatus status;
   CurrentUser? _user;
+  String token;
 
   /// Construct an [AuthResult] with a [status] and null [_user]
-  AuthResult({required this.status}) {
+  AuthResult({required this.status, required this.token}) {
     _user = null;
   }
 
   /// Add the user [user] to the [AuthResult]
   void setUser(CurrentUser user) {
     _user = user;
+    _user!.setToken(token);
   }
 
   /// Return the [_user], if it is not null. Will throw an exception if
@@ -43,7 +45,7 @@ class AuthResult {
         return "Invalid email/password combination";
       case AuthStatus.lockedOut:
         return "Your account is locked out due to too many failed login "
-            "attempts. Contact an administrator to unlock your account";
+            "attempts. Please wait 15 minutes before logging back in";
       case AuthStatus.internalError:
         return "An internal error occured. Check your internet connection "
             "and try again.";

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:async';
@@ -17,7 +19,7 @@ class ProfilePage extends StatefulWidget {
   bool owner = false;
   String? email;
   Future<ForeignUser>? user;
-  
+
   ProfilePage({Key? key, this.email}) : super(key: key) {
     if (email == null || email == globals.activeUser!.email) {
       user = Future<ForeignUser>.value(globals.activeUser);
@@ -99,16 +101,20 @@ class _ProfilePageState extends State<ProfilePage> {
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        const ProfileEditPage()));
+                                                builder: (BuildContext
+                                                        context) =>
+                                                    const ProfileEditPage()));
                                       },
                                       style: ButtonStyle(
                                         backgroundColor:
                                             MaterialStateProperty.all<Color>(
                                                 globals.friendzoneYellow),
                                       ),
-                                      child: const Text("Edit"))
+                                      child: const Text(
+                                        "Edit",
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                    )
                                   : Container(),
                             ),
                           ]);
@@ -159,7 +165,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                             },
                                             trailing: IconButton(
                                               icon: const Icon(
-                                                  FontAwesomeIcons.x),
+                                                FontAwesomeIcons.xmark,
+                                                color: Colors.black,
+                                              ),
                                               //color: globals.friendzoneYellow,
                                               onPressed: () {
                                                 showDialog(
@@ -255,7 +263,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildDeleteDialogue(BuildContext context, String eventName) {
     return AlertDialog(
-        title: Text("Permenently Delete " + eventName + "?"),
+        title: Container(
+          padding: const EdgeInsets.all(15),
+          color: Colors.black,
+          child: Text("Permenently Delete " + eventName + "?",
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: globals.friendzoneYellow, fontSize: 25)),
+        ),
         content: Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,

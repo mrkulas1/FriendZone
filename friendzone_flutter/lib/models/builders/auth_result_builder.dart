@@ -1,5 +1,7 @@
 /// Class to handle JSON serialization/deserialization for an AuthResult object
 
+import 'package:friendzone_flutter/models/builders/current_user_builder.dart';
+
 import '../auth_result.dart';
 import 'json_builder.dart';
 
@@ -35,6 +37,12 @@ class AuthResultBuilder extends JsonBuilder<AuthResult> {
         break;
     }
 
-    return AuthResult(status: status);
+    AuthResult result = AuthResult(status: status, token: json["token"] ?? "");
+
+    if (json.containsKey("user")) {
+      result.setUser(CurrentUserBuilder().fromJson(json["user"]));
+    }
+
+    return result;
   }
 }
