@@ -16,7 +16,7 @@ import 'package:friendzone_flutter/main.dart' as app;
 
 void main() {
   group('Test Profile Edit', () {
-    //Test 1:
+    //Test 1: test the text is correct
     testWidgets('Testing Profile Text', (tester) async {
       runApp(const MaterialApp(title: 'FriendZone', home: ProfileEditPage()));
       expect(find.text('Introduction'), findsOneWidget);
@@ -24,13 +24,13 @@ void main() {
       expect(find.text("Edit Profile"), findsOneWidget);
     });
 
-    //Test 2:
+    //Test 2: test the correct number of containers
     testWidgets('Testing Update Button Exists', (tester) async {
       runApp(const MaterialApp(title: 'FriendZone', home: ProfileEditPage()));
       expect(find.byType(Container), findsNWidgets(4));
     });
 
-    //Test 3:
+    //Test 3: test no list view
     testWidgets('Testing Successful Usecase No ListViews', (tester) async {
       runApp(const MaterialApp(title: 'FriendZone', home: ProfileEditPage()));
       expect(find.byType(ListView), findsNothing);
