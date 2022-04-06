@@ -84,6 +84,7 @@ class MySearchDelegate extends SearchDelegate<String> {
             // Insert all the event data into the event List
             for (int i = 0; i < snapshot.data!.length; i++) {
               EventList.add(snapshot.data![i]);
+              remaining.add(snapshot.data![i]);
             }
 
             int limit = 15;
