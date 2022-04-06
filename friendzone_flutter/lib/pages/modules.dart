@@ -13,6 +13,7 @@ class MySearchDelegate extends SearchDelegate<String> {
   // Suggestions + initial suggestions
   // ignore: non_constant_identifier_names
   final List<Event> EventList = [];
+  List<Event> remaining = [];
 
   @override
   List<Widget>? buildActions(BuildContext context) => [
@@ -36,22 +37,39 @@ class MySearchDelegate extends SearchDelegate<String> {
       icon: const Icon(Icons.arrow_back));
 
   @override
-  Widget buildResults(BuildContext context) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.alarm, size: 120),
-            SizedBox(height: 48),
-            Text(
-              "NOTHING TO SEE HERE, WILL IMPLEMENT LATER",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 64,
-                fontWeight: FontWeight.bold,
+  Widget buildResults(BuildContext context) => ListView.builder(
+        itemCount: remaining.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            onTap: () {
+              Future<Event> detailedEvent =
+                  getDetailedEvent(remaining[index].id);
+
+              globals.makeSnackbar(context, "Getting Event Details");
+
+              detailedEvent.then((value) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            DetailEventViewPage(data: value)));
+              }).catchError((error) {
+                globals.makeSnackbar(context, error.toString());
+              });
+            },
+            leading: const Icon(FontAwesomeIcons.atom),
+            title: RichText(
+              text: TextSpan(
+                text: remaining[index].title,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                ),
               ),
             ),
-          ],
-        ),
+          );
+        },
       );
 
   @override
@@ -62,6 +80,7 @@ class MySearchDelegate extends SearchDelegate<String> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             EventList.clear();
+            remaining.clear();
             // Insert all the event data into the event List
             for (int i = 0; i < snapshot.data!.length; i++) {
               EventList.add(snapshot.data![i]);
@@ -112,6 +131,7 @@ class MySearchDelegate extends SearchDelegate<String> {
         return sugLower.startsWith(qLower);
       }).toList();
 
+      remaining = suggestion;
       return buildSuggestionSuccess(suggestion);
     }
   }
