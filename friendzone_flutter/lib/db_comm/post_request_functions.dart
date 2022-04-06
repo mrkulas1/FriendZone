@@ -24,33 +24,7 @@ Future<AuthResult> authenticate(String email, String password) async {
   AuthResult authResult =
       await makePostRequest(PHPFunction.auth, input, AuthResultBuilder());
 
-  if (!authResult.success()) {
-    return authResult;
-  }
-
-  input.clear();
-  input = {"email": email};
-
-  CurrentUser user = await makePostRequest(
-      PHPFunction.getCurrentUser, input, CurrentUserBuilder());
-
-  authResult.setUser(user);
-
   return authResult;
-}
-
-/// Report an Event with the [userEmail], reporting the event [eventID], with
-/// the given [comment]. Will update the existing reporting comment if the user
-/// already reported the event.
-Future<ForeignUser> getCurrentUser(String userEmail) async {
-  Map<String, dynamic> input = {
-    "email": userEmail,
-  };
-
-  ForeignUser user = await makePostRequest(
-    PHPFunction.getForeignUser, input, ForeignUserBuilder());
-
-  return user;
 }
 
 /// Register a user with the given [email], [password], [name], [intro], and
@@ -98,7 +72,7 @@ Future<Event> getDetailedEvent(int eventID) async {
 Future<Event> createEvent(String userEmail, String title, String description,
     String location, String time, int slots, int category) async {
   Map<String, dynamic> input = {
-    "userEmail": userEmail,
+    "email": userEmail,
     "title": title,
     "description": description,
     "location": location,
@@ -216,11 +190,11 @@ Future<void> reportEvent(String userEmail, int eventID, String comment) async {
 /// already reported the event.
 Future<ForeignUser> getForeignUser(String userEmail) async {
   Map<String, dynamic> input = {
-    "email": userEmail,
+    "fEmail": userEmail,
   };
 
   ForeignUser user = await makePostRequest(
-    PHPFunction.getForeignUser, input, ForeignUserBuilder());
+      PHPFunction.getForeignUser, input, ForeignUserBuilder());
 
   return user;
 }

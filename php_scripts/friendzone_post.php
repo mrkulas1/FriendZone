@@ -6,7 +6,6 @@
 class PHPFunctions
 {
     const AUTH = 0;
-    const GET_CUR_USER = 1;
     const CREATE_USER = 2;
 
     const GET_ALL_EVENTS = 3;
@@ -37,15 +36,9 @@ class PHPFunctions
 
 require "functions.php";
 
-function fail_notFound()
+function fail_unauth()
 {
-    http_response_code(404);
-    die();
-}
-
-function fail_alreadyThere()
-{
-    http_response_code(409);
+    http_response_code(401);
     die();
 }
 
@@ -65,6 +58,9 @@ function bulk_isset($params, $map)
     return true;
 }
 
+// Keep this timezone the same as SQL's timezone
+date_default_timezone_set("America/Detroit");
+
 // If these headers aren't here, Flutter errors in making the POST request
 header("Access-Control-Allow-Headers: Authorization, Content-Type");
 header("Access-Control-Allow-Origin: *");
@@ -80,6 +76,22 @@ if (!isset($data["functionID"])) {
 // Get the function to call
 $functionID = $data["functionID"];
 
+// Need to do a token check unless authenticating or registering,
+// or getting the token
+if ($functionID != PHPFunctions::AUTH 
+    && $functionID != PHPFunctions::CREATE_USER)
+{
+    if (!bulk_isset(array("token", "email"), $data)) {
+        fail_unauth();
+    }
+
+    $tokenResult = checkToken($data["token"], $data["email"]);
+
+    if(!$tokenResult) {
+        fail_unauth();
+    }
+}
+
 // Based on ID, call the function
 switch ($functionID) {
     case PHPFunctions::AUTH:
@@ -90,22 +102,17 @@ switch ($functionID) {
         $e = $data["email"];
         $p = $data["password"];
         //Output Auth function performed upon input
-        $code = Auth($e, $p);
+        $code = array("status" => Auth($e, $p));
 
-        echo json_encode(array("status" => $code));
-        break;
-
-    case PHPFunctions::GET_CUR_USER:
-        //Get input from POST Request
-        if (!isset($data["email"])) {
-            fail_general();
+        $token = array();
+        $user = array();
+        // On successful login, get the token
+        if ($code["status"] == 0) {
+            $token = getToken($e, $p);
+            $user = array("user" => Get_Cur_User($e));
         }
 
-        $e = $data["email"];
-        //Output specified user based upon input data
-        $user = Get_Cur_User($e);
-
-        echo json_encode($user);
+        echo json_encode(array_merge($code, $token, $user));
         break;
 
     case PHPFunctions::CREATE_USER:
@@ -122,7 +129,9 @@ switch ($functionID) {
         //Performs and outputs Create_User Function
         $user = Create_User($e, $p, $n, $i, $c);
 
-        echo json_encode($user);
+        $token = getToken($e, $p);
+
+        echo json_encode(array_merge($user, $token));
         break;
 
     case PHPFunctions::GET_ALL_EVENTS:
@@ -146,11 +155,11 @@ switch ($functionID) {
 
     case PHPFunctions::CREATE_EVENT:
         //Takes POST input and assigns data to variables
-        if (!bulk_isset(array("userEmail", "title", "description",
+        if (!bulk_isset(array("email", "title", "description",
             "location", "time", "slots", "category"), $data)) {
             fail_general();
         }
-        $e = $data["userEmail"];
+        $e = $data["email"];
         $t = $data["title"];
         $d = $data["description"];
         $l = $data["location"];
@@ -165,12 +174,13 @@ switch ($functionID) {
         break;
 
     case PHPFunctions::UPDATE_EVENT:
-        if (!bulk_isset(array("id", "title", "description",
+        if (!bulk_isset(array("id", "email", "title", "description",
             "location", "time", "slots", "category"), $data)) {
             fail_general();
         }
 
         $i = $data["id"];
+        $e = $data["email"];
         $t = $data["title"];
         $d = $data["description"];
         $l = $data["location"];
@@ -290,11 +300,11 @@ switch ($functionID) {
 
     case PHPFunctions::GET_FOREIGN_USER:
         //Get input from POST Request
-        if (!isset($data["email"])) {
+        if (!isset($data["fEmail"])) {
             fail_general();
         }
 
-        $e = $data["email"];
+        $e = $data["fEmail"];
         //Output specified user based upon input data
         $user = Get_Foreign_User($e);
 

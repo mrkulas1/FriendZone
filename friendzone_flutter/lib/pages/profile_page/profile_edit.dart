@@ -9,9 +9,7 @@ import 'package:friendzone_flutter/global_header.dart';
 import 'package:friendzone_flutter/pages/profile_page/profile.dart';
 
 class ProfileEditPage extends StatefulWidget {
-
-  const ProfileEditPage({Key? key})
-      : super(key: key);
+  const ProfileEditPage({Key? key}) : super(key: key);
 
   @override
   ProfileEditPageState createState() {
@@ -124,7 +122,10 @@ class ProfileEditPageState extends State<ProfileEditPage> {
                               _intro.text,
                               _addContact.text);
                           user.then((value) {
+                            // Preserve token when editing current user
+                            String token = globals.activeUser!.token;
                             globals.activeUser = value;
+                            globals.activeUser!.token = token;
                             ScaffoldMessenger.of(context).clearSnackBars();
                             Navigator.pushReplacement(
                                 context,

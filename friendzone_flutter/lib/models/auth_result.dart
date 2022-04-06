@@ -9,15 +9,17 @@ enum AuthStatus { valid, noUser, badCredentials, lockedOut, internalError }
 class AuthResult {
   AuthStatus status;
   CurrentUser? _user;
+  String token;
 
   /// Construct an [AuthResult] with a [status] and null [_user]
-  AuthResult({required this.status}) {
+  AuthResult({required this.status, required this.token}) {
     _user = null;
   }
 
   /// Add the user [user] to the [AuthResult]
   void setUser(CurrentUser user) {
     _user = user;
+    _user!.setToken(token);
   }
 
   /// Return the [_user], if it is not null. Will throw an exception if
