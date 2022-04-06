@@ -129,7 +129,10 @@ switch ($functionID) {
         //Performs and outputs Create_User Function
         $user = Create_User($e, $p, $n, $i, $c);
 
-        $token = getToken($e, $p);
+        $token = array();
+        if (!isset($user["error"])) {
+            $token = getToken($e, $p);
+        }
 
         echo json_encode(array_merge($user, $token));
         break;
