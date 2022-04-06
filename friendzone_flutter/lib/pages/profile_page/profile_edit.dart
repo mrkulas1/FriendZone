@@ -7,6 +7,7 @@ import 'package:friendzone_flutter/models/current_user.dart';
 import 'package:friendzone_flutter/models/event.dart';
 import 'package:friendzone_flutter/global_header.dart';
 import 'package:friendzone_flutter/pages/profile_page/profile.dart';
+import 'package:profanity_filter/profanity_filter.dart';
 
 class ProfileEditPage extends StatefulWidget {
   const ProfileEditPage({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class ProfileEditPage extends StatefulWidget {
 class ProfileEditPageState extends State<ProfileEditPage> {
   final TextEditingController _intro = TextEditingController();
   final TextEditingController _addContact = TextEditingController();
-
+  ProfanityFilter filter = ProfanityFilter();
   @override
   void initState() {
     super.initState();
@@ -82,6 +83,8 @@ class ProfileEditPageState extends State<ProfileEditPage> {
                         validator: (value) {
                           if ((value?.length ?? 0) > 100) {
                             return 'Too long';
+                          } else if (filter.hasProfanity(value!)) {
+                            return "please keep content clean";
                           }
                           return null;
                         },
@@ -101,6 +104,8 @@ class ProfileEditPageState extends State<ProfileEditPage> {
                         validator: (value) {
                           if ((value?.length ?? 0) > 40) {
                             return 'Too long';
+                          } else if (filter.hasProfanity(value!)) {
+                            return "please keep content clean";
                           }
                           return null;
                         },
