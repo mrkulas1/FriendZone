@@ -65,7 +65,6 @@ class EventPostPageState extends State<EventPostPage> {
     'Long Distances',
     'Other'
   ];
-  final List<String> clubsSubcat = [];
   final List<String> creativeSubcat = ['Art', 'Music', 'Other'];
   final List<String> gamingSubcat = [
     'Video Games',
@@ -73,7 +72,7 @@ class EventPostPageState extends State<EventPostPage> {
     'Card Games',
     'Other'
   ];
-  final List<String> volunteerSubcat = ['Other'];
+  final List<String> volunteerSubcat = ['Michigan Tech', 'Community', 'Other'];
   List<String> subcat = [];
   String? selectCat;
   String? selectSubCat;
@@ -439,12 +438,6 @@ class EventPostPageState extends State<EventPostPage> {
       setState(() {
         selectCat = "Carpool";
         subcat = carpoolsubcat;
-        selectSubCat = null;
-      });
-    } else if (generalcat == 'Clubs') {
-      setState(() {
-        selectCat = "Clubs";
-        subcat = clubsSubcat;
         selectSubCat = null;
       });
     } else if (generalcat == 'Creative') {
