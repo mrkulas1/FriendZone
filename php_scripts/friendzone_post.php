@@ -210,6 +210,7 @@ switch ($functionID) {
 
         if (isset($joined["error"])) {
             echo json_encode($joined);
+            die();
         }
 
         echo json_encode(array("status" => $joined));
@@ -227,6 +228,7 @@ switch ($functionID) {
 
         if (isset($left["error"])) {
             echo json_encode($left);
+            die();
         }
 
         echo json_encode(array("status" => $left));
@@ -296,6 +298,7 @@ switch ($functionID) {
 
         if (isset($report["error"])) {
             echo json_encode($report);
+            die();
         }
 
         echo json_encode(array("status" => $report));
