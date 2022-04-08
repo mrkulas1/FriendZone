@@ -133,7 +133,7 @@ class ProfileEditPageState extends State<ProfileEditPage> {
                                     builder: (BuildContext context) =>
                                         ProfilePage()));
                           }).catchError((error) {
-                            globals.makeSnackbar(context, error.toString());
+                            globals.unifiedErrorCatch(context, error);
                           });
                         }
                       },

@@ -201,8 +201,7 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                                                 DetailEventViewPage(
                                                     data: value)));
                                   }).catchError((error) {
-                                    globals.makeSnackbar(
-                                        context, error.toString());
+                                    globals.unifiedErrorCatch(context, error);
                                   });
                                 },
                               );

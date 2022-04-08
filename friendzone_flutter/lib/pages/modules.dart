@@ -55,7 +55,7 @@ class MySearchDelegate extends SearchDelegate<String> {
                         builder: (context) =>
                             DetailEventViewPage(data: value)));
               }).catchError((error) {
-                globals.makeSnackbar(context, error.toString());
+                globals.unifiedErrorCatch(context, error);
               });
             },
             leading: const Icon(FontAwesomeIcons.atom),
@@ -112,7 +112,7 @@ class MySearchDelegate extends SearchDelegate<String> {
                               builder: (context) =>
                                   DetailEventViewPage(data: value)));
                     }).catchError((error) {
-                      globals.makeSnackbar(context, error.toString());
+                      globals.unifiedErrorCatch(context, error);
                     });
                   },
                 );
@@ -157,7 +157,7 @@ class MySearchDelegate extends SearchDelegate<String> {
                         builder: (context) =>
                             DetailEventViewPage(data: value)));
               }).catchError((error) {
-                globals.makeSnackbar(context, error.toString());
+                globals.unifiedErrorCatch(context, error);
               });
             },
             leading: const Icon(FontAwesomeIcons.magnifyingGlass),
