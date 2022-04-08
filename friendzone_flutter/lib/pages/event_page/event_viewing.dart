@@ -243,99 +243,104 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
             textAlign: TextAlign.center,
             style: TextStyle(color: globals.friendzoneYellow, fontSize: 25)),
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          TextFormField(
-            key: const Key("Filter_Text"),
-            controller: _nameControl,
-            decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Event Name",
-                hintText: "Event Name Here"),
-            autofocus: false,
-          ),
-          Row(
-            children: [
-              const Text("Select Event Type: "),
-              DropdownButton(
-                  value: selectedValue,
-                  alignment: Alignment.center,
-                  items: const [
-                    DropdownMenuItem(
-                      child: Text("Friend 1"),
-                      value: 1,
-                    ),
-                    DropdownMenuItem(
-                      child: Text("Friend 2"),
-                      value: 2,
-                    ),
-                    DropdownMenuItem(
-                      child: Text("Friend 3"),
-                      value: 3,
-                    ),
-                  ],
-                  onChanged: (int? value) {
-                    setState(() {
-                      selectedValue = value;
-                    });
-                  },
-                  hint: Text("Select Event Category"))
-            ],
-          ),
-          /*Padding(
+      content: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            TextFormField(
+              key: const Key("Filter_Text"),
+              controller: _nameControl,
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Event Name",
+                  hintText: "Event Name Here"),
+              autofocus: false,
+            ),
+            Row(
+              children: [
+                const Text("Select Event Type: "),
+                DropdownButton(
+                    value: selectedValue,
+                    alignment: Alignment.center,
+                    items: const [
+                      DropdownMenuItem(
+                        child: Text("Friend 1"),
+                        value: 1,
+                      ),
+                      DropdownMenuItem(
+                        child: Text("Friend 2"),
+                        value: 2,
+                      ),
+                      DropdownMenuItem(
+                        child: Text("Friend 3"),
+                        value: 3,
+                      ),
+                    ],
+                    onChanged: (int? value) {
+                      setState(() {
+                        selectedValue = value;
+                      });
+                    },
+                    hint: Text("Select Event Category"))
+              ],
+            ),
+            /*Padding(
               padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: */
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text("Events After: "),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  _selectDateFrom(context);
-                  fromDate = fromDate;
-                });
-              },
-              child: Text('${fromDate.month}/${fromDate.day}/${fromDate.year}'),
-              key: const Key("fromDate"),
-            ),
-            IconButton(
-                onPressed: () {
-                  fromDate = DateTime.now();
-                  fromPicked = false;
-                },
-                icon: const Icon(FontAwesomeIcons.xmark, color: Colors.red)),
-          ]) /*)*/,
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text("Events Before: "),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  _selectDateTo(context);
-                  toDate = toDate;
-                });
-              },
-              child: Text('${toDate.month}/${toDate.day}/${toDate.year}'),
-            ),
-            IconButton(
-                onPressed: () {
-                  toDate = DateTime.now();
-                  toPicked = false;
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Text("Events After: "),
+              InkWell(
+                onTap: () {
                   setState(() {
-                    toDate = DateTime.now();
+                    _selectDateFrom(context).then(((value) => setState(() {})));
+                    //fromDate = fromDate;
                   });
                 },
-                icon: const Icon(FontAwesomeIcons.xmark, color: Colors.red)),
-            //FIgure Out Tomorrow
-          ]),
-        ],
-      ),
+                child:
+                    Text('${fromDate.month}/${fromDate.day}/${fromDate.year}'),
+                key: const Key("fromDate"),
+              ),
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      fromDate = DateTime.now();
+                      fromPicked = false;
+                    });
+                  },
+                  icon: const Icon(FontAwesomeIcons.xmark, color: Colors.red)),
+            ]) /*)*/,
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Text("Events Before: "),
+              InkWell(
+                onTap: () {
+                  setState(() {
+                    _selectDateTo(context).then(((value) => setState(() {})));
+                    //toDate = toDate;
+                  });
+                },
+                child: Text('${toDate.month}/${toDate.day}/${toDate.year}'),
+              ),
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      toDate = DateTime.now();
+                      toPicked = false;
+                    });
+                  },
+                  icon: const Icon(FontAwesomeIcons.xmark, color: Colors.red)),
+              //FIgure Out Tomorrow
+            ]),
+          ],
+        );
+      }),
       actions: <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            FlatButton(
+            ElevatedButton(
                 onPressed: () {
                   //Key("Filter_Text").
                   setState(() {
@@ -347,10 +352,12 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                     _nameControl.text = "";
                   });
                 },
-                color: globals.friendzoneYellow,
-                textColor: Colors.black,
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      globals.friendzoneYellow),
+                ),
                 child: const Text("Reset Filter")),
-            FlatButton(
+            ElevatedButton(
               onPressed: () {
                 //Filter Events by whatever Here
 
@@ -401,15 +408,25 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
 
                 Navigator.of(context).pop();
               },
-              textColor: Theme.of(context).primaryColor,
-              child: const Text("Search"),
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(globals.friendzoneYellow),
+              ),
+              child: Text(
+                "Search",
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              ),
             ),
-            FlatButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              textColor: Color.fromARGB(255, 254, 0, 0),
-              child: const Text("Cancel"),
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(globals.friendzoneYellow),
+              ),
+              child: const Text("Cancel",
+                  style: TextStyle(color: Color.fromARGB(255, 254, 0, 0))),
             ),
           ],
         )
