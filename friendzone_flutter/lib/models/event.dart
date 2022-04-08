@@ -7,7 +7,8 @@ class Event {
   String time;
   String location;
   int slots;
-  int category;
+  String category;
+  String subCat;
 
   bool _detailed = false;
   String? description;
@@ -22,6 +23,7 @@ class Event {
       required this.location,
       required this.slots,
       required this.category,
+      required this.subCat,
       this.description,
       this.reported,
       this.dateCreated});

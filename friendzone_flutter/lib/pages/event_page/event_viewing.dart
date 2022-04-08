@@ -312,11 +312,7 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                             child: Text(value),
                           );
                         }).toList(),
-                  onChanged: (String? value) {
-                    setState(() {
-                      selectedValue = value;
-                    });
-                  },
+                  onChanged: onChangedCallback,
                   hint: const Text("Select Event Category"))
               ],
             ),
@@ -406,6 +402,8 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                     fromDate = DateTime.now();
                     _events = getAllEvents();
                     _nameControl.text = "";
+                    selectCat = null;
+                    selectSubCat = null;
                   });
                 },
                 style: ButtonStyle(
@@ -443,6 +441,14 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                         validEvent = false;
                       }
                     } else if (e.time.length <= 5 && (toPicked || fromPicked)) {
+                      validEvent = false;
+                    }
+
+                    if (e.category != selectCat) {
+                      validEvent = false;
+                    }
+
+                    if (e.category == selectCat && e.subCat != selectSubCat) {
                       validEvent = false;
                     }
 
@@ -488,5 +494,50 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
         )
       ],
     );
+  }
+
+  void onChangedCallback(generalcat) {
+    if (generalcat == 'Academic') {
+      setState(() {
+        selectCat = "Academic";
+        subcat = academicsubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Active') {
+      setState(() {
+        selectCat = "Active";
+        subcat = activesubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Carpool') {
+      setState(() {
+        selectCat = "Carpool";
+        subcat = carpoolsubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Creative') {
+      setState(() {
+        selectCat = "Creative";
+        subcat = creativeSubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Gaming') {
+      setState(() {
+        selectCat = "Gaming";
+        subcat = gamingSubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Volunteer') {
+      setState(() {
+        selectCat = "Volunteer";
+        subcat = volunteerSubcat;
+        selectSubCat = null;
+      });
+    } else {
+      setState(() {
+        subcat = [];
+        selectSubCat = null;
+      });
+    }
   }
 }
