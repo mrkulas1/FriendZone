@@ -27,6 +27,47 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
   List<Event> newEvents = [];
   final TextEditingController _nameControl = TextEditingController();
 
+  final List<String> generalcat = [
+    'Academic',
+    'Active',
+    'Carpool',
+    'Clubs',
+    'Creative',
+    'Gaming',
+    'Volunteer',
+    'Other'
+  ];
+  final List<String> academicsubcat = [
+    'Study Group',
+    'Homework',
+    'Tutoring',
+    'Other'
+  ];
+  final List<String> activesubcat = [
+    'Winter Sports',
+    'Water Sports',
+    'Racquet Sports',
+    'Team Sports',
+    'Other'
+  ];
+  final List<String> carpoolsubcat = [
+    'Short Distances',
+    'Long Distances',
+    'Other'
+  ];
+  final List<String> clubsSubcat = [];
+  final List<String> creativeSubcat = ['Art', 'Music', 'Other'];
+  final List<String> gamingSubcat = [
+    'Video Games',
+    'Board Games',
+    'Card Games',
+    'Other'
+  ];
+  final List<String> volunteerSubcat = [];
+  List<String> subcat = [];
+  String? selectCat;
+  String? selectSubCat;
+
   @override
   void initState() {
     super.initState();
@@ -88,7 +129,7 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
       body: Container(
         alignment: Alignment.center,
         child: Column(
-          children: [
+          children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -229,7 +270,7 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
   }
 
   Widget _buildPopupDialog(BuildContext context) {
-    int? selectedValue = 1;
+    String? selectedValue = null;
     return AlertDialog(
       insetPadding: const EdgeInsets.all(15),
       title: Container(
@@ -261,32 +302,47 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
             Row(
               children: [
                 const Text("Select Event Type: "),
-                DropdownButton(
-                    value: selectedValue,
-                    alignment: Alignment.center,
-                    items: const [
-                      DropdownMenuItem(
-                        child: Text("Friend 1"),
-                        value: 1,
-                      ),
-                      DropdownMenuItem(
-                        child: Text("Friend 2"),
-                        value: 2,
-                      ),
-                      DropdownMenuItem(
-                        child: Text("Friend 3"),
-                        value: 3,
-                      ),
-                    ],
-                    onChanged: (int? value) {
-                      setState(() {
-                        selectedValue = value;
-                      });
-                    },
-                    hint: Text("Select Event Category"))
+                DropdownButton<String>(
+                  value: selectCat,
+                  alignment: Alignment.center,
+                  items: generalcat.map((String value) {
+                    return DropdownMenuItem(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                  onChanged: (String? value) {
+                    setState(() {
+                      selectedValue = value;
+                    });
+                  },
+                  hint: const Text("Select Event Category"))
               ],
             ),
-            /*Padding(
+            Row(
+            children: [
+              const Text("Select Subcategory: "),
+              DropdownButton<String>(
+                hint: const Text('Subcategory'),
+                        value: selectSubCat,
+                        items: subcat.map((String value) {
+                          return DropdownMenuItem(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (subcat) {
+                          setState(() {
+                            selectSubCat = subcat;
+                          });
+                        },
+
+              )
+
+            ],
+          ),
+            
+          /*Padding(
               padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: */
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
