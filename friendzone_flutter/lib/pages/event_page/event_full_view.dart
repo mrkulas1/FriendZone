@@ -158,8 +158,8 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                             globals.makeSnackbar(
                                                 context, "Joined successfully");
                                           }).catchError((error) {
-                                            globals.makeSnackbar(
-                                                context, error.toString());
+                                            globals.unifiedErrorCatch(
+                                                context, error);
                                           });
                                           Navigator.pop(context);
                                         })
@@ -188,14 +188,12 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                             style: TextButton.styleFrom(
                               textStyle: const TextStyle(fontSize: 14),
                             ),
-                            onPressed: () 
-                            {
+                            onPressed: () {
                               Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProfilePage(
-                                                    email: widget.data.userEmail)));
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ProfilePage(
+                                          email: widget.data.userEmail)));
                             },
                           ),
                         ],
@@ -212,7 +210,7 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                             });
                             globals.makeSnackbar(context, "Left successfully");
                           }).catchError((error) {
-                            globals.makeSnackbar(context, error.toString());
+                            globals.unifiedErrorCatch(context, error);
                           });
                         },
                         style: ButtonStyle(
@@ -410,8 +408,8 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                                                 globals.makeSnackbar(context,
                                                     "Report successful");
                                               }).catchError((error) {
-                                                globals.makeSnackbar(
-                                                    context, error.toString());
+                                                globals.unifiedErrorCatch(
+                                                    context, error);
                                               });
                                               Navigator.pop(context);
                                             })

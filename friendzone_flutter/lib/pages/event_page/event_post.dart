@@ -341,7 +341,7 @@ class EventPostPageState extends State<EventPostPage> {
                                     builder: (BuildContext context) =>
                                         DetailEventViewPage(data: value)));
                           }).catchError((error) {
-                            globals.makeSnackbar(context, error.toString());
+                            globals.unifiedErrorCatch(context, error);
                           });
                         }
                       },
