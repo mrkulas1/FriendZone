@@ -169,9 +169,10 @@ switch ($functionID) {
         $time = $data["time"];
         $s = $data["slots"];
         $c = $data["category"];
+        $sc = $data["subcategory"];
 
         //Variables input to Create_Event function, performed, and returned
-        $event = Create_Event($e, $t, $d, $time, $l, $s, $c);
+        $event = Create_Event($e, $t, $d, $time, $l, $s, $c, $sc);
 
         echo json_encode($event);
         break;
@@ -190,9 +191,10 @@ switch ($functionID) {
         $time = $data["time"];
         $s = $data["slots"];
         $c = $data["category"];
+        $sc = $data["subcategory"];
 
         //Variables input to Create_Event function, performed, and returned
-        $event = Update_Event($i, $t, $d, $time, $l, $s, $c);
+        $event = Update_Event($i, $t, $d, $time, $l, $s, $c, $sc);
 
         echo json_encode($event);
         break;

@@ -246,7 +246,7 @@ function Get_All_Events()
     try {
         $dbh = connectDB();
 
-        $statement = $dbh->prepare("Select id, email, title, time, location, slots, category from Event");
+        $statement = $dbh->prepare("Select id, email, title, time, location, slots, category, subcategory from Event");
         $return = $statement->execute();
         $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -281,14 +281,14 @@ function Get_Detailed_Event(int $id)
 }
 
 function Create_Event(String $email, String $title, String $description,
-    String $time, String $location, int $slots, int $category) {
+    String $time, String $location, int $slots, String $category, String $subcategory) {
     //creates event, then returns its detailed info
     // NOTE - Commenting out time for now since String - DATETIME will be weird
     try {
         $dbh = connectDB();
 
-        $statement = $dbh->prepare("INSERT INTO Event(email, title, description, time, location, slots, category)
-        values(:email, :title, :description, :time, :location, :slots, :category)");
+        $statement = $dbh->prepare("INSERT INTO Event(email, title, description, time, location, slots, category, subcategory)
+        values(:email, :title, :description, :time, :location, :slots, :category, :subcategory)");
         $statement->bindParam(":email", $email);
         $statement->bindParam(":title", $title);
         $statement->bindParam(":description", $description);
@@ -296,6 +296,7 @@ function Create_Event(String $email, String $title, String $description,
         $statement->bindParam(":location", $location);
         $statement->bindParam(":slots", $slots);
         $statement->bindParam(":category", $category);
+        $statement->bindParam(":subcategory", $subcategory);
         $result = $statement->execute();
 
         // This is potentially prone to error - need testing,
@@ -313,7 +314,7 @@ function Create_Event(String $email, String $title, String $description,
 
 // Making this to quickly throw something together
 function Update_Event(int $id, String $title, String $description,
-    String $time, String $location, int $slots, int $category) {
+    String $time, String $location, int $slots, String $category, String $subcategory) {
 
     try {
         $dbh = connectDB();
@@ -329,7 +330,8 @@ function Update_Event(int $id, String $title, String $description,
         }
 
         $statement = $dbh->prepare("UPDATE Event SET title = :title, description = :description,
-        time = :time, location = :location, slots = :slots, category = :category WHERE id = :id");
+            time = :time, location = :location, slots = :slots, category = :category, 
+            subcategory = :subcategory WHERE id = :id");
         $statement->bindParam(":id", $id);
         $statement->bindParam(":title", $title);
         $statement->bindParam(":description", $description);
@@ -337,6 +339,7 @@ function Update_Event(int $id, String $title, String $description,
         $statement->bindParam(":location", $location);
         $statement->bindParam(":slots", $slots);
         $statement->bindParam(":category", $category);
+        $statement->bindParam(":subcategory", $subcategory);
         $result = $statement->execute();
 
         $dbh = null;

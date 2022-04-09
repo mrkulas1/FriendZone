@@ -199,7 +199,7 @@ void main() {
   /// and that the event table increases in size
   test('Test Create Event', () async {
     Event event = await createEvent("CS3141Admin@mtu.edu", "New Event",
-        "New Event Description", "Place", "", 5, 0);
+        "New Event Description", "Place", "", 5, "", "");
 
     expect(event.userEmail, "CS3141Admin@mtu.edu");
     expect(event.title, "New Event");
@@ -219,7 +219,7 @@ void main() {
     Event event;
     // Try to update an event that doesn't exist, check for exception
     try {
-      event = await updateEvent(0, "", "", "", "", 0, 0);
+      event = await updateEvent(0, "", "", "", "", 0, "", "");
       fail("No Exception Thrown");
     } catch (e) {
       expect(e, isA<Exception>());
@@ -227,7 +227,7 @@ void main() {
     }
 
     event = await updateEvent(
-        123123123, "Fun2", "testing2", "Somewhere2", "2021-03-23", 8, 1);
+        123123123, "Fun2", "testing2", "Somewhere2", "2021-03-23", 8, "", "");
 
     expect(event.id, 123123123);
     expect(event.userEmail, "aelaest@mtu.edu");

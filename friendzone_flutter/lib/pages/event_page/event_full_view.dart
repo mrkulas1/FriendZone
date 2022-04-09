@@ -346,6 +346,25 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                           const SizedBox(
                             height: 10,
                           ),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: const Text(
+                              "Category",
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                                "${widget.data.category}, ${widget.data.subCat}"),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
                           ElevatedButton(
                             onPressed: (() {
                               showDialog(

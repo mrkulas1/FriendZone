@@ -69,8 +69,15 @@ Future<Event> getDetailedEvent(int eventID) async {
 
 /// Create a new event with the given owner [userEmail], [title], [description],
 /// [location], [time], number of [slots], and [category].
-Future<Event> createEvent(String userEmail, String title, String description,
-    String location, String time, int slots, int category) async {
+Future<Event> createEvent(
+    String userEmail,
+    String title,
+    String description,
+    String location,
+    String time,
+    int slots,
+    String category,
+    String subCat) async {
   Map<String, dynamic> input = {
     "email": userEmail,
     "title": title,
@@ -78,7 +85,8 @@ Future<Event> createEvent(String userEmail, String title, String description,
     "location": location,
     "time": time,
     "slots": slots,
-    "category": category
+    "category": category,
+    "subcategory": subCat
   };
 
   Event event =
@@ -89,8 +97,15 @@ Future<Event> createEvent(String userEmail, String title, String description,
 
 /// Update the event with ID [eventID] with the given [title], [description],
 /// [location], [time], number of [slots], and [category].
-Future<Event> updateEvent(int eventID, String title, String description,
-    String location, String time, int slots, int category) async {
+Future<Event> updateEvent(
+    int eventID,
+    String title,
+    String description,
+    String location,
+    String time,
+    int slots,
+    String category,
+    String subCat) async {
   Map<String, dynamic> input = {
     "id": eventID,
     "title": title,
@@ -98,7 +113,8 @@ Future<Event> updateEvent(int eventID, String title, String description,
     "location": location,
     "time": time,
     "slots": slots,
-    "category": category
+    "category": category,
+    "subcategory": subCat
   };
 
   Event event =
