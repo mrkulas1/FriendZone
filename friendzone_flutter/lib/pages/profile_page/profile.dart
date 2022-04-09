@@ -145,8 +145,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                         itemCount: snapshot.data!.length,
                                         itemBuilder: (context, int index) {
                                           return ListTile(
-                                            leading: const Icon(
-                                                FontAwesomeIcons.atom),
+                                            leading: Icon(customIcons(snapshot
+                                                .data![index].category)),
                                             title: Text(
                                                 snapshot.data![index].title),
                                             subtitle: Text(
@@ -212,8 +212,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                         itemCount: snapshot.data!.length,
                                         itemBuilder: (context, int index) {
                                           return ListTile(
-                                            leading: const Icon(
-                                                FontAwesomeIcons.atom),
+                                            leading: Icon(customIcons(snapshot
+                                                .data![index].category)),
                                             title: Text(
                                                 snapshot.data![index].title),
                                             subtitle: Text(

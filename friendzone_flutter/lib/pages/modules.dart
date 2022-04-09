@@ -58,7 +58,7 @@ class MySearchDelegate extends SearchDelegate<String> {
                 globals.unifiedErrorCatch(context, error);
               });
             },
-            leading: const Icon(FontAwesomeIcons.atom),
+            leading: Icon(customIcons(remaining[index].category)),
             title: RichText(
               text: TextSpan(
                 text: remaining[index].title,
@@ -183,4 +183,26 @@ class MySearchDelegate extends SearchDelegate<String> {
           );
         },
       );
+}
+
+IconData customIcons(String catigory) {
+  IconData data = FontAwesomeIcons.atom;
+
+  if (catigory == "Academic") {
+    data = FontAwesomeIcons.school;
+  } else if (catigory == "Active") {
+    data = FontAwesomeIcons.futbol;
+  } else if (catigory == "Carpool") {
+    data = FontAwesomeIcons.car;
+  } else if (catigory == "Clubs") {
+    data = FontAwesomeIcons.puzzlePiece;
+  } else if (catigory == "Creative") {
+    data = FontAwesomeIcons.brush;
+  } else if (catigory == "Gaming") {
+    data = FontAwesomeIcons.gamepad;
+  } else if (catigory == "Volunteer") {
+    data = FontAwesomeIcons.handshake;
+  }
+
+  return data;
 }

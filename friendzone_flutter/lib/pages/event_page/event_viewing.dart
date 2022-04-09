@@ -192,33 +192,9 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                             scrollDirection: Axis.vertical,
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, int index) {
-                              IconData data = FontAwesomeIcons.atom;
-                              // TODO: Change when enum is finish
-                              // ignore: unrelated_type_equality_checks
-                              if (snapshot.data![index].category ==
-                                  "Academic") {
-                                data = FontAwesomeIcons.graduationCap;
-                              } else if (snapshot.data![index].category ==
-                                  "Active") {
-                                data = FontAwesomeIcons.futbol;
-                              } else if (snapshot.data![index].category ==
-                                  "Carpool") {
-                                data = FontAwesomeIcons.car;
-                              } else if (snapshot.data![index].category ==
-                                  "Clubs") {
-                                data = FontAwesomeIcons.puzzlePiece;
-                              } else if (snapshot.data![index].category ==
-                                  "Creative") {
-                                data = FontAwesomeIcons.brush;
-                              } else if (snapshot.data![index].category ==
-                                  "Gaming") {
-                                data = FontAwesomeIcons.dAndD;
-                              } else if (snapshot.data![index].category ==
-                                  "Volunteer") {
-                                data = FontAwesomeIcons.handshake;
-                              }
                               return ListTile(
-                                leading: Icon(data),
+                                leading: Icon(customIcons(
+                                    snapshot.data![index].category)),
                                 title: Text(snapshot.data![index].title),
                                 subtitle: Text(
                                     "Where: ${snapshot.data![index].location}\n"
@@ -303,42 +279,40 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
               children: [
                 const Text("Select Event Type: "),
                 DropdownButton<String>(
-                  value: selectCat,
-                  alignment: Alignment.center,
-                  items: generalcat.map((String value) {
-                    return DropdownMenuItem(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                  onChanged: onChangedCallback,
-                  hint: const Text("Select Event Category"))
+                    value: selectCat,
+                    alignment: Alignment.center,
+                    items: generalcat.map((String value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: onChangedCallback,
+                    hint: const Text("Select Event Category"))
               ],
             ),
             Row(
-            children: [
-              const Text("Select Subcategory: "),
-              DropdownButton<String>(
-                hint: const Text('Subcategory'),
-                        value: selectSubCat,
-                        items: subcat.map((String value) {
-                          return DropdownMenuItem(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (subcat) {
-                          setState(() {
-                            selectSubCat = subcat;
-                          });
-                        },
+              children: [
+                const Text("Select Subcategory: "),
+                DropdownButton<String>(
+                  hint: const Text('Subcategory'),
+                  value: selectSubCat,
+                  items: subcat.map((String value) {
+                    return DropdownMenuItem(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (subcat) {
+                    setState(() {
+                      selectSubCat = subcat;
+                    });
+                  },
+                )
+              ],
+            ),
 
-              )
-
-            ],
-          ),
-            
-          /*Padding(
+            /*Padding(
               padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: */
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
