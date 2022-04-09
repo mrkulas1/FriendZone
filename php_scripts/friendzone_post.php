@@ -25,6 +25,7 @@ class PHPFunctions
     const REPORT_EVENT = 13;
 
     const GET_FOREIGN_USER = 14;
+    const DELETE_EVENT = 15;
 }
 
 // Main entry point for a Flutter page to make a POST request. The Flutter code
@@ -317,6 +318,24 @@ switch ($functionID) {
         $user = Get_Foreign_User($e);
 
         echo json_encode($user);
+        break;
+
+
+    case PHPFunctions::DELETE_EVENT:
+        if (!isset($data["id"])) {
+            fail_general();
+        }
+
+        $i = $data["id"];
+
+        $removal = Delete_Event($i);
+
+        if (isset($removal["error"])) {
+            echo json_encode($removal);
+            die();
+        }
+
+        echo json_encode(array("status" => $removal));
         break;
 
     default:

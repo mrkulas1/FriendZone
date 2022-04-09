@@ -178,7 +178,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                                               context,
                                                               snapshot
                                                                   .data![index]
-                                                                  .title),
+                                                                  .title,
+                                                              snapshot
+                                                                  .data![index]
+                                                                  .id),
                                                 );
                                               },
                                             ),
@@ -261,12 +264,13 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildDeleteDialogue(BuildContext context, String eventName) {
+  Widget _buildDeleteDialogue(
+      BuildContext context, String eventName, int eventID) {
     return AlertDialog(
         title: Container(
           padding: const EdgeInsets.all(15),
           color: Colors.black,
-          child: Text("Permenently Delete " + eventName + "?",
+          child: Text("Permenently Delete " + eventName + " ($eventID)?",
               textAlign: TextAlign.center,
               style: const TextStyle(
                   color: globals.friendzoneYellow, fontSize: 25)),
@@ -278,7 +282,15 @@ class _ProfilePageState extends State<ProfilePage> {
             children: <Widget>[
               FlatButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Future<void> delete = deleteEvent(eventID);
+                    delete.then((value) {
+                    setState(() {
+                      Navigator.of(context).pop();
+                      _myEvents = getMyEvents(widget.email.toString());
+                      _joinedEvents = getJoinedEvents(widget.email.toString());
+                    });
+                    }
+                    );
                   },
                   textColor: const Color.fromARGB(255, 0, 0, 255),
                   child: const Text("Confirm")),

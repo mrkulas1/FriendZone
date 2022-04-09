@@ -391,12 +391,6 @@ function Update_Event(int $id, String $title, String $description,
 //   }
 // }
 
-function getEventsDay(String $day)
-{
-    //Returns events on given day
-    //Trevor may need a bit of extra work to figure this out, will come back to it
-}
-
 function Join_Event(int $id, String $email, String $comment)
 {
     try {
@@ -450,13 +444,14 @@ function Leave_Event(int $id, String $email)
     try {
         $dbh = connectDB();
 
-        $statement = $dbh->prepare("SELECT Count(*) FROM Joins WHERE id = :id AND email = :email");
+        $statement = $dbh->prepare("SELECT Count(*) From Joins WHERE id = :id AND email = :email");
         $statement->bindParam(":id", $id);
         $statement->bindParam(":email", $email);
         $statement->execute();
         $result = $statement->fetchColumn(0);
         // Check if user is signed up to the event
-        if ($result == 0) {
+        
+        if($result == 0){
             return 1;
         }
 
@@ -606,6 +601,24 @@ function Get_Foreign_User(String $email)
 
         return $row;
     } catch (PDOException $exception) {
+        return errorReturn($exception->getMessage());
+    }
+}
+
+function Delete_Event(int $id) {
+    try{
+        
+    //return errorReturn("We made it here function start");
+
+    $dbh = connectDB();
+    $statement = $dbh->prepare("DELETE FROM Event WHERE id = :id");
+    $statement->bindParam(":id", $id);
+    $statement->execute();
+    $dbh = null;
+
+    return 1;
+
+    } catch (PDOException $exception){
         return errorReturn($exception->getMessage());
     }
 }

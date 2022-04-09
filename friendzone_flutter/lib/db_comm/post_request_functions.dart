@@ -214,3 +214,11 @@ Future<ForeignUser> getForeignUser(String userEmail) async {
 
   return user;
 }
+
+///Delete an event with the id [eventID]
+Future<void> deleteEvent(int eventID) async {
+  Map<String, dynamic> input = {"id" : eventID};
+
+      await makeVoidPostRequest(PHPFunction.deleteEvent, input);
+
+}
