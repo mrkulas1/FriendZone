@@ -246,7 +246,6 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
   }
 
   Widget _buildPopupDialog(BuildContext context) {
-    String? selectedValue = null;
     return AlertDialog(
       insetPadding: const EdgeInsets.all(15),
       title: Container(
@@ -417,12 +416,14 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                       validEvent = false;
                     }
 
-                    if (e.category != selectCat) {
-                      validEvent = false;
-                    }
+                    if (selectCat != null) {
+                      if (e.category != selectCat) {
+                        validEvent = false;
+                      }
 
-                    if (e.category == selectCat && e.subCat != selectSubCat) {
-                      validEvent = false;
+                      if (e.category == selectCat && e.subCat != selectSubCat) {
+                        validEvent = false;
+                      }
                     }
 
                     if (validEvent) {
