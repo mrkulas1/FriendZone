@@ -489,6 +489,12 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
         subcat = carpoolsubcat;
         selectSubCat = null;
       });
+    } else if (generalcat == 'Clubs') {
+      setState(() {
+        selectCat = "Clubs";
+        subcat = clubsSubcat;
+        selectSubCat = null;
+      });
     } else if (generalcat == 'Creative') {
       setState(() {
         selectCat = "Creative";
