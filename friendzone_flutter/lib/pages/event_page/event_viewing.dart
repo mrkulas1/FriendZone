@@ -421,7 +421,7 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                         validEvent = false;
                       }
 
-                      if (e.category == selectCat && e.subCat != selectSubCat) {
+                      if (e.category == selectCat && e.subCat != selectSubCat && selectSubCat != null) {
                         validEvent = false;
                       }
                     }
