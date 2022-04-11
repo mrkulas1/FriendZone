@@ -286,7 +286,9 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                         child: Text(value),
                       );
                     }).toList(),
-                    onChanged: onChangedCallback,
+                    onChanged: (String? value) {
+                      onChangedCallback(value, setState);
+                    },
                     hint: const Text("Select Event Category"))
               ],
             ),
@@ -302,7 +304,7 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                       child: Text(value),
                     );
                   }).toList(),
-                  onChanged: (subcat) {
+                  onChanged: (String? subcat) {
                     setState(() {
                       selectSubCat = subcat;
                     });
@@ -320,7 +322,6 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                 onTap: () {
                   setState(() {
                     _selectDateFrom(context).then(((value) => setState(() {})));
-                    //fromDate = fromDate;
                   });
                 },
                 child:
@@ -377,6 +378,7 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                     selectCat = null;
                     selectSubCat = null;
                   });
+                  Navigator.of(context).pop();
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
@@ -421,7 +423,9 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                         validEvent = false;
                       }
 
-                      if (e.category == selectCat && e.subCat != selectSubCat && selectSubCat != null) {
+                      if (e.category == selectCat &&
+                          e.subCat != selectSubCat &&
+                          selectSubCat != null) {
                         validEvent = false;
                       }
                     }
@@ -470,7 +474,7 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
     );
   }
 
-  void onChangedCallback(generalcat) {
+  void onChangedCallback(String? generalcat, StateSetter setState) {
     if (generalcat == 'Academic') {
       setState(() {
         selectCat = "Academic";
