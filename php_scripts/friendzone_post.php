@@ -80,7 +80,9 @@ $functionID = $data["functionID"];
 // Need to do a token check unless authenticating or registering,
 // or getting the token
 if ($functionID != PHPFunctions::AUTH 
-    && $functionID != PHPFunctions::CREATE_USER)
+    && $functionID != PHPFunctions::CREATE_USER
+    && $functionID != PHPFunctions::GET_MY_EVENTS
+    && $functionID != PHPFunctions::GET_JOINED_EVENTS)
 {
     if (!bulk_isset(array("token", "email"), $data)) {
         fail_unauth();
