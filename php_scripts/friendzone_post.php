@@ -25,6 +25,7 @@ class PHPFunctions
     const REPORT_EVENT = 13;
 
     const GET_FOREIGN_USER = 14;
+    const DELETE_EVENT = 15;
 }
 
 // Main entry point for a Flutter page to make a POST request. The Flutter code
@@ -79,7 +80,9 @@ $functionID = $data["functionID"];
 // Need to do a token check unless authenticating or registering,
 // or getting the token
 if ($functionID != PHPFunctions::AUTH 
-    && $functionID != PHPFunctions::CREATE_USER)
+    && $functionID != PHPFunctions::CREATE_USER
+    && $functionID != PHPFunctions::GET_MY_EVENTS
+    && $functionID != PHPFunctions::GET_JOINED_EVENTS)
 {
     if (!bulk_isset(array("token", "email"), $data)) {
         fail_unauth();
@@ -169,9 +172,10 @@ switch ($functionID) {
         $time = $data["time"];
         $s = $data["slots"];
         $c = $data["category"];
+        $sc = $data["subcategory"];
 
         //Variables input to Create_Event function, performed, and returned
-        $event = Create_Event($e, $t, $d, $time, $l, $s, $c);
+        $event = Create_Event($e, $t, $d, $time, $l, $s, $c, $sc);
 
         echo json_encode($event);
         break;
@@ -190,9 +194,10 @@ switch ($functionID) {
         $time = $data["time"];
         $s = $data["slots"];
         $c = $data["category"];
+        $sc = $data["subcategory"];
 
         //Variables input to Create_Event function, performed, and returned
-        $event = Update_Event($i, $t, $d, $time, $l, $s, $c);
+        $event = Update_Event($i, $t, $d, $time, $l, $s, $c, $sc);
 
         echo json_encode($event);
         break;
@@ -315,6 +320,24 @@ switch ($functionID) {
         $user = Get_Foreign_User($e);
 
         echo json_encode($user);
+        break;
+
+
+    case PHPFunctions::DELETE_EVENT:
+        if (!isset($data["id"])) {
+            fail_general();
+        }
+
+        $i = $data["id"];
+
+        $removal = Delete_Event($i);
+
+        if (isset($removal["error"])) {
+            echo json_encode($removal);
+            die();
+        }
+
+        echo json_encode(array("status" => $removal));
         break;
 
     default:

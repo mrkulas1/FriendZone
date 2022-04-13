@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:friendzone_flutter/models/auth_result.dart';
-import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/pages/event_page/event_viewing.dart';
 
 import 'signup.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  final bool tokenLogout;
+  const LoginPage({Key? key, this.tokenLogout = false}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -23,6 +23,16 @@ class _LoginPageState extends State<LoginPage> {
   final _loginFormKey = GlobalKey<FormState>();
 
   Future<AuthResult>? _futureAuth;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.tokenLogout) {
+      WidgetsBinding.instance!
+          .addPostFrameCallback((_) => _showTokenAlert(context));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                                       context, value.getStatusMessage());
                                 }
                               }).catchError((error) {
-                                globals.makeSnackbar(context, error.toString());
+                                globals.unifiedErrorCatch(context, error);
                               });
                             });
                           }
@@ -248,21 +258,48 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.web_rounded),
-          backgroundColor: globals.friendzoneYellow,
-          onPressed: () {
-            authenticate("test@mtu.edu", "Password123").then((value) {
-              globals.activeUser = value.getUser();
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          const EventViewAllPage()));
-            });
-          },
-        ),
+        // Commenting out for build
+        // floatingActionButton: FloatingActionButton(
+        //   child: const Icon(Icons.web_rounded),
+        //   backgroundColor: globals.friendzoneYellow,
+        //   onPressed: () {
+        //     authenticate("test@mtu.edu", "Password123").then((value) {
+        //       globals.activeUser = value.getUser();
+        //       Navigator.pushReplacement(
+        //           context,
+        //           MaterialPageRoute(
+        //               builder: (BuildContext context) =>
+        //                   const EventViewAllPage()));
+        //     });
+        //   },
+        // ),
       ),
     );
+  }
+
+  void _showTokenAlert(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              title: const Text("Logged out due to inactivity"),
+              content: const Text(
+                  "You were inactive in the app for over 30 minutes, "
+                  "so you were logged out for security purposes. Please log back "
+                  "in to continue."),
+              actions: <Widget>[
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        globals.friendzoneYellow),
+                  ),
+                  child: const Text(
+                    "OK",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                )
+              ]);
+        });
   }
 }

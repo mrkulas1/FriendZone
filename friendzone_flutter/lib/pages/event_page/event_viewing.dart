@@ -27,6 +27,47 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
   List<Event> newEvents = [];
   final TextEditingController _nameControl = TextEditingController();
 
+  final List<String> generalcat = [
+    'Academic',
+    'Active',
+    'Carpool',
+    'Clubs',
+    'Creative',
+    'Gaming',
+    'Volunteer',
+    'Other'
+  ];
+  final List<String> academicsubcat = [
+    'Study Group',
+    'Homework',
+    'Tutoring',
+    'Other'
+  ];
+  final List<String> activesubcat = [
+    'Winter Sports',
+    'Water Sports',
+    'Racquet Sports',
+    'Team Sports',
+    'Other'
+  ];
+  final List<String> carpoolsubcat = [
+    'Short Distances',
+    'Long Distances',
+    'Other'
+  ];
+  final List<String> clubsSubcat = [];
+  final List<String> creativeSubcat = ['Art', 'Music', 'Other'];
+  final List<String> gamingSubcat = [
+    'Video Games',
+    'Board Games',
+    'Card Games',
+    'Other'
+  ];
+  final List<String> volunteerSubcat = [];
+  List<String> subcat = [];
+  String? selectCat;
+  String? selectSubCat;
+
   @override
   void initState() {
     super.initState();
@@ -88,7 +129,7 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
       body: Container(
         alignment: Alignment.center,
         child: Column(
-          children: [
+          children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -151,33 +192,9 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                             scrollDirection: Axis.vertical,
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, int index) {
-                              IconData data = FontAwesomeIcons.atom;
-                              // TODO: Change when enum is finish
-                              // ignore: unrelated_type_equality_checks
-                              if (snapshot.data![index].category ==
-                                  "Academic") {
-                                data = FontAwesomeIcons.graduationCap;
-                              } else if (snapshot.data![index].category ==
-                                  "Active") {
-                                data = FontAwesomeIcons.futbol;
-                              } else if (snapshot.data![index].category ==
-                                  "Carpool") {
-                                data = FontAwesomeIcons.car;
-                              } else if (snapshot.data![index].category ==
-                                  "Clubs") {
-                                data = FontAwesomeIcons.puzzlePiece;
-                              } else if (snapshot.data![index].category ==
-                                  "Creative") {
-                                data = FontAwesomeIcons.brush;
-                              } else if (snapshot.data![index].category ==
-                                  "Gaming") {
-                                data = FontAwesomeIcons.dAndD;
-                              } else if (snapshot.data![index].category ==
-                                  "Volunteer") {
-                                data = FontAwesomeIcons.handshake;
-                              }
                               return ListTile(
-                                leading: Icon(data),
+                                leading: Icon(customIcons(
+                                    snapshot.data![index].category)),
                                 title: Text(snapshot.data![index].title),
                                 subtitle: Text(
                                     "Where: ${snapshot.data![index].location}\n"
@@ -201,8 +218,7 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                                                 DetailEventViewPage(
                                                     data: value)));
                                   }).catchError((error) {
-                                    globals.makeSnackbar(
-                                        context, error.toString());
+                                    globals.unifiedErrorCatch(context, error);
                                   });
                                 },
                               );
@@ -230,7 +246,6 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
   }
 
   Widget _buildPopupDialog(BuildContext context) {
-    int? selectedValue = 1;
     return AlertDialog(
       insetPadding: const EdgeInsets.all(15),
       title: Container(
@@ -243,99 +258,114 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
             textAlign: TextAlign.center,
             style: TextStyle(color: globals.friendzoneYellow, fontSize: 25)),
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          TextFormField(
-            key: const Key("Filter_Text"),
-            controller: _nameControl,
-            decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Event Name",
-                hintText: "Event Name Here"),
-            autofocus: false,
-          ),
-          Row(
-            children: [
-              const Text("Select Event Type: "),
-              DropdownButton(
-                  value: selectedValue,
-                  alignment: Alignment.center,
-                  items: const [
-                    DropdownMenuItem(
-                      child: Text("Friend 1"),
-                      value: 1,
-                    ),
-                    DropdownMenuItem(
-                      child: Text("Friend 2"),
-                      value: 2,
-                    ),
-                    DropdownMenuItem(
-                      child: Text("Friend 3"),
-                      value: 3,
-                    ),
-                  ],
-                  onChanged: (int? value) {
+      content: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            TextFormField(
+              key: const Key("Filter_Text"),
+              controller: _nameControl,
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Event Name",
+                  hintText: "Event Name Here"),
+              autofocus: false,
+            ),
+            Row(
+              children: [
+                const Text("Select Event Type: "),
+                DropdownButton<String>(
+                    value: selectCat,
+                    alignment: Alignment.center,
+                    items: generalcat.map((String value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String? value) {
+                      onChangedCallback(value, setState);
+                    },
+                    hint: const Text("Select Event Category"))
+              ],
+            ),
+            Row(
+              children: [
+                const Text("Select Subcategory: "),
+                DropdownButton<String>(
+                  hint: const Text('Subcategory'),
+                  value: selectSubCat,
+                  items: subcat.map((String value) {
+                    return DropdownMenuItem(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? subcat) {
                     setState(() {
-                      selectedValue = value;
+                      selectSubCat = subcat;
                     });
                   },
-                  hint: Text("Select Event Category"))
-            ],
-          ),
-          /*Padding(
+                )
+              ],
+            ),
+
+            /*Padding(
               padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
               child: */
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text("Events After: "),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  _selectDateFrom(context);
-                  fromDate = fromDate;
-                });
-              },
-              child: Text('${fromDate.month}/${fromDate.day}/${fromDate.year}'),
-              key: const Key("fromDate"),
-            ),
-            IconButton(
-                onPressed: () {
-                  fromDate = DateTime.now();
-                  fromPicked = false;
-                },
-                icon: const Icon(FontAwesomeIcons.xmark, color: Colors.red)),
-          ]) /*)*/,
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text("Events Before: "),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  _selectDateTo(context);
-                  toDate = toDate;
-                });
-              },
-              child: Text('${toDate.month}/${toDate.day}/${toDate.year}'),
-            ),
-            IconButton(
-                onPressed: () {
-                  toDate = DateTime.now();
-                  toPicked = false;
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Text("Events After: "),
+              InkWell(
+                onTap: () {
                   setState(() {
-                    toDate = DateTime.now();
+                    _selectDateFrom(context).then(((value) => setState(() {})));
                   });
                 },
-                icon: const Icon(FontAwesomeIcons.xmark, color: Colors.red)),
-            //FIgure Out Tomorrow
-          ]),
-        ],
-      ),
+                child:
+                    Text('${fromDate.month}/${fromDate.day}/${fromDate.year}'),
+                key: const Key("fromDate"),
+              ),
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      fromDate = DateTime.now();
+                      fromPicked = false;
+                    });
+                  },
+                  icon: const Icon(FontAwesomeIcons.xmark, color: Colors.red)),
+            ]) /*)*/,
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Text("Events Before: "),
+              InkWell(
+                onTap: () {
+                  setState(() {
+                    _selectDateTo(context).then(((value) => setState(() {})));
+                    //toDate = toDate;
+                  });
+                },
+                child: Text('${toDate.month}/${toDate.day}/${toDate.year}'),
+              ),
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      toDate = DateTime.now();
+                      toPicked = false;
+                    });
+                  },
+                  icon: const Icon(FontAwesomeIcons.xmark, color: Colors.red)),
+              //FIgure Out Tomorrow
+            ]),
+          ],
+        );
+      }),
       actions: <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            FlatButton(
+            ElevatedButton(
                 onPressed: () {
                   //Key("Filter_Text").
                   setState(() {
@@ -345,12 +375,17 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                     fromDate = DateTime.now();
                     _events = getAllEvents();
                     _nameControl.text = "";
+                    selectCat = null;
+                    selectSubCat = null;
                   });
+                  Navigator.of(context).pop();
                 },
-                color: globals.friendzoneYellow,
-                textColor: Colors.black,
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      globals.friendzoneYellow),
+                ),
                 child: const Text("Reset Filter")),
-            FlatButton(
+            ElevatedButton(
               onPressed: () {
                 //Filter Events by whatever Here
 
@@ -383,6 +418,18 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
                       validEvent = false;
                     }
 
+                    if (selectCat != null) {
+                      if (e.category != selectCat) {
+                        validEvent = false;
+                      }
+
+                      if (e.category == selectCat &&
+                          e.subCat != selectSubCat &&
+                          selectSubCat != null) {
+                        validEvent = false;
+                      }
+                    }
+
                     if (validEvent) {
                       newEvents.add(e);
                       setState(() {
@@ -401,19 +448,80 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
 
                 Navigator.of(context).pop();
               },
-              textColor: Theme.of(context).primaryColor,
-              child: const Text("Search"),
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(globals.friendzoneYellow),
+              ),
+              child: Text(
+                "Search",
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              ),
             ),
-            FlatButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              textColor: Color.fromARGB(255, 254, 0, 0),
-              child: const Text("Cancel"),
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(globals.friendzoneYellow),
+              ),
+              child: const Text("Cancel",
+                  style: TextStyle(color: Color.fromARGB(255, 254, 0, 0))),
             ),
           ],
         )
       ],
     );
+  }
+
+  void onChangedCallback(String? generalcat, StateSetter setState) {
+    if (generalcat == 'Academic') {
+      setState(() {
+        selectCat = "Academic";
+        subcat = academicsubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Active') {
+      setState(() {
+        selectCat = "Active";
+        subcat = activesubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Carpool') {
+      setState(() {
+        selectCat = "Carpool";
+        subcat = carpoolsubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Clubs') {
+      setState(() {
+        selectCat = "Clubs";
+        subcat = clubsSubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Creative') {
+      setState(() {
+        selectCat = "Creative";
+        subcat = creativeSubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Gaming') {
+      setState(() {
+        selectCat = "Gaming";
+        subcat = gamingSubcat;
+        selectSubCat = null;
+      });
+    } else if (generalcat == 'Volunteer') {
+      setState(() {
+        selectCat = "Volunteer";
+        subcat = volunteerSubcat;
+        selectSubCat = null;
+      });
+    } else {
+      setState(() {
+        subcat = [];
+        selectSubCat = null;
+      });
+    }
   }
 }

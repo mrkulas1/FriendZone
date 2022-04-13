@@ -78,7 +78,8 @@ class MyApp extends StatelessWidget {
                             editable: true,
                             event: Event(
                               id: 0,
-                              category: 0,
+                              category: "",
+                              subCat: "",
                               title: 'Test Title',
                               userEmail: 'Test Email',
                               time: 'Test time',

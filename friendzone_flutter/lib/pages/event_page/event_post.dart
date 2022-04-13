@@ -96,6 +96,9 @@ class EventPostPageState extends State<EventPostPage> {
     _category.text = widget.event!.category.toString();
     _numSlots.text = widget.event!.slots.toString();
     _description.text = widget.event!.description ?? "";
+    selectCat = widget.event!.category;
+    onChangedCallback(selectCat);
+    selectSubCat = widget.event!.subCat;
 
     try {
       _dateTime = DateTime.parse(widget.event!.time);
@@ -323,7 +326,8 @@ class EventPostPageState extends State<EventPostPage> {
                                   _location.text,
                                   formattedDateTime,
                                   int.parse(_numSlots.text),
-                                  0)
+                                  selectCat ?? "",
+                                  selectSubCat ?? "")
                               : createEvent(
                                   globals.activeUser?.email ?? "",
                                   _eventName.text,
@@ -331,7 +335,8 @@ class EventPostPageState extends State<EventPostPage> {
                                   _location.text,
                                   formattedDateTime,
                                   int.parse(_numSlots.text),
-                                  0 /*TODO: Category enum */);
+                                  selectCat ?? "",
+                                  selectSubCat ?? "");
 
                           event.then((value) {
                             ScaffoldMessenger.of(context).clearSnackBars();
@@ -341,7 +346,7 @@ class EventPostPageState extends State<EventPostPage> {
                                     builder: (BuildContext context) =>
                                         DetailEventViewPage(data: value)));
                           }).catchError((error) {
-                            globals.makeSnackbar(context, error.toString());
+                            globals.unifiedErrorCatch(context, error);
                           });
                         }
                       },

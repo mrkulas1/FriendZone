@@ -20,7 +20,8 @@ class EventBuilder extends JsonBuilder<Event> with JsonListBuilder<Event> {
         time: json["time"] ?? "",
         location: json["location"] ?? "",
         slots: int.parse(json["slots"] ?? '0'),
-        category: int.parse(json["category"] ?? '0'));
+        category: json["category"] ?? "",
+        subCat: json["subcategory"] ?? "");
 
     if (json.containsKey("description") &&
         json.containsKey("reported") &&

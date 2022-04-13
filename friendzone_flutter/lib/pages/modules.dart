@@ -13,6 +13,7 @@ class MySearchDelegate extends SearchDelegate<String> {
   // Suggestions + initial suggestions
   // ignore: non_constant_identifier_names
   final List<Event> EventList = [];
+  List<Event> remaining = [];
 
   @override
   List<Widget>? buildActions(BuildContext context) => [
@@ -36,22 +37,39 @@ class MySearchDelegate extends SearchDelegate<String> {
       icon: const Icon(Icons.arrow_back));
 
   @override
-  Widget buildResults(BuildContext context) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.alarm, size: 120),
-            SizedBox(height: 48),
-            Text(
-              "NOTHING TO SEE HERE, WILL IMPLEMENT LATER",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 64,
-                fontWeight: FontWeight.bold,
+  Widget buildResults(BuildContext context) => ListView.builder(
+        itemCount: remaining.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            onTap: () {
+              Future<Event> detailedEvent =
+                  getDetailedEvent(remaining[index].id);
+
+              globals.makeSnackbar(context, "Getting Event Details");
+
+              detailedEvent.then((value) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            DetailEventViewPage(data: value)));
+              }).catchError((error) {
+                globals.unifiedErrorCatch(context, error);
+              });
+            },
+            leading: Icon(customIcons(remaining[index].category)),
+            title: RichText(
+              text: TextSpan(
+                text: remaining[index].title,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                ),
               ),
             ),
-          ],
-        ),
+          );
+        },
       );
 
   @override
@@ -62,9 +80,11 @@ class MySearchDelegate extends SearchDelegate<String> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             EventList.clear();
+            remaining.clear();
             // Insert all the event data into the event List
             for (int i = 0; i < snapshot.data!.length; i++) {
               EventList.add(snapshot.data![i]);
+              remaining.add(snapshot.data![i]);
             }
 
             int limit = 15;
@@ -92,7 +112,7 @@ class MySearchDelegate extends SearchDelegate<String> {
                               builder: (context) =>
                                   DetailEventViewPage(data: value)));
                     }).catchError((error) {
-                      globals.makeSnackbar(context, error.toString());
+                      globals.unifiedErrorCatch(context, error);
                     });
                   },
                 );
@@ -112,6 +132,7 @@ class MySearchDelegate extends SearchDelegate<String> {
         return sugLower.startsWith(qLower);
       }).toList();
 
+      remaining = suggestion;
       return buildSuggestionSuccess(suggestion);
     }
   }
@@ -136,7 +157,7 @@ class MySearchDelegate extends SearchDelegate<String> {
                         builder: (context) =>
                             DetailEventViewPage(data: value)));
               }).catchError((error) {
-                globals.makeSnackbar(context, error.toString());
+                globals.unifiedErrorCatch(context, error);
               });
             },
             leading: const Icon(FontAwesomeIcons.magnifyingGlass),
@@ -162,4 +183,26 @@ class MySearchDelegate extends SearchDelegate<String> {
           );
         },
       );
+}
+
+IconData customIcons(String catigory) {
+  IconData data = FontAwesomeIcons.atom;
+
+  if (catigory == "Academic") {
+    data = FontAwesomeIcons.school;
+  } else if (catigory == "Active") {
+    data = FontAwesomeIcons.futbol;
+  } else if (catigory == "Carpool") {
+    data = FontAwesomeIcons.car;
+  } else if (catigory == "Clubs") {
+    data = FontAwesomeIcons.puzzlePiece;
+  } else if (catigory == "Creative") {
+    data = FontAwesomeIcons.brush;
+  } else if (catigory == "Gaming") {
+    data = FontAwesomeIcons.gamepad;
+  } else if (catigory == "Volunteer") {
+    data = FontAwesomeIcons.handshake;
+  }
+
+  return data;
 }

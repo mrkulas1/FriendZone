@@ -246,7 +246,7 @@ function Get_All_Events()
     try {
         $dbh = connectDB();
 
-        $statement = $dbh->prepare("Select id, email, title, time, location, slots, category from Event");
+        $statement = $dbh->prepare("Select id, email, title, time, location, slots, category, subcategory from Event");
         $return = $statement->execute();
         $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -281,14 +281,14 @@ function Get_Detailed_Event(int $id)
 }
 
 function Create_Event(String $email, String $title, String $description,
-    String $time, String $location, int $slots, int $category) {
+    String $time, String $location, int $slots, String $category, String $subcategory) {
     //creates event, then returns its detailed info
     // NOTE - Commenting out time for now since String - DATETIME will be weird
     try {
         $dbh = connectDB();
 
-        $statement = $dbh->prepare("INSERT INTO Event(email, title, description, time, location, slots, category)
-        values(:email, :title, :description, :time, :location, :slots, :category)");
+        $statement = $dbh->prepare("INSERT INTO Event(email, title, description, time, location, slots, category, subcategory)
+        values(:email, :title, :description, :time, :location, :slots, :category, :subcategory)");
         $statement->bindParam(":email", $email);
         $statement->bindParam(":title", $title);
         $statement->bindParam(":description", $description);
@@ -296,6 +296,7 @@ function Create_Event(String $email, String $title, String $description,
         $statement->bindParam(":location", $location);
         $statement->bindParam(":slots", $slots);
         $statement->bindParam(":category", $category);
+        $statement->bindParam(":subcategory", $subcategory);
         $result = $statement->execute();
 
         // This is potentially prone to error - need testing,
@@ -313,7 +314,7 @@ function Create_Event(String $email, String $title, String $description,
 
 // Making this to quickly throw something together
 function Update_Event(int $id, String $title, String $description,
-    String $time, String $location, int $slots, int $category) {
+    String $time, String $location, int $slots, String $category, String $subcategory) {
 
     try {
         $dbh = connectDB();
@@ -329,7 +330,8 @@ function Update_Event(int $id, String $title, String $description,
         }
 
         $statement = $dbh->prepare("UPDATE Event SET title = :title, description = :description,
-        time = :time, location = :location, slots = :slots, category = :category WHERE id = :id");
+            time = :time, location = :location, slots = :slots, category = :category, 
+            subcategory = :subcategory WHERE id = :id");
         $statement->bindParam(":id", $id);
         $statement->bindParam(":title", $title);
         $statement->bindParam(":description", $description);
@@ -337,6 +339,7 @@ function Update_Event(int $id, String $title, String $description,
         $statement->bindParam(":location", $location);
         $statement->bindParam(":slots", $slots);
         $statement->bindParam(":category", $category);
+        $statement->bindParam(":subcategory", $subcategory);
         $result = $statement->execute();
 
         $dbh = null;
@@ -387,12 +390,6 @@ function Update_Event(int $id, String $title, String $description,
 //     echo $exception->getMessage();
 //   }
 // }
-
-function getEventsDay(String $day)
-{
-    //Returns events on given day
-    //Trevor may need a bit of extra work to figure this out, will come back to it
-}
 
 function Join_Event(int $id, String $email, String $comment)
 {
@@ -447,13 +444,14 @@ function Leave_Event(int $id, String $email)
     try {
         $dbh = connectDB();
 
-        $statement = $dbh->prepare("SELECT Count(*) FROM Joins WHERE id = :id AND email = :email");
+        $statement = $dbh->prepare("SELECT Count(*) From Joins WHERE id = :id AND email = :email");
         $statement->bindParam(":id", $id);
         $statement->bindParam(":email", $email);
         $statement->execute();
         $result = $statement->fetchColumn(0);
         // Check if user is signed up to the event
-        if ($result == 0) {
+        
+        if($result == 0){
             return 1;
         }
 
@@ -603,6 +601,24 @@ function Get_Foreign_User(String $email)
 
         return $row;
     } catch (PDOException $exception) {
+        return errorReturn($exception->getMessage());
+    }
+}
+
+function Delete_Event(int $id) {
+    try{
+        
+    //return errorReturn("We made it here function start");
+
+    $dbh = connectDB();
+    $statement = $dbh->prepare("DELETE FROM Event WHERE id = :id");
+    $statement->bindParam(":id", $id);
+    $statement->execute();
+    $dbh = null;
+
+    return 1;
+
+    } catch (PDOException $exception){
         return errorReturn($exception->getMessage());
     }
 }

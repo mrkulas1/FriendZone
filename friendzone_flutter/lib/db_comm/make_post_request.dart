@@ -5,6 +5,7 @@ import 'package:friendzone_flutter/globals.dart' as globals;
 
 import 'package:friendzone_flutter/models/builders/json_builder.dart';
 import 'package:friendzone_flutter/models/builders/json_list_builder.dart';
+import 'package:friendzone_flutter/db_comm/friendzone_exceptions.dart';
 import 'package:http/http.dart' as http;
 
 /// Enum to track the IDs of all PHP functions that can be called.
@@ -31,7 +32,9 @@ enum PHPFunction {
 
   reportEvent,
 
-  getForeignUser
+  getForeignUser,
+  
+  deleteEvent
 }
 
 // Path for all POST requests
@@ -71,14 +74,14 @@ Future<T> makePostRequest<T, U extends JsonBuilder<T>>(
     case phpSuccessCode:
       Map<String, dynamic> json = jsonDecode(response.body);
       if (json.containsKey("error")) {
-        throw Exception(json["error"]);
+        throw PHPException(json["error"]);
       }
 
       return builder.fromJson(json);
     case phpInternalErrorCode:
       throw Exception("Internal PHP Error occurred");
     case badTokenCode:
-      throw Exception("Token Authentication Failed");
+      throw TokenException();
     default:
       throw Exception("Unexpected error occurred");
   }
@@ -120,7 +123,7 @@ Future<List<T>> makeListPostRequest<T, U extends JsonListBuilder<T>>(
         }
 
         if (json[0].containsKey("error")) {
-          throw Exception(json[0]["error"]);
+          throw PHPException(json[0]["error"]);
         }
 
         return builder.listFromJson(jsonDecode(response.body));
@@ -128,7 +131,7 @@ Future<List<T>> makeListPostRequest<T, U extends JsonListBuilder<T>>(
         Map<String, dynamic> json = jsonDecode(response.body);
 
         if (json.containsKey("error")) {
-          throw Exception(json["error"]);
+          throw PHPException(json["error"]);
         } else {
           rethrow;
         }
@@ -136,7 +139,7 @@ Future<List<T>> makeListPostRequest<T, U extends JsonListBuilder<T>>(
     case phpInternalErrorCode:
       throw Exception("PHP Error occurred");
     case badTokenCode:
-      throw Exception("Token Authentication Failed");
+      throw TokenException();
     default:
       throw Exception("Unexpected error occurred");
   }
@@ -169,14 +172,14 @@ Future<void> makeVoidPostRequest(
     case phpSuccessCode:
       Map<String, dynamic> json = jsonDecode(response.body);
       if (json.containsKey("error")) {
-        throw Exception(json["error"]);
+        throw PHPException(json["error"]);
       }
       return;
 
     case phpInternalErrorCode:
       throw Exception("PHP Error occurred");
     case badTokenCode:
-      throw Exception("Token Authentication Failed");
+      throw TokenException();
     default:
       throw Exception("Unexpected error occurred");
   }

@@ -301,7 +301,7 @@ class _SignUpPage extends State<SignUpPage> {
                                         builder: (BuildContext context) =>
                                             const EventViewAllPage()));
                               }).catchError((error) {
-                                globals.makeSnackbar(context, error.toString());
+                                globals.unifiedErrorCatch(context, error);
                               });
                             });
                           }
