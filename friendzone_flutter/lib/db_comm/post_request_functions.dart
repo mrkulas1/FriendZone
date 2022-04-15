@@ -1,4 +1,5 @@
 import 'package:friendzone_flutter/models/auth_result.dart';
+import 'package:friendzone_flutter/models/builders/comment_builder.dart';
 import 'package:friendzone_flutter/models/builders/foreign_user_builder.dart';
 import 'package:friendzone_flutter/models/current_user.dart';
 import 'package:friendzone_flutter/models/event.dart';
@@ -217,8 +218,25 @@ Future<ForeignUser> getForeignUser(String userEmail) async {
 
 ///Delete an event with the id [eventID]
 Future<void> deleteEvent(int eventID) async {
-  Map<String, dynamic> input = {"id" : eventID};
+  Map<String, dynamic> input = {"id": eventID};
 
-      await makeVoidPostRequest(PHPFunction.deleteEvent, input);
+  await makeVoidPostRequest(PHPFunction.deleteEvent, input);
+}
 
+Future<List<Event>> getAllReportedEvent() async {
+  Map<String, dynamic> input = {};
+
+  List<Event> events = await makeListPostRequest(
+      PHPFunction.getReportedEvent, input, EventBuilder());
+
+  return events;
+}
+
+Future<List<String>> getReportedComment(int eventID) async {
+  Map<String, dynamic> input = {"id": eventID};
+
+  List<String> comments = await makeListPostRequest(
+      PHPFunction.getReportedComment, input, commentBuilder());
+
+  return comments;
 }

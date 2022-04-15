@@ -364,7 +364,7 @@ switch ($functionID) {
             die();
         }
 
-        echo json_encode(array("status" => $comments));
+        echo json_encode($comments);
 
         break;
 

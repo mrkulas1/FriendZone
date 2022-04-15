@@ -33,8 +33,11 @@ enum PHPFunction {
   reportEvent,
 
   getForeignUser,
-  
-  deleteEvent
+
+  deleteEvent,
+
+  getReportedEvent,
+  getReportedComment
 }
 
 // Path for all POST requests
