@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 const SizedBox(
-                  height: 60,
+                  height: 100,
                 ),
                 Container(
                   width: 325,
@@ -133,22 +133,8 @@ class _LoginPageState extends State<LoginPage> {
                               )),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 30, 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                              onPressed: () => {
-                                // TODO: Nothing for now, maybe comment out
-                              },
-                              child: const Text(
-                                "Forget Password",
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            )
-                          ],
-                        ),
+                      const SizedBox(
+                        height: 15,
                       ),
                       ElevatedButton(
                         onPressed: () {
@@ -205,51 +191,42 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       const SizedBox(
-                        height: 17,
-                      ),
-                      const Text(
-                        "Or Login using",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(
                         height: 15,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          IconButton(
-                              onPressed: () => {
-                                    // TODO: other auth? maybe comment out for now
-                                  },
-                              icon: const Icon(
-                                FontAwesomeIcons.google,
-                                color: Colors.black,
-                              )),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                              onPressed: () => {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SignUpPage()))
-                              },
-                              child: const Text(
-                                "No Account? Sign Up",
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            )
-                          ],
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SignUpPage()));
+                        },
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.black),
                         ),
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: 250,
+                          child: const Padding(
+                            padding: EdgeInsets.all(12.0),
+                            child: Text(
+                              'Sign Up',
+                              style: TextStyle(
+                                  color: globals.friendzoneYellow,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
                       ),
                     ],
                   ),

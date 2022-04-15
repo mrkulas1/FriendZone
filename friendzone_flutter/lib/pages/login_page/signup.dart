@@ -332,35 +332,12 @@ class _SignUpPage extends State<SignUpPage> {
                         ),
                       ),
                       const SizedBox(
-                        height: 17,
-                      ),
-                      const Text(
-                        "Or sign up using",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          IconButton(
-                              onPressed: () => {
-                                    // TODO: other auth? maybe comment out for now
-                                  },
-                              icon: const Icon(
-                                FontAwesomeIcons.google,
-                                color: Colors.black,
-                              )),
-                        ],
-                      ),
-                      const SizedBox(
                         height: 10,
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             TextButton(
                               onPressed: () => {
