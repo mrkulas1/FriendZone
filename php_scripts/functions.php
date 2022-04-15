@@ -26,7 +26,7 @@ function getToken(String $email, String $password) {
             return errorReturn("Failed to get token, bad authentication");
         }
 
-        // Purge out-of-date tokens 
+        // Purge out-of-date tokens
         $statement = $dbh->prepare("DELETE FROM Tokens WHERE expires < NOW()");
         $statement->execute();
 
@@ -63,7 +63,7 @@ function checkToken(String $token, String $email) {
             $dbh = null;
             return false;
         }
-        
+
         // Set the token to expire 30 minutes from now
         $time30min = time() + 1800;
         $timestr = date("Y-m-d H:i:s", $time30min);
@@ -72,7 +72,7 @@ function checkToken(String $token, String $email) {
         $statement->bindParam(":time", $timestr);
         $statement->bindParam(":token", $token);
         $statement->execute();
-        
+
         $dbh = null;
         return true;
     } catch (PDOException $e) {
@@ -105,7 +105,7 @@ function Auth(String $email, String $password)
         $statement->bindParam(":email", $email);
         $result = $statement->execute();
         $row = $statement->fetch();
-        
+
         //User doesn't exist
         if ($row[0] == 0) {
             $dbh = null;
@@ -119,7 +119,7 @@ function Auth(String $email, String $password)
             return 3;
         }
         $login_attempts = $row[2];
-        
+
         // Determine that the password is correct
         $statement = $dbh->prepare("select count(*) from User where email = :email and password = sha2(:password, 256)");
         $statement->bindParam(":email", $email);
@@ -330,7 +330,7 @@ function Update_Event(int $id, String $title, String $description,
         }
 
         $statement = $dbh->prepare("UPDATE Event SET title = :title, description = :description,
-            time = :time, location = :location, slots = :slots, category = :category, 
+            time = :time, location = :location, slots = :slots, category = :category,
             subcategory = :subcategory WHERE id = :id");
         $statement->bindParam(":id", $id);
         $statement->bindParam(":title", $title);
@@ -450,7 +450,7 @@ function Leave_Event(int $id, String $email)
         $statement->execute();
         $result = $statement->fetchColumn(0);
         // Check if user is signed up to the event
-        
+
         if($result == 0){
             return 1;
         }
@@ -607,7 +607,7 @@ function Get_Foreign_User(String $email)
 
 function Delete_Event(int $id) {
     try{
-        
+
     //return errorReturn("We made it here function start");
 
     $dbh = connectDB();
@@ -619,6 +619,43 @@ function Delete_Event(int $id) {
     return 1;
 
     } catch (PDOException $exception){
+        return errorReturn($exception->getMessage());
+    }
+}
+
+function Get_All_Reported_Event()
+{
+    // Returns list of reported event
+    try {
+        $dbh = connectDB();
+
+        $statement = $dbh->prepare("SELECT DISTINCT e.id id, e.email email, title, description, time, location, slots, category, reported, date_created FROM Reports j JOIN Event e WHERE e.id = j.id");
+        $return = $statement->execute();
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        $dbh = null;
+
+        return $rows;
+    } catch (PDOException $exception) {
+        return errorReturn($exception->getMessage());
+    }
+}
+
+function get_report_comment(int $id)
+{
+    try {
+        $dbh = connectDB();
+
+        $statement = $dbh->prepare("SELECT comment FROM Reports WHERE id = :id");
+        $statement->bindParam(":id", $id);
+        $return = $statement->execute();
+        $row = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        $dbh = null;
+
+        return $row;
+
+    } catch (PDOException $exception) {
         return errorReturn($exception->getMessage());
     }
 }

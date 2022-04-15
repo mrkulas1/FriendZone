@@ -26,6 +26,9 @@ class PHPFunctions
 
     const GET_FOREIGN_USER = 14;
     const DELETE_EVENT = 15;
+
+    const GET_ALL_REPORTED_EVENT = 16;
+    const GET_REPORTED_COMMENT = 17;
 }
 
 // Main entry point for a Flutter page to make a POST request. The Flutter code
@@ -79,7 +82,7 @@ $functionID = $data["functionID"];
 
 // Need to do a token check unless authenticating or registering,
 // or getting the token
-if ($functionID != PHPFunctions::AUTH 
+if ($functionID != PHPFunctions::AUTH
     && $functionID != PHPFunctions::CREATE_USER
     && $functionID != PHPFunctions::GET_MY_EVENTS
     && $functionID != PHPFunctions::GET_JOINED_EVENTS)
@@ -338,6 +341,31 @@ switch ($functionID) {
         }
 
         echo json_encode(array("status" => $removal));
+        break;
+
+    case PHPFunctions::GET_ALL_REPORTED_EVENT:
+        //Return Get_All_Events Function
+        $reported_events = Get_All_Reported_Event();
+
+        echo json_encode($reported_events);
+        break;
+
+    case PHPFunctions::GET_REPORTED_COMMENT:
+        if (!isset($data["id"])) {
+            fail_general();
+        }
+
+        $i = $data["id"];
+
+        $comments = get_report_comment($i);
+
+        if (isset($comments["error"])) {
+            echo json_encode($comments);
+            die();
+        }
+
+        echo json_encode(array("status" => $comments));
+
         break;
 
     default:
