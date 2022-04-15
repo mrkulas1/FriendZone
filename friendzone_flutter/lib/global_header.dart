@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:friendzone_flutter/pages/event_page/event_viewing.dart';
 import 'package:friendzone_flutter/pages/login_page/login.dart';
 import 'package:friendzone_flutter/pages/profile_page/profile.dart';
+import 'package:friendzone_flutter/pages/moderation_page/report_view.dart';
 
 import 'globals.dart' as globals;
 import 'models/foreign_user.dart';
@@ -125,6 +126,18 @@ class CustomDrawer extends StatelessWidget {
                   builder: ((context) => const EventPostPage(editable: false)),
                 ),
               );
+            },
+          ),
+          ListTile(
+            tileColor: const Color(0xFFFFCC00),
+            textColor: Colors.black,
+            title: const Text(
+              'View Reports',
+              style: TextStyle(fontSize: 20),
+            ),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: ((context) => const ReportsPage())));
             },
           ),
           ListTile(
