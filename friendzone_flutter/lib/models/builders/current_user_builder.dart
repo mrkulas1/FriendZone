@@ -20,10 +20,11 @@ class CurrentUserBuilder extends JsonBuilder<CurrentUser> {
     }
 
     if (json.containsKey("admin")) {
-      if (json["admin"] == 1) {
+      if (int.parse(json["admin"]) == 1) {
         user.makeAdmin();
       }
     }
+
     return user;
   }
 }

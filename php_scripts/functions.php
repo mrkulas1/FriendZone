@@ -167,7 +167,7 @@ function Get_Cur_User(String $email)
     try {
         $dbh = connectDB();
         $email = trim($email, " ");
-        $statement = $dbh->prepare("SELECT email, name, introduction, additional_contact from User where email = :email");
+        $statement = $dbh->prepare("SELECT email, name, introduction, additional_contact, admin from User where email = :email");
         $statement->bindParam(":email", $email);
         $result = $statement->execute();
         $row = $statement->fetch(PDO::FETCH_ASSOC);

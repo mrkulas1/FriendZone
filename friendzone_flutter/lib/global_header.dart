@@ -104,12 +104,8 @@ class CustomDrawer extends StatelessWidget {
               style: TextStyle(fontSize: 20),
             ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: ((context) => ProfilePage())
-                  )
-              );
+              Navigator.push(context,
+                  MaterialPageRoute(builder: ((context) => ProfilePage())));
             },
           ),
           ListTile(
@@ -128,18 +124,22 @@ class CustomDrawer extends StatelessWidget {
               );
             },
           ),
-          ListTile(
-            tileColor: const Color(0xFFFFCC00),
-            textColor: Colors.black,
-            title: const Text(
-              'View Reports',
-              style: TextStyle(fontSize: 20),
-            ),
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: ((context) => const ReportsPage())));
-            },
-          ),
+          globals.activeUser!.isAdmin()
+              ? ListTile(
+                  tileColor: const Color(0xFFFFCC00),
+                  textColor: Colors.black,
+                  title: const Text(
+                    'View Reports',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) => const ReportsPage())));
+                  },
+                )
+              : Container(height: 0, width: 0),
           ListTile(
             tileColor: const Color(0xFFFFCC00),
             textColor: Colors.black,

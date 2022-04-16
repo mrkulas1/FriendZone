@@ -24,4 +24,8 @@ class CurrentUser extends ForeignUser {
   void makeAdmin() {
     _admin = true;
   }
+
+  bool isAdmin() {
+    return _admin;
+  }
 }
