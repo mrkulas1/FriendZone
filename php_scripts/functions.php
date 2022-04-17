@@ -659,4 +659,17 @@ function get_report_comment(int $id)
         return errorReturn($exception->getMessage());
     }
 }
+
+function Get_Notifications(String $email)
+{
+    try {
+        $dbh = connectDB();
+
+        $dbh = null;
+
+        return array();
+    } catch (PDOException $exception) {
+        return errorReturn($exception->getMessage());
+    }
+}
 ?>

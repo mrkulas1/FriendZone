@@ -29,6 +29,8 @@ class PHPFunctions
 
     const GET_ALL_REPORTED_EVENT = 16;
     const GET_REPORTED_COMMENT = 17;
+
+    const GET_USER_NOTIFICATIONS = 18;
 }
 
 // Main entry point for a Flutter page to make a POST request. The Flutter code
@@ -367,7 +369,14 @@ switch ($functionID) {
         echo json_encode($comments);
 
         break;
+    
+    case PHPFunctions::GET_USER_NOTIFICATIONS:
+        $e = $data["email"];
 
+        $notifications = Get_Notifications($e);
+        echo json_encode($notifications);
+
+        break;
     default:
         // If no function specified, error
         fail_general();
