@@ -664,10 +664,17 @@ function Get_Notifications(String $email)
 {
     try {
         $dbh = connectDB();
+        $statement = $dbh->prepare("SELECT notification_id, type, Notification.time, Comment, seen, instigator, IFNULL(title, deleted_title) AS event_title" 
+            . "FROM ((Receives NATURAL JOIN Notification) LEFT OUTER JOIN Event ON Notification.id=Event.id) "
+            . "WHERE Receives.email = :email ORDER BY Notification.time DESC, seen ASC");
+        
+        $statement->bindParam(":email", $email);
+        $statement->execute();
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         $dbh = null;
 
-        return array();
+        return $rows;
     } catch (PDOException $exception) {
         return errorReturn($exception->getMessage());
     }
