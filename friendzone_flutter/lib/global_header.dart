@@ -1,14 +1,12 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:friendzone_flutter/pages/event_page/event_viewing.dart';
 import 'package:friendzone_flutter/pages/login_page/login.dart';
 import 'package:friendzone_flutter/pages/profile_page/profile.dart';
 import 'package:friendzone_flutter/pages/moderation_page/report_view.dart';
+import 'package:friendzone_flutter/pages/notfication_page/notification_page.dart';
 
 import 'globals.dart' as globals;
-import 'models/foreign_user.dart';
 import 'pages/event_page/event_post.dart';
 
 class Header extends StatefulWidget implements PreferredSizeWidget {
@@ -39,6 +37,19 @@ class _CustomAppBarState extends State<Header> {
         ),
       ),
       actions: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(right: 10.0),
+          child: IconButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ViewNotfication()));
+            },
+            icon: const Icon(
+              FontAwesomeIcons.bell,
+              color: Color(0xFFFFCC00),
+            ),
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.only(right: 20.0),
           child: IconButton(
@@ -139,7 +150,7 @@ class CustomDrawer extends StatelessWidget {
                             builder: ((context) => const ReportsPage())));
                   },
                 )
-              : Container(height: 0, width: 0),
+              : const SizedBox(height: 0, width: 0),
           ListTile(
             tileColor: const Color(0xFFFFCC00),
             textColor: Colors.black,
