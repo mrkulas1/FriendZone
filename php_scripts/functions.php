@@ -608,12 +608,28 @@ function Get_Foreign_User(String $email)
 function Delete_Event(int $id) {
     try{
 
-    //return errorReturn("We made it here function start");
-
     $dbh = connectDB();
+
+    $statement = $dbh->prepare("WITH e AS (SELECT title, email FROM Event where id = :id)
+                                UPDATE Notification set deleted_title = (select title from e),
+                                                        deleted_email = (select email from e)
+                                                    where id = :id");
+    $statement->bindParam(":id", $id);
+    $statement->execute();
+
+    $statement = $dbh->prepare("INSERT INTO Notification(type, id) values(3, :id)");
+    $statement->bindParam(":id", $id);
+    $statement->execute();
+
+    $statement = $dbh->prepare("INSERT into Receives(email, id) 
+                                    SELECT email, last_insert_id() FROM Joins WHERE id = :id");
+    $statement->bindParam(":id", $id);
+    $statement->execute();
+
     $statement = $dbh->prepare("DELETE FROM Event WHERE id = :id");
     $statement->bindParam(":id", $id);
     $statement->execute();
+
     $dbh = null;
 
     return 1;
