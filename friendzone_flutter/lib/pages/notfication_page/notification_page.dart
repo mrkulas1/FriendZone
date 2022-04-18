@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/global_header.dart';
 import 'package:friendzone_flutter/models/notification.dart' as noti;
+import 'package:friendzone_flutter/globals.dart' as globals;
 
 class ViewNotfication extends StatefulWidget {
   const ViewNotfication({Key? key}) : super(key: key);
@@ -84,6 +85,18 @@ class _ViewNotfication extends State<ViewNotfication> {
               ],
             ),
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            _notfication = getNotifications();
+          });
+        },
+        backgroundColor: globals.friendzoneYellow,
+        child: const Icon(
+          Icons.restart_alt,
+          color: Colors.black,
         ),
       ),
     );

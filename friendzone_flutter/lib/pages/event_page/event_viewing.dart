@@ -241,7 +241,10 @@ class _EventViewAllPageState extends State<EventViewAllPage> {
             });
           },
           backgroundColor: globals.friendzoneYellow,
-          child: const Icon(Icons.restart_alt)),
+          child: const Icon(
+            Icons.restart_alt,
+            color: Colors.black,
+          )),
     );
   }
 
