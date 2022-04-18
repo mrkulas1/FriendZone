@@ -29,63 +29,70 @@ class _ViewNotfication extends State<ViewNotfication> {
       body: Container(
         alignment: Alignment.center,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Column(
+            //Column(
+            //mainAxisAlignment: MainAxisAlignment.center,
+            //children: [
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  height: 10,
+              children: const [
+                Icon(FontAwesomeIcons.bell),
+                SizedBox(
+                  width: 10,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(FontAwesomeIcons.bell),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text("Notifications"),
-                  ],
-                ),
-                Container(
-                  child: _notfication == null
-                      ? Container()
-                      : FutureBuilder<List<noti.Notification>>(
-                          future: _notfication,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return Expanded(
-                                child: ListView.builder(
-                                  itemCount: snapshot.data!.length,
-                                  itemBuilder: (context, index) {
-                                    IconData _envelope =
-                                        FontAwesomeIcons.envelopeCircleCheck;
-                                    if (snapshot.data![index].seen) {
-                                      _envelope =
-                                          FontAwesomeIcons.envelopeCircleCheck;
-                                    }
-                                    return ListTile(
-                                      leading: Icon(_envelope),
-                                      title: Text(
-                                          snapshot.data![index].eventTitle),
-                                      subtitle:
-                                          Text("${snapshot.data![index].text}\n"
-                                              "${snapshot.data![index].time}"),
-                                    );
-                                  },
-                                ),
-                              );
-                            } else if (snapshot.hasError) {
-                              return Text("${snapshot.error!}");
-                            }
-                            return const CircularProgressIndicator();
-                          }),
-                ),
+                Text("Notifications"),
               ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              child: _notfication == null
+                  ? Container()
+                  : FutureBuilder<List<noti.Notification>>(
+                      future: _notfication,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data!.isEmpty) {
+                            return const Text("No notifications yet");
+                          } else {
+                            return Expanded(
+                              child: ListView.builder(
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) {
+                                  IconData _envelope =
+                                      FontAwesomeIcons.envelopeCircleCheck;
+                                  if (snapshot.data![index].seen) {
+                                    _envelope =
+                                        FontAwesomeIcons.envelopeCircleCheck;
+                                  }
+                                  return ListTile(
+                                    leading: Icon(_envelope),
+                                    title:
+                                        Text(snapshot.data![index].eventTitle),
+                                    subtitle:
+                                        Text("${snapshot.data![index].text}\n"
+                                            "${snapshot.data![index].time}"),
+                                  );
+                                },
+                              ),
+                            );
+                          }
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error!}");
+                        }
+                        return const CircularProgressIndicator();
+                      }),
             ),
           ],
         ),
+        //],
       ),
+      // ),
     );
   }
 }
