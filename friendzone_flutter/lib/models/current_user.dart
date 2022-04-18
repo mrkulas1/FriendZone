@@ -20,4 +20,12 @@ class CurrentUser extends ForeignUser {
   void setToken(String t) {
     token = t;
   }
+
+  void makeAdmin() {
+    _admin = true;
+  }
+
+  bool isAdmin() {
+    return _admin;
+  }
 }

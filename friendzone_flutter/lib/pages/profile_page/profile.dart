@@ -284,13 +284,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   onPressed: () {
                     Future<void> delete = deleteEvent(eventID);
                     delete.then((value) {
-                    setState(() {
-                      Navigator.of(context).pop();
-                      _myEvents = getMyEvents(widget.email.toString());
-                      _joinedEvents = getJoinedEvents(widget.email.toString());
+                      setState(() {
+                        Navigator.of(context).pop();
+                        _myEvents = getMyEvents(widget.email.toString());
+                        _joinedEvents =
+                            getJoinedEvents(widget.email.toString());
+                      });
                     });
-                    }
-                    );
                   },
                   textColor: const Color.fromARGB(255, 0, 0, 255),
                   child: const Text("Confirm")),
