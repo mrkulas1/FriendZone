@@ -145,47 +145,31 @@ class _ProfilePageState extends State<ProfilePage> {
                                         itemCount: snapshot.data!.length,
                                         itemBuilder: (context, int index) {
                                           return ListTile(
-                                            leading: Icon(customIcons(snapshot
-                                                .data![index].category)),
-                                            title: Text(
-                                                snapshot.data![index].title),
-                                            subtitle: Text(
-                                                "Where: ${snapshot.data![index].location}\n"
-                                                "When: ${snapshot.data![index].time}\n"
-                                                "# of Slots: ${snapshot.data![index].slots}"),
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          DetailEventViewPage(
-                                                              data: snapshot
-                                                                      .data![
-                                                                  index])));
-                                            },
-                                            trailing: IconButton(
-                                              icon: const Icon(
-                                                FontAwesomeIcons.xmark,
-                                                color: Colors.black,
-                                              ),
-                                              //color: globals.friendzoneYellow,
-                                              onPressed: () {
-                                                showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) =>
-                                                          _buildDeleteDialogue(
-                                                              context,
-                                                              snapshot
-                                                                  .data![index]
-                                                                  .title,
-                                                              snapshot
-                                                                  .data![index]
-                                                                  .id),
-                                                );
+                                              leading: Icon(customIcons(snapshot
+                                                  .data![index].category)),
+                                              title: Text(
+                                                  snapshot.data![index].title),
+                                              subtitle: Text(
+                                                  "Where: ${snapshot.data![index].location}\n"
+                                                  "When: ${snapshot.data![index].time}\n"
+                                                  "# of Slots: ${snapshot.data![index].slots}"),
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            DetailEventViewPage(
+                                                                data: snapshot
+                                                                        .data![
+                                                                    index])));
                                               },
-                                            ),
-                                          );
+                                              trailing: _buildX(
+                                                  snapshot.data!
+                                                      .elementAt(index),
+                                                  snapshot.data![index].id,
+                                                  snapshot.data![index].title,
+                                                  globals.activeUser!
+                                                      .isAdmin()));
                                         },
                                       ));
                                     } else if (snapshot.hasError) {
@@ -301,5 +285,27 @@ class _ProfilePageState extends State<ProfilePage> {
                   textColor: const Color.fromARGB(255, 254, 0, 0),
                   child: const Text("Cancel")),
             ]));
+  }
+
+  Widget _buildX(Event e, int id, String title, bool isAdmin) {
+    if (!isAdmin) {
+      return const Spacer(flex: 1);
+    } else if (globals.activeUser!.email != e.userEmail) {
+      return const Spacer(flex: 1);
+    }
+    return IconButton(
+      icon: const Icon(
+        FontAwesomeIcons.xmark,
+        color: Colors.black,
+      ),
+
+      //color: globals.friendzoneYellow,
+      onPressed: () {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) =>
+                _buildDeleteDialogue(context, title, id));
+      },
+    );
   }
 }
