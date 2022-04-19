@@ -10,11 +10,11 @@ class NotificationBuilder extends JsonBuilder<Notification>
     with JsonListBuilder<Notification> {
   @override
   Notification fromJson(Map<String, dynamic> json) {
-    DateTime timestamp = DateTime.parse(json["time"]);
-    String eventTitle = json["event_title"];
+    DateTime timestamp = DateTime.parse(json["time"] ?? "");
+    String eventTitle = json["event_title"] ?? "";
     String user = json["instigator"] ?? "";
     String comment = json["Comment"] ?? "";
-    bool seen = json["seen"];
+    bool seen = (int.parse(json["seen"] ?? 0) == 1);
     int id = int.parse(json["notification_id"]);
 
     int type = int.parse(json["type"]);
@@ -49,7 +49,7 @@ class NotificationBuilder extends JsonBuilder<Notification>
   }
 
   @override
-  List<Notification> listFromJson(List json) {
+  List<Notification> listFromJson(List<dynamic> json) {
     List<Notification> notifications = [];
 
     for (var notif in json) {
