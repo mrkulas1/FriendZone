@@ -466,6 +466,7 @@ class EventPostPageState extends State<EventPostPage> {
       });
     } else {
       setState(() {
+        selectCat = "Other";
         subcat = [];
         selectSubCat = null;
       });
