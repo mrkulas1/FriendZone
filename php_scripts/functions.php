@@ -329,6 +329,18 @@ function Update_Event(int $id, String $title, String $description,
             return errorReturn("No event with this ID");
         }
 
+        $statement = $dbh->prepare("INSERT INTO Notification(type, id, instigator) values(4, :id, :email)");
+        $statement->bindParam(":id", $id);
+        $statement->bindParam(":email", $email);
+        $statement->execute();
+
+        $statement = $dbh->prepare("INSERT into Receives(email, notification_id) 
+                                        SELECT UT.email, last_insert_id() FROM ((Select email FROM Joins WHERE id = :id AND email != :email) UNION
+                                                                                (Select email from Event WHERE id = :id)) as UT");
+        $statement->bindParam(":id", $id);
+        $statement->bindParam(":email", $email);
+        $statement->execute();
+
         $statement = $dbh->prepare("UPDATE Event SET title = :title, description = :description,
             time = :time, location = :location, slots = :slots, category = :category,
             subcategory = :subcategory WHERE id = :id");
@@ -426,6 +438,19 @@ function Join_Event(int $id, String $email, String $comment)
         if ($result1 == $result2) {
             return errorReturn("Event has no remaining slots");
         } else {
+            $statement = $dbh->prepare("INSERT INTO Notification(type, comment, id, instigator) values(1, :comment, :id, :email)");
+            $statement->bindParam(":comment", $comment);
+            $statement->bindParam(":id", $id);
+            $statement->bindParam(":email", $email);
+            $statement->execute();
+
+            $statement = $dbh->prepare("INSERT into Receives(email, notification_id) 
+                                            SELECT UT.email, last_insert_id() FROM ((Select email FROM Joins WHERE id = :id AND email != :email) UNION
+                                                                                    (Select email from Event WHERE id = :id)) as UT");
+            $statement->bindParam(":id", $id);
+            $statement->bindParam(":email", $email);
+            $statement->execute();
+
             $statement = $dbh->prepare("INSERT INTO Joins values(:id, :email, :comment)");
             $statement->bindParam(":id", $id);
             $statement->bindParam(":email", $email);
@@ -454,6 +479,19 @@ function Leave_Event(int $id, String $email)
         if($result == 0){
             return 1;
         }
+
+        $statement = $dbh->prepare("INSERT INTO Notification(type, id, instigator) values(2, :id, :email)");
+        $statement->bindParam(":id", $id);
+        $statement->bindParam(":email", $email);
+        $statement->execute();
+
+        $statement = $dbh->prepare("INSERT into Receives(email, notification_id) 
+                                        SELECT UT.email, last_insert_id() FROM ((Select email FROM Joins WHERE id = :id AND email != :email) 
+                                                                                 UNION
+                                                                                (Select email from Event WHERE id = :id)) as UT");
+        $statement->bindParam(":id", $id);
+        $statement->bindParam(":email", $email);
+        $statement->execute();
 
         $statement = $dbh->prepare("DELETE FROM Joins WHERE id = :id AND email = :email");
         $statement->bindParam(":id", $id);
@@ -621,7 +659,7 @@ function Delete_Event(int $id) {
     $statement->bindParam(":id", $id);
     $statement->execute();
 
-    $statement = $dbh->prepare("INSERT into Receives(email, id) 
+    $statement = $dbh->prepare("INSERT into Receives(email, notification_id) 
                                     SELECT email, last_insert_id() FROM Joins WHERE id = :id");
     $statement->bindParam(":id", $id);
     $statement->execute();
@@ -680,7 +718,7 @@ function Get_Notifications(String $email)
 {
     try {
         $dbh = connectDB();
-        $statement = $dbh->prepare("SELECT notification_id, type, Notification.time, Comment, seen, instigator, IFNULL(title, deleted_title) AS event_title" 
+        $statement = $dbh->prepare("SELECT notification_id, type, Notification.time, comment, seen, instigator, IFNULL(title, deleted_title) AS event_title" 
             . " FROM ((Receives NATURAL JOIN Notification) LEFT OUTER JOIN Event ON Notification.id=Event.id)"
             . " WHERE Receives.email = :email ORDER BY Notification.time DESC, seen ASC");
         
