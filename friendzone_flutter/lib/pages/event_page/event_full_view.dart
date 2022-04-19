@@ -201,29 +201,31 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                         ],
                       ),
                       const SizedBox(width: 25),
-                      ElevatedButton(
-                        onPressed: () {
-                          Future<void> left = leaveEvent(
-                              globals.activeUser!.email, widget.data.id);
+                      globals.activeUser!.email != widget.data.userEmail
+                        ? ElevatedButton(
+                            onPressed: () {
+                              Future<void> left = leaveEvent(
+                                  globals.activeUser!.email, widget.data.id);
 
-                          left.then((value) {
-                            setState(() {
-                              _signUpUser = getSignedUpUsers(widget.data.id);
-                            });
-                            globals.makeSnackbar(context, "Left successfully");
-                          }).catchError((error) {
-                            globals.unifiedErrorCatch(context, error);
-                          });
-                        },
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              globals.friendzoneYellow),
-                        ),
-                        child: const Text(
-                          "Leave",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ),
+                              left.then((value) {
+                                setState(() {
+                                  _signUpUser = getSignedUpUsers(widget.data.id);
+                                });
+                                globals.makeSnackbar(context, "Left successfully");
+                              }).catchError((error) {
+                                globals.unifiedErrorCatch(context, error);
+                              });
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  globals.friendzoneYellow),
+                            ),
+                            child: const Text(
+                              "Leave",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          )
+                        : Container(),
                     ],
                   ),
                   // Buttons and post information
