@@ -416,7 +416,7 @@ function Join_Event(int $id, String $email, String $comment)
 
         // Check if user already sign up for an event
         if ($result > 0) {
-            $statement = $dbh->prepare("UPDATE Joins set comment = :comment WHERE id = :id AND email = :email");
+            $statement = $dbh->prepare("UPDATE Notification set comment = :comment WHERE id = :id AND instigator = :email ORDER BY time DESC LIMIT 1");
             $statement->bindParam(":id", $id);
             $statement->bindParam(":email", $email);
             $statement->bindParam(":comment", $comment);
@@ -451,10 +451,9 @@ function Join_Event(int $id, String $email, String $comment)
             $statement->bindParam(":email", $email);
             $statement->execute();
 
-            $statement = $dbh->prepare("INSERT INTO Joins values(:id, :email, :comment)");
+            $statement = $dbh->prepare("INSERT INTO Joins values(:id, :email)");
             $statement->bindParam(":id", $id);
             $statement->bindParam(":email", $email);
-            $statement->bindParam(":comment", $comment);
             $statement->execute();
             return 1; //Event joined successfully
         }
@@ -486,9 +485,10 @@ function Leave_Event(int $id, String $email)
         $statement->execute();
 
         $statement = $dbh->prepare("INSERT into Receives(email, notification_id) 
-                                        SELECT UT.email, last_insert_id() FROM ((Select email FROM Joins WHERE id = :id AND email != :email) 
-                                                                                 UNION
-                                                                                (Select email from Event WHERE id = :id)) as UT");
+                                        SELECT UT.email, last_insert_id() 
+                                        FROM ((Select email FROM Joins WHERE id = :id AND email != :email) 
+                                            UNION
+                                              (Select email from Event WHERE id = :id)) as UT");
         $statement->bindParam(":id", $id);
         $statement->bindParam(":email", $email);
         $statement->execute();

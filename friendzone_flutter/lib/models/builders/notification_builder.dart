@@ -13,7 +13,7 @@ class NotificationBuilder extends JsonBuilder<Notification>
     DateTime timestamp = DateTime.parse(json["time"] ?? "");
     String eventTitle = json["event_title"] ?? "";
     String user = json["instigator"] ?? "";
-    String comment = json["Comment"] ?? "";
+    String comment = json["comment"] ?? "";
     bool seen = (int.parse(json["seen"] ?? 0) == 1);
     int id = int.parse(json["notification_id"]);
 
