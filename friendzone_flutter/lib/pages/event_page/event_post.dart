@@ -96,9 +96,10 @@ class EventPostPageState extends State<EventPostPage> {
     _category.text = widget.event!.category.toString();
     _numSlots.text = widget.event!.slots.toString();
     _description.text = widget.event!.description ?? "";
-    selectCat = widget.event!.category;
-    onChangedCallback(selectCat);
-    selectSubCat = widget.event!.subCat;
+
+    //selectCat = widget.event!.category;
+    onChangedCallback(widget.event!.category);
+    selectSubCat = widget.event!.subCat == "" ? null : widget.event!.subCat;
 
     try {
       _dateTime = DateTime.parse(widget.event!.time);
