@@ -10,6 +10,7 @@ import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'package:friendzone_flutter/models/foreign_user.dart';
 import 'package:friendzone_flutter/pages/profile_page/profile.dart';
 
+/// This class is used to display details about a specific event such as time, location, description, and email of the user who posted the event
 class DetailEventViewPage extends StatefulWidget {
   final Event data;
   const DetailEventViewPage({Key? key, required this.data}) : super(key: key);
@@ -103,81 +104,89 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       globals.activeUser!.email != widget.data.userEmail
-                        ? ElevatedButton(
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    var messageController = TextEditingController();
-                                    return AlertDialog(
-                                      title: const Text(
-                                          'Please confirm you would like to join this event'),
-                                      content: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Form(
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: <Widget>[
-                                              SizedBox(
-                                                width: 500,
-                                                child: TextFormField(
-                                                  maxLines: 7,
-                                                  minLines: 1,
-                                                  controller: messageController,
-                                                  decoration: const InputDecoration(
-                                                      labelText:
-                                                          'Is there anything you would like to let the event creator know?'),
+                          ? ElevatedButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      var messageController =
+                                          TextEditingController();
+                                      return AlertDialog(
+                                        title: const Text(
+                                            'Please confirm you would like to join this event'),
+                                        content: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Form(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                SizedBox(
+                                                  width: 500,
+                                                  child: TextFormField(
+                                                    maxLines: 7,
+                                                    minLines: 1,
+                                                    controller:
+                                                        messageController,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                            labelText:
+                                                                'Is there anything you would like to let the event creator know?'),
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      actions: [
-                                        ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStateProperty.all<Color>(
-                                                      globals.friendzoneYellow),
-                                            ),
-                                            child: const Text(
-                                              "Join",
-                                              style: TextStyle(color: Colors.black),
-                                            ),
-                                            onPressed: () {
-                                              var comment = messageController.text;
-                                              Future<void> joined = joinEvent(
-                                                  globals.activeUser!.email,
-                                                  widget.data.id,
-                                                  comment);
+                                        actions: [
+                                          ElevatedButton(
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty
+                                                        .all<Color>(globals
+                                                            .friendzoneYellow),
+                                              ),
+                                              child: const Text(
+                                                "Join",
+                                                style: TextStyle(
+                                                    color: Colors.black),
+                                              ),
+                                              onPressed: () {
+                                                var comment =
+                                                    messageController.text;
+                                                Future<void> joined = joinEvent(
+                                                    globals.activeUser!.email,
+                                                    widget.data.id,
+                                                    comment);
 
-                                              joined.then((value) {
-                                                setState(() {
-                                                  _signUpUser = getSignedUpUsers(
-                                                      widget.data.id);
+                                                joined.then((value) {
+                                                  setState(() {
+                                                    _signUpUser =
+                                                        getSignedUpUsers(
+                                                            widget.data.id);
+                                                  });
+                                                  globals.makeSnackbar(context,
+                                                      "Joined successfully");
+                                                }).catchError((error) {
+                                                  globals.unifiedErrorCatch(
+                                                      context, error);
                                                 });
-                                                globals.makeSnackbar(
-                                                    context, "Joined successfully");
-                                              }).catchError((error) {
-                                                globals.unifiedErrorCatch(
-                                                    context, error);
-                                              });
-                                              Navigator.pop(context);
-                                            })
-                                      ],
-                                    );
-                                  });
-                            },
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  globals.friendzoneYellow),
-                            ),
-                            child: const Text(
-                              "Join",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          )
-                        : Container(),
+                                                Navigator.pop(context);
+                                              })
+                                        ],
+                                      );
+                                    });
+                              },
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        globals.friendzoneYellow),
+                              ),
+                              child: const Text(
+                                "Join",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            )
+                          : Container(),
                       const SizedBox(width: 25),
                       Column(
                         children: [
@@ -202,30 +211,33 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                       ),
                       const SizedBox(width: 25),
                       globals.activeUser!.email != widget.data.userEmail
-                        ? ElevatedButton(
-                            onPressed: () {
-                              Future<void> left = leaveEvent(
-                                  globals.activeUser!.email, widget.data.id);
+                          ? ElevatedButton(
+                              onPressed: () {
+                                Future<void> left = leaveEvent(
+                                    globals.activeUser!.email, widget.data.id);
 
-                              left.then((value) {
-                                setState(() {
-                                  _signUpUser = getSignedUpUsers(widget.data.id);
+                                left.then((value) {
+                                  setState(() {
+                                    _signUpUser =
+                                        getSignedUpUsers(widget.data.id);
+                                  });
+                                  globals.makeSnackbar(
+                                      context, "Left successfully");
+                                }).catchError((error) {
+                                  globals.unifiedErrorCatch(context, error);
                                 });
-                                globals.makeSnackbar(context, "Left successfully");
-                              }).catchError((error) {
-                                globals.unifiedErrorCatch(context, error);
-                              });
-                            },
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  globals.friendzoneYellow),
-                            ),
-                            child: const Text(
-                              "Leave",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          )
-                        : Container(),
+                              },
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        globals.friendzoneYellow),
+                              ),
+                              child: const Text(
+                                "Leave",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            )
+                          : Container(),
                     ],
                   ),
                   // Buttons and post information

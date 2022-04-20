@@ -11,6 +11,7 @@ import 'package:friendzone_flutter/pages/event_page/event_viewing.dart';
 import 'package:profanity_filter/profanity_filter.dart';
 import 'login.dart';
 
+/// This class allows users to fill in their information and create an account
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
 
