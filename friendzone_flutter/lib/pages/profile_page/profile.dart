@@ -15,6 +15,11 @@ import 'package:friendzone_flutter/pages/event_page/event_full_view.dart';
 import 'package:friendzone_flutter/pages/modules.dart';
 import 'package:friendzone_flutter/pages/profile_page/profile_edit.dart';
 
+/// This class builds the user interface for the user profile page and accounts
+/// for whether or not the current user matches that of the profile page.
+/// Additionally, admin permissions will allow the current user to delete events
+/// regardless of the profile if they are an administrator.
+
 class ProfilePage extends StatefulWidget {
   bool owner = false;
   String? email;
@@ -138,6 +143,9 @@ class _ProfilePageState extends State<ProfilePage> {
                               : FutureBuilder<List<Event>>(
                                   future: _myEvents,
                                   builder: (context, snapshot) {
+                                    //Displays events that the user depicted in
+                                    //the profile has created
+
                                     if (snapshot.hasData) {
                                       return Expanded(
                                           child: ListView.builder(
@@ -186,6 +194,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       children: [
                         const Text("Joined Events"),
+
+                        //Displays all events user is currently joined in
+
                         Container(
                           child: _joinedEvents == null
                               ? const Text("No Joined Events")
@@ -248,6 +259,9 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  /// Builds dialogue for deleting an event, performs actions
+  /// if user does so choose
+
   Widget _buildDeleteDialogue(
       BuildContext context, String eventName, int eventID) {
     return AlertDialog(
@@ -286,6 +300,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: const Text("Cancel")),
             ]));
   }
+
+  /// Builds the option to delete an event in the form of an "X"
+  /// as a trailer if the current user is an administrater or the current
+  /// user matches the user described in the profile
 
   Widget _buildX(Event e, int id, String title, bool isAdmin) {
     if (!isAdmin) {
