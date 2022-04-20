@@ -241,7 +241,7 @@ class _ReportsPageState extends State<ReportsPage> {
                                               future: _reportedComments,
                                               builder: (context, snapshot) {
                                                 if (snapshot.hasData) {
-                                                  return Expanded(
+                                                  return Container(
                                                     child: ListView.builder(
                                                       scrollDirection: Axis.vertical,
                                                       itemCount: snapshot.data!.length,
