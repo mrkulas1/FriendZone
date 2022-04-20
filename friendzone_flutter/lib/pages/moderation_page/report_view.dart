@@ -19,6 +19,7 @@ class ReportsPage extends StatefulWidget {
 
 class _ReportsPageState extends State<ReportsPage> {
   Future<List<Event>>? _events;
+  Future<List<String>>? _reportedComments;
   DateTime selectedDate = DateTime.now();
   DateTime fromDate = DateTime.now();
   DateTime toDate = DateTime.now();
@@ -221,7 +222,53 @@ class _ReportsPageState extends State<ReportsPage> {
                                     globals.unifiedErrorCatch(context, error);
                                   });
                                 },
-                                trailing: IconButton(
+                                trailing: Row(mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        _reportedComments = getReportedComment(snapshot.data![index].id);
+                                          showDialog(
+                                            context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  title: const Text(
+                                                   'Reports'),
+                                                  content: Container(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: _reportedComments == null
+                                            ? Container()
+                                            : FutureBuilder<List<String>>(
+                                              future: _reportedComments,
+                                              builder: (context, snapshot) {
+                                                if (snapshot.hasData) {
+                                                  return Expanded(
+                                                    child: ListView.builder(
+                                                      scrollDirection: Axis.vertical,
+                                                      itemCount: snapshot.data!.length,
+                                                      itemBuilder: (context, int index) {
+                                                        return ListTile(
+                                                          title: Text(snapshot.data![index])
+                                                        );
+                                                      },
+                                                    )
+                                                  );
+                                                }
+                                                else if (snapshot.hasError) {
+                                                  return Text("${snapshot.error!}");
+                                                }
+                                                return const CircularProgressIndicator();
+                                              },)));});},
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              globals.friendzoneYellow),
+                        ),
+                        child: const Text(
+                          "View Reports",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      
+                                    ),
+                                    IconButton(
                                               icon: const Icon(
                                                 FontAwesomeIcons.xmark,
                                                 color: Colors.black,
@@ -242,8 +289,8 @@ class _ReportsPageState extends State<ReportsPage> {
                                                                   .id),
                                                 );
                                               },
-                                            ),
-                              );
+                                            )
+                                  ]));
                             },
                           ));
                         } else if (snapshot.hasError) {
