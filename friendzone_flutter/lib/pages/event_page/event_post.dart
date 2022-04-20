@@ -10,6 +10,7 @@ import 'package:friendzone_flutter/pages/event_page/event_full_view.dart';
 import 'package:profanity_filter/profanity_filter.dart';
 import 'package:flutter/material.dart';
 
+/// This class is used to display fields to allow users to post events
 class EventPostPage extends StatefulWidget {
   static const String routeName = '/post';
 
@@ -80,6 +81,7 @@ class EventPostPageState extends State<EventPostPage> {
   @override
   void initState() {
     super.initState();
+    // set up time of day
     if (_selectedTime.hour == 23) {
       _selectedTime = const TimeOfDay(hour: 0, minute: 0);
       _dateTime = DateTime.utc(
@@ -157,6 +159,7 @@ class EventPostPageState extends State<EventPostPage> {
                       width: 260,
                       height: 80,
                       child: TextFormField(
+                        // check that text is permitted
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please add a name';
@@ -384,6 +387,7 @@ class EventPostPageState extends State<EventPostPage> {
     );
   }
 
+// this checks that the time of day is permitted and sets it if permitted
   _selectTime(BuildContext context) async {
     final TimeOfDay? timeOfDay = await showTimePicker(
       context: context,
@@ -409,6 +413,7 @@ class EventPostPageState extends State<EventPostPage> {
     }
   }
 
+// this checks that the date and time are permitted and sets it if permitted
   _selectDate(BuildContext context) async {
     if (_dateTime.isBefore(DateTime.now())) {
       _dateTime = DateTime.now();
@@ -427,6 +432,7 @@ class EventPostPageState extends State<EventPostPage> {
     }
   }
 
+// this is used to set the categories
   void onChangedCallback(generalcat) {
     if (generalcat == 'Academic') {
       setState(() {
