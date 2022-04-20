@@ -5,6 +5,7 @@ import 'package:friendzone_flutter/global_header.dart';
 import 'package:friendzone_flutter/models/notification.dart' as noti;
 import 'package:friendzone_flutter/globals.dart' as globals;
 
+/// This class allows users to view any relevant notfications that they have recieved
 class ViewNotfication extends StatefulWidget {
   const ViewNotfication({Key? key}) : super(key: key);
 

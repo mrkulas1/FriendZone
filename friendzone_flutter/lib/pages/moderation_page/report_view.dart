@@ -10,6 +10,7 @@ import 'package:friendzone_flutter/globals.dart' as globals;
 import 'package:friendzone_flutter/global_header.dart';
 import 'package:friendzone_flutter/pages/modules.dart';
 
+/// this class allows moderators to view and delete events
 class ReportsPage extends StatefulWidget {
   const ReportsPage({Key? key}) : super(key: key);
 
@@ -194,103 +195,119 @@ class _ReportsPageState extends State<ReportsPage> {
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, int index) {
                               return ListTile(
-                                leading: Icon(customIcons(
-                                    snapshot.data![index].category)),
-                                title: Text(snapshot.data![index].title),
-                                subtitle: Text(
-                                    "Where: ${snapshot.data![index].location}\n"
-                                    "When: ${snapshot.data![index].time}\n"
-                                    "# of Slots: ${snapshot.data![index].slots}"),
-                                onTap: () {
-                                  Future<Event> detailedEvent =
-                                      getDetailedEvent(
-                                          snapshot.data![index].id);
+                                  leading: Icon(customIcons(
+                                      snapshot.data![index].category)),
+                                  title: Text(snapshot.data![index].title),
+                                  subtitle: Text(
+                                      "Where: ${snapshot.data![index].location}\n"
+                                      "When: ${snapshot.data![index].time}\n"
+                                      "# of Slots: ${snapshot.data![index].slots}"),
+                                  onTap: () {
+                                    Future<Event> detailedEvent =
+                                        getDetailedEvent(
+                                            snapshot.data![index].id);
 
-                                  globals.makeSnackbar(
-                                      context, "Getting Event Details");
+                                    globals.makeSnackbar(
+                                        context, "Getting Event Details");
 
-                                  detailedEvent.then((value) {
-                                    ScaffoldMessenger.of(context)
-                                        .clearSnackBars();
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                DetailEventViewPage(
-                                                    data: value)));
-                                  }).catchError((error) {
-                                    globals.unifiedErrorCatch(context, error);
-                                  });
-                                },
-                                trailing: Row(mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        _reportedComments = getReportedComment(snapshot.data![index].id);
-                                          showDialog(
-                                            context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  title: const Text(
-                                                   'Reports'),
-                                                  content: Container(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: _reportedComments == null
-                                            ? Container()
-                                            : FutureBuilder<List<String>>(
-                                              future: _reportedComments,
-                                              builder: (context, snapshot) {
-                                                if (snapshot.hasData) {
-                                                  return Container(
-                                                    child: ListView.builder(
-                                                      scrollDirection: Axis.vertical,
-                                                      itemCount: snapshot.data!.length,
-                                                      itemBuilder: (context, int index) {
-                                                        return ListTile(
-                                                          title: Text(snapshot.data![index])
-                                                        );
-                                                      },
-                                                    )
-                                                  );
-                                                }
-                                                else if (snapshot.hasError) {
-                                                  return Text("${snapshot.error!}");
-                                                }
-                                                return const CircularProgressIndicator();
-                                              },)));});},
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              globals.friendzoneYellow),
-                        ),
-                        child: const Text(
-                          "View Reports",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      
-                                    ),
-                                    IconButton(
-                                              icon: const Icon(
-                                                FontAwesomeIcons.xmark,
-                                                color: Colors.black,
-                                              ),
-                                              //color: globals.friendzoneYellow,
-                                              onPressed: () {
-                                                showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) =>
-                                                          _buildDeleteDialogue(
-                                                              context,
-                                                              snapshot
-                                                                  .data![index]
-                                                                  .title,
-                                                              snapshot
-                                                                  .data![index]
-                                                                  .id),
-                                                );
-                                              },
-                                            )
-                                  ]));
+                                    detailedEvent.then((value) {
+                                      ScaffoldMessenger.of(context)
+                                          .clearSnackBars();
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  DetailEventViewPage(
+                                                      data: value)));
+                                    }).catchError((error) {
+                                      globals.unifiedErrorCatch(context, error);
+                                    });
+                                  },
+                                  trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            _reportedComments =
+                                                getReportedComment(
+                                                    snapshot.data![index].id);
+                                            showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return AlertDialog(
+                                                      title:
+                                                          const Text('Reports'),
+                                                      content: Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: _reportedComments ==
+                                                                  null
+                                                              ? Container()
+                                                              : FutureBuilder<
+                                                                  List<String>>(
+                                                                  future:
+                                                                      _reportedComments,
+                                                                  builder: (context,
+                                                                      snapshot) {
+                                                                    if (snapshot
+                                                                        .hasData) {
+                                                                      return Container(
+                                                                          child:
+                                                                              ListView.builder(
+                                                                        scrollDirection:
+                                                                            Axis.vertical,
+                                                                        itemCount: snapshot
+                                                                            .data!
+                                                                            .length,
+                                                                        itemBuilder:
+                                                                            (context,
+                                                                                int index) {
+                                                                          return ListTile(
+                                                                              title: Text(snapshot.data![index]));
+                                                                        },
+                                                                      ));
+                                                                    } else if (snapshot
+                                                                        .hasError) {
+                                                                      return Text(
+                                                                          "${snapshot.error!}");
+                                                                    }
+                                                                    return const CircularProgressIndicator();
+                                                                  },
+                                                                )));
+                                                });
+                                          },
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                        Color>(
+                                                    globals.friendzoneYellow),
+                                          ),
+                                          child: const Text(
+                                            "View Reports",
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(
+                                            FontAwesomeIcons.xmark,
+                                            color: Colors.black,
+                                          ),
+                                          //color: globals.friendzoneYellow,
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  _buildDeleteDialogue(
+                                                      context,
+                                                      snapshot
+                                                          .data![index].title,
+                                                      snapshot.data![index].id),
+                                            );
+                                          },
+                                        )
+                                      ]));
                             },
                           ));
                         } else if (snapshot.hasError) {
@@ -593,6 +610,7 @@ class _ReportsPageState extends State<ReportsPage> {
       });
     }
   }
+
   Widget _buildDeleteDialogue(
       BuildContext context, String eventName, int eventID) {
     return AlertDialog(
