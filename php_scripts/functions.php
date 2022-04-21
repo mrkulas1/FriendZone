@@ -648,14 +648,14 @@ function Delete_Event(int $id) {
 
     $dbh = connectDB();
 
+    $statement = $dbh->prepare("INSERT INTO Notification(type, id) values(3, :id)");
+    $statement->bindParam(":id", $id);
+    $statement->execute();
+
     $statement = $dbh->prepare("WITH e AS (SELECT title, email FROM Event where id = :id)
                                 UPDATE Notification set deleted_title = (select title from e),
                                                         deleted_email = (select email from e)
                                                     where id = :id");
-    $statement->bindParam(":id", $id);
-    $statement->execute();
-
-    $statement = $dbh->prepare("INSERT INTO Notification(type, id) values(3, :id)");
     $statement->bindParam(":id", $id);
     $statement->execute();
 
