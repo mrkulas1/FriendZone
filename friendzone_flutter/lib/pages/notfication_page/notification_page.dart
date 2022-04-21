@@ -70,8 +70,8 @@ class _ViewNotfication extends State<ViewNotfication> {
                                   }
                                   return ListTile(
                                     leading: Icon(_envelope),
-                                    title:
-                                        Text(snapshot.data![index].eventTitle),
+                                    title: _buildText(
+                                        snapshot.data![index].eventTitle),
                                     subtitle:
                                         Text("${snapshot.data![index].text}\n"
                                             "${snapshot.data![index].time}"),
@@ -102,5 +102,13 @@ class _ViewNotfication extends State<ViewNotfication> {
         ),
       ),
     );
+  }
+
+  Widget _buildText(String title) {
+    if (title == "") {
+      return const Text("Deleted Event");
+    } else {
+      return Text(title);
+    }
   }
 }
