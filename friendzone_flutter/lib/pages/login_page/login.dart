@@ -9,6 +9,7 @@ import 'package:friendzone_flutter/pages/event_page/event_viewing.dart';
 
 import 'signup.dart';
 
+/// This class handles the login information and allows the user to login if their information is correct.
 class LoginPage extends StatefulWidget {
   final bool tokenLogout;
   const LoginPage({Key? key, this.tokenLogout = false}) : super(key: key);

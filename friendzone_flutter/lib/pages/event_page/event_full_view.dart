@@ -10,6 +10,7 @@ import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'package:friendzone_flutter/models/foreign_user.dart';
 import 'package:friendzone_flutter/pages/profile_page/profile.dart';
 
+/// This class is used to display details about a specific event such as time, location, description, and email of the user who posted the event
 class DetailEventViewPage extends StatefulWidget {
   final Event data;
   const DetailEventViewPage({Key? key, required this.data}) : super(key: key);
