@@ -58,42 +58,46 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        widget.data.title,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            fontSize: 28, fontWeight: FontWeight.bold),
+                      Flexible(
+                        child: Text(
+                          widget.data.title,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              fontSize: 28, fontWeight: FontWeight.bold),
+                        ),
                       ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        child:
-                            globals.activeUser!.email == widget.data.userEmail
-                                ? ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              EventPostPage(
-                                                  editable: true,
-                                                  event: widget.data),
-                                        ),
-                                      );
-                                    },
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              globals.friendzoneYellow),
-                                    ),
-                                    child: const Text(
-                                      "Edit",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  )
-                                : Container(),
-                      ),
+                      if(globals.activeUser!.email == widget.data.userEmail) ...[
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Container(
+                          child:
+                              globals.activeUser!.email == widget.data.userEmail
+                                  ? ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                EventPostPage(
+                                                    editable: true,
+                                                    event: widget.data),
+                                          ),
+                                        );
+                                      },
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                globals.friendzoneYellow),
+                                      ),
+                                      child: const Text(
+                                        "Edit",
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                    )
+                                  : Container(),
+                        ),
+                      ],
                     ],
                   ),
                   const SizedBox(
