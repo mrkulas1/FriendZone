@@ -278,7 +278,7 @@ class _ProfilePageState extends State<ProfilePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              FlatButton(
+              TextButton(
                   onPressed: () {
                     Future<void> delete = deleteEvent(eventID);
                     delete.then((value) {
@@ -290,13 +290,15 @@ class _ProfilePageState extends State<ProfilePage> {
                       });
                     });
                   },
-                  textColor: const Color.fromARGB(255, 0, 0, 255),
+                  style: TextButton.styleFrom(
+                      primary: const Color.fromARGB(255, 0, 0, 255)),
                   child: const Text("Confirm")),
-              FlatButton(
+              TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  textColor: const Color.fromARGB(255, 254, 0, 0),
+                  style: TextButton.styleFrom(
+                      primary: const Color.fromARGB(255, 254, 0, 0)),
                   child: const Text("Cancel")),
             ]));
   }
