@@ -5,8 +5,10 @@ import 'package:friendzone_flutter/db_comm/friendzone_exceptions.dart';
 import 'package:friendzone_flutter/models/current_user.dart';
 import 'package:friendzone_flutter/pages/login_page/login.dart';
 
+// The user that is currently logged into the app
 CurrentUser? activeUser;
 
+// The specific yellow color that is used throughout the app
 const Color friendzoneYellow = Color.fromARGB(255, 255, 204, 0);
 
 /// Display a snackbar at the bottom of the screen with the given [message]

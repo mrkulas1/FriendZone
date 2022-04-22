@@ -1,14 +1,13 @@
 import 'package:friendzone_flutter/globals.dart' as globals;
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/models/current_user.dart';
-import 'package:friendzone_flutter/models/event.dart';
 import 'package:friendzone_flutter/global_header.dart';
 import 'package:friendzone_flutter/pages/profile_page/profile.dart';
 import 'package:profanity_filter/profanity_filter.dart';
 
+/// This class allows users to update their profile information with a form
 class ProfileEditPage extends StatefulWidget {
   const ProfileEditPage({Key? key}) : super(key: key);
 

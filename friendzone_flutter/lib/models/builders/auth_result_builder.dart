@@ -1,10 +1,9 @@
-/// Class to handle JSON serialization/deserialization for an AuthResult object
-
 import 'package:friendzone_flutter/models/builders/current_user_builder.dart';
 
 import '../auth_result.dart';
 import 'json_builder.dart';
 
+/// Class to handle JSON serialization/deserialization for an AuthResult object
 class AuthResultBuilder extends JsonBuilder<AuthResult> {
   @override
   Map<String, dynamic> toJson(AuthResult obj) {

@@ -10,7 +10,8 @@ import 'package:friendzone_flutter/pages/event_page/event_full_view.dart';
 import 'package:profanity_filter/profanity_filter.dart';
 import 'package:flutter/material.dart';
 
-/// This class is used to display fields to allow users to post events
+/// This class is used to display fields to allow users to post events,
+/// as well as edit existing events
 class EventPostPage extends StatefulWidget {
   static const String routeName = '/post';
 

@@ -9,7 +9,9 @@ import 'package:friendzone_flutter/pages/event_page/event_viewing.dart';
 
 import 'signup.dart';
 
-/// This class handles the login information and allows the user to login if their information is correct.
+/// This class handles the login page and allows the user to login if their
+/// information is correct. This is the first page users see when they open
+/// the app.
 class LoginPage extends StatefulWidget {
   final bool tokenLogout;
   const LoginPage({Key? key, this.tokenLogout = false}) : super(key: key);
@@ -235,20 +237,6 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.web_rounded),
-          backgroundColor: globals.friendzoneYellow,
-          onPressed: () {
-            authenticate("test@mtu.edu", "Password123").then((value) {
-              globals.activeUser = value.getUser();
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          const EventViewAllPage()));
-            });
-          },
         ),
       ),
     );

@@ -1,16 +1,7 @@
 # friendzone_flutter
 
-A new Flutter project.
+The Flutter repository for the FriendZone web / mobile application. The built version
+of the app is at https://classdb.it.mtu.edu/cs3141/team3-frien/flutter/
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+If viewing this page as a part of the built documentation, click the links on this
+page to see the more detailed descriptions of other classes.

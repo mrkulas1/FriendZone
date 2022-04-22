@@ -119,7 +119,6 @@ Future<List<T>> makeListPostRequest<T, U extends JsonListBuilder<T>>(
   switch (response.statusCode) {
     case phpSuccessCode:
       // Kind of hacky, but fixes the type mismatch error
-      // TODO: Make code less gross
       try {
         List<dynamic> json = jsonDecode(response.body);
 

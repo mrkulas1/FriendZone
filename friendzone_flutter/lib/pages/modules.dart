@@ -7,7 +7,7 @@ import 'package:friendzone_flutter/models/event.dart';
 import 'package:friendzone_flutter/globals.dart' as globals;
 import 'package:friendzone_flutter/pages/event_page/event_full_view.dart';
 
-// Search System
+/// This class handles the name searching system on the event_viewing page
 class MySearchDelegate extends SearchDelegate<String> {
   // Changing the variables name may be a good idea.
   // Suggestions + initial suggestions

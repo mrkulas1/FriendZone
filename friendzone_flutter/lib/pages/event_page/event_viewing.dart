@@ -10,7 +10,8 @@ import 'package:friendzone_flutter/global_header.dart';
 import 'event_full_view.dart';
 import 'package:friendzone_flutter/pages/modules.dart';
 
-/// This class is used to display the event and sort events by criteria such as categories and time
+/// This class is used to display all events,
+/// and sort events by criteria such as categories, time, and name
 
 class EventViewAllPage extends StatefulWidget {
   const EventViewAllPage({Key? key}) : super(key: key);

@@ -1,8 +1,7 @@
-/// Class to handle JSON serialization/deserialization for a CurrentUser object
-
 import '../current_user.dart';
 import 'json_builder.dart';
 
+/// Class to handle JSON serialization/deserialization for a CurrentUser object
 class CurrentUserBuilder extends JsonBuilder<CurrentUser> {
   @override
   Map<String, dynamic> toJson(CurrentUser obj) {

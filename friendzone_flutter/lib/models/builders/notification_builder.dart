@@ -1,11 +1,8 @@
-/// Class to handle JSON serialization/deserialization for a Notification object
-
-import 'dart:developer';
-
 import 'package:friendzone_flutter/models/builders/json_builder.dart';
 import 'package:friendzone_flutter/models/builders/json_list_builder.dart';
 import '../notification.dart';
 
+/// Class to handle JSON serialization/deserialization for a Notification object
 class NotificationBuilder extends JsonBuilder<Notification>
     with JsonListBuilder<Notification> {
   @override

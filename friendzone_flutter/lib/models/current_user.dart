@@ -1,4 +1,3 @@
-import 'package:friendzone_flutter/models/event.dart';
 import 'package:friendzone_flutter/models/foreign_user.dart';
 
 /// Class representing the User that is currently logged into the app. Contains

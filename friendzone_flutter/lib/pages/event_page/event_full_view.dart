@@ -10,7 +10,11 @@ import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'package:friendzone_flutter/models/foreign_user.dart';
 import 'package:friendzone_flutter/pages/profile_page/profile.dart';
 
-/// This class is used to display details about a specific event such as time, location, description, and email of the user who posted the event
+/// This class is used to display details about a specific event such as time,
+/// location, description, and email of the user who posted the event. It
+/// also displays the list of users signed up for the event
+/// It also contains the buttons for joining, leaving, editing, and reporting
+/// an event.
 class DetailEventViewPage extends StatefulWidget {
   final Event data;
   const DetailEventViewPage({Key? key, required this.data}) : super(key: key);
@@ -66,7 +70,8 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                               fontSize: 28, fontWeight: FontWeight.bold),
                         ),
                       ),
-                      if(globals.activeUser!.email == widget.data.userEmail) ...[
+                      if (globals.activeUser!.email ==
+                          widget.data.userEmail) ...[
                         const SizedBox(
                           width: 20,
                         ),
@@ -113,81 +118,92 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         globals.activeUser!.email != widget.data.userEmail
-                          ? ElevatedButton(
-                              onPressed: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      var messageController = TextEditingController();
-                                      return AlertDialog(
-                                        title: const Text(
-                                            'Please confirm you would like to join this event'),
-                                        content: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Form(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                SizedBox(
-                                                  width: 500,
-                                                  child: TextFormField(
-                                                    maxLines: 7,
-                                                    minLines: 1,
-                                                    controller: messageController,
-                                                    decoration: const InputDecoration(
-                                                        labelText:
-                                                            'Is there anything you would like to let the event creator know?'),
+                            ? ElevatedButton(
+                                onPressed: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        var messageController =
+                                            TextEditingController();
+                                        return AlertDialog(
+                                          title: const Text(
+                                              'Please confirm you would like to join this event'),
+                                          content: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Form(
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  SizedBox(
+                                                    width: 500,
+                                                    child: TextFormField(
+                                                      maxLines: 7,
+                                                      minLines: 1,
+                                                      controller:
+                                                          messageController,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              labelText:
+                                                                  'Is there anything you would like to let the event creator know?'),
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        actions: [
-                                          ElevatedButton(
-                                              style: ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStateProperty.all<Color>(
-                                                        globals.friendzoneYellow),
-                                              ),
-                                              child: const Text(
-                                                "Join",
-                                                style: TextStyle(color: Colors.black),
-                                              ),
-                                              onPressed: () {
-                                                var comment = messageController.text;
-                                                Future<void> joined = joinEvent(
-                                                    globals.activeUser!.email,
-                                                    widget.data.id,
-                                                    comment);
-                  
-                                                joined.then((value) {
-                                                  setState(() {
-                                                    _signUpUser = getSignedUpUsers(
-                                                        widget.data.id);
+                                          actions: [
+                                            ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty
+                                                          .all<Color>(globals
+                                                              .friendzoneYellow),
+                                                ),
+                                                child: const Text(
+                                                  "Join",
+                                                  style: TextStyle(
+                                                      color: Colors.black),
+                                                ),
+                                                onPressed: () {
+                                                  var comment =
+                                                      messageController.text;
+                                                  Future<void> joined =
+                                                      joinEvent(
+                                                          globals.activeUser!
+                                                              .email,
+                                                          widget.data.id,
+                                                          comment);
+
+                                                  joined.then((value) {
+                                                    setState(() {
+                                                      _signUpUser =
+                                                          getSignedUpUsers(
+                                                              widget.data.id);
+                                                    });
+                                                    globals.makeSnackbar(
+                                                        context,
+                                                        "Joined successfully");
+                                                  }).catchError((error) {
+                                                    globals.unifiedErrorCatch(
+                                                        context, error);
                                                   });
-                                                  globals.makeSnackbar(
-                                                      context, "Joined successfully");
-                                                }).catchError((error) {
-                                                  globals.unifiedErrorCatch(
-                                                      context, error);
-                                                });
-                                                Navigator.pop(context);
-                                              })
-                                        ],
-                                      );
-                                    });
-                              },
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all<Color>(
-                                    globals.friendzoneYellow),
-                              ),
-                              child: const Text(
-                                "Join",
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            )
-                          : Container(),
+                                                  Navigator.pop(context);
+                                                })
+                                          ],
+                                        );
+                                      });
+                                },
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          globals.friendzoneYellow),
+                                ),
+                                child: const Text(
+                                  "Join",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              )
+                            : Container(),
                         const SizedBox(width: 25),
                         Column(
                           children: [
@@ -212,30 +228,34 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                         ),
                         const SizedBox(width: 25),
                         globals.activeUser!.email != widget.data.userEmail
-                          ? ElevatedButton(
-                              onPressed: () {
-                                Future<void> left = leaveEvent(
-                                    globals.activeUser!.email, widget.data.id);
-                  
-                                left.then((value) {
-                                  setState(() {
-                                    _signUpUser = getSignedUpUsers(widget.data.id);
+                            ? ElevatedButton(
+                                onPressed: () {
+                                  Future<void> left = leaveEvent(
+                                      globals.activeUser!.email,
+                                      widget.data.id);
+
+                                  left.then((value) {
+                                    setState(() {
+                                      _signUpUser =
+                                          getSignedUpUsers(widget.data.id);
+                                    });
+                                    globals.makeSnackbar(
+                                        context, "Left successfully");
+                                  }).catchError((error) {
+                                    globals.unifiedErrorCatch(context, error);
                                   });
-                                  globals.makeSnackbar(context, "Left successfully");
-                                }).catchError((error) {
-                                  globals.unifiedErrorCatch(context, error);
-                                });
-                              },
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all<Color>(
-                                    globals.friendzoneYellow),
-                              ),
-                              child: const Text(
-                                "Leave",
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            )
-                          : Container(),
+                                },
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          globals.friendzoneYellow),
+                                ),
+                                child: const Text(
+                                  "Leave",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              )
+                            : Container(),
                       ],
                     ),
                   ),
@@ -246,7 +266,9 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                   Flex(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    direction: MediaQuery.of(context).size.width < 600 ? Axis.vertical : Axis.horizontal,
+                    direction: MediaQuery.of(context).size.width < 600
+                        ? Axis.vertical
+                        : Axis.horizontal,
                     children: [
                       TitledContainer(
                         title: "Description",
@@ -257,7 +279,9 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                           constraints: BoxConstraints(
                             minHeight: MediaQuery.of(context).size.height / 2,
                           ),
-                          width: MediaQuery.of(context).size.width < 600 ? null : MediaQuery.of(context).size.width / 4,
+                          width: MediaQuery.of(context).size.width < 600
+                              ? null
+                              : MediaQuery.of(context).size.width / 4,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -293,7 +317,9 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          MediaQuery.of(context).size.width < 600 ? const SizedBox(height: 30) : Container(),
+                          MediaQuery.of(context).size.width < 600
+                              ? const SizedBox(height: 30)
+                              : Container(),
                           Container(
                             alignment: Alignment.center,
                             child: const Text(
@@ -479,7 +505,9 @@ class _DetailEventViewPageState extends State<DetailEventViewPage> {
                           // constraints: BoxConstraints(
                           //   minHeight: MediaQuery.of(context).size.height / 2,
                           // ),
-                          width: MediaQuery.of(context).size.width < 600 ? null : MediaQuery.of(context).size.width / 4,
+                          width: MediaQuery.of(context).size.width < 600
+                              ? null
+                              : MediaQuery.of(context).size.width / 4,
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: Colors.black,

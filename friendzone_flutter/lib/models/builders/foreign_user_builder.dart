@@ -1,14 +1,12 @@
-/// Class to handle JSON serialization/deserialization for a ForeignUser object
-
 import '../foreign_user.dart';
 import 'json_builder.dart';
 import 'json_list_builder.dart';
 
+/// Class to handle JSON serialization/deserialization for a ForeignUser object
 class ForeignUserBuilder extends JsonBuilder<ForeignUser>
     with JsonListBuilder<ForeignUser> {
   @override
   Map<String, dynamic> toJson(ForeignUser obj) {
-    // TODO: implement toJson
     throw UnimplementedError();
   }
 
@@ -23,7 +21,6 @@ class ForeignUserBuilder extends JsonBuilder<ForeignUser>
 
   @override
   List listToJson(List<ForeignUser> obj) {
-    // TODO: implement listToJson
     throw UnimplementedError();
   }
 

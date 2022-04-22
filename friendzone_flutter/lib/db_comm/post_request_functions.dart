@@ -14,8 +14,8 @@ import 'package:friendzone_flutter/models/notification.dart';
 import 'make_post_request.dart';
 import 'dart:async';
 
-/// This file contains all functions that are used by the UI to interface with
-/// the PHP/DB layer of the app
+// This file contains all functions that are used by the UI to interface with
+// the PHP/DB layer of the app
 
 /// Authenticate the attempted login with the credentials of [email] and
 /// [password]
@@ -60,7 +60,7 @@ Future<List<Event>> getAllEvents() async {
   return events;
 }
 
-/// Get all information about one event. Throw an exception on failure.
+/// Get all information about the event with id [eventID]. Throw an exception on failure.
 Future<Event> getDetailedEvent(int eventID) async {
   Map<String, dynamic> input = {"id": eventID};
 
@@ -148,6 +148,8 @@ Future<void> leaveEvent(String userEmail, int eventID) async {
   await makeVoidPostRequest(PHPFunction.leaveEvent, input);
 }
 
+/// Get the list of users signed up for the event with ID [eventID]. Throws
+/// an exception on failure
 Future<List<ForeignUser>> getSignedUpUsers(int eventID) async {
   Map<String, dynamic> input = {"id": eventID};
 
@@ -157,7 +159,8 @@ Future<List<ForeignUser>> getSignedUpUsers(int eventID) async {
   return users;
 }
 
-//Get all the events a user has created
+/// Get the list of events that the user with the given [email] created. Throws
+/// an exception on failure
 Future<List<Event>> getMyEvents(String email) async {
   Map<String, dynamic> input = {"email": email};
 
@@ -167,7 +170,8 @@ Future<List<Event>> getMyEvents(String email) async {
   return events;
 }
 
-/// Get all the events a given user has joined.
+/// Get the list of events that the user with the given [email] has joined.
+/// Throws an exception on failure
 Future<List<Event>> getJoinedEvents(String email) async {
   Map<String, dynamic> input = {"email": email};
 
@@ -177,6 +181,9 @@ Future<List<Event>> getJoinedEvents(String email) async {
   return events;
 }
 
+/// Update the profile information for the user with email [email], setting the
+/// [introduction] and [additionalContact] fields. Throws an exception on
+/// failure
 Future<CurrentUser> updateProfile(
     String email, String introduction, String additionalContact) async {
   Map<String, dynamic> input = {
@@ -193,7 +200,7 @@ Future<CurrentUser> updateProfile(
 
 /// Report an Event with the [userEmail], reporting the event [eventID], with
 /// the given [comment]. Will update the existing reporting comment if the user
-/// already reported the event.
+/// already reported the event. Throws an exception on failure
 Future<void> reportEvent(String userEmail, int eventID, String comment) async {
   Map<String, dynamic> input = {
     "email": userEmail,
@@ -204,9 +211,9 @@ Future<void> reportEvent(String userEmail, int eventID, String comment) async {
   await makeVoidPostRequest(PHPFunction.reportEvent, input);
 }
 
-/// Report an Event with the [userEmail], reporting the event [eventID], with
-/// the given [comment]. Will update the existing reporting comment if the user
-/// already reported the event.
+/// Get the user information associated with the email [userEmail], which is
+/// a separate user from the one logged into the app. Throws and exception on
+/// failure
 Future<ForeignUser> getForeignUser(String userEmail) async {
   Map<String, dynamic> input = {
     "fEmail": userEmail,
@@ -218,14 +225,16 @@ Future<ForeignUser> getForeignUser(String userEmail) async {
   return user;
 }
 
-///Delete an event with the id [eventID]
+/// Delete the event with the id [eventID]. Throws an exception on failure
 Future<void> deleteEvent(int eventID) async {
   Map<String, dynamic> input = {"id": eventID};
 
   await makeVoidPostRequest(PHPFunction.deleteEvent, input);
 }
 
-Future<List<Event>> getAllReportedEvent() async {
+/// Get the list of events that have been reported. Throws an exception on
+/// failure
+Future<List<Event>> getAllReportedEvents() async {
   Map<String, dynamic> input = {};
 
   List<Event> events = await makeListPostRequest(
@@ -234,15 +243,19 @@ Future<List<Event>> getAllReportedEvent() async {
   return events;
 }
 
-Future<List<String>> getReportedComment(int eventID) async {
+/// Get the list of report comments for the event with ID [eventID]. Throws
+/// an exception on failure
+Future<List<String>> getReportedComments(int eventID) async {
   Map<String, dynamic> input = {"id": eventID};
 
   List<String> comments = await makeListPostRequest(
-      PHPFunction.getReportedComment, input, commentBuilder());
+      PHPFunction.getReportedComment, input, CommentBuilder());
 
   return comments;
 }
 
+/// Get the list of notifications sent to the currently logged in user. Throws
+/// an exception on failure
 Future<List<Notification>> getNotifications() async {
   Map<String, dynamic> input = {};
 

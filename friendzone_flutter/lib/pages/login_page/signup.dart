@@ -3,9 +3,7 @@ import 'package:friendzone_flutter/globals.dart' as globals;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'package:friendzone_flutter/models/auth_result.dart';
 import 'package:friendzone_flutter/models/current_user.dart';
-import 'package:friendzone_flutter/pages/event_page/event_post.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/pages/event_page/event_viewing.dart';
 import 'package:profanity_filter/profanity_filter.dart';

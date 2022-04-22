@@ -9,6 +9,8 @@ import 'package:friendzone_flutter/pages/notfication_page/notification_page.dart
 import 'globals.dart' as globals;
 import 'pages/event_page/event_post.dart';
 
+/// This class handles the header bar that appears at the top of each
+/// page in the app
 class Header extends StatefulWidget implements PreferredSizeWidget {
   const Header({Key? key})
       : preferredSize = const Size.fromHeight(kToolbarHeight),

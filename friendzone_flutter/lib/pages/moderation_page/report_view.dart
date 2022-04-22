@@ -72,7 +72,7 @@ class _ReportsPageState extends State<ReportsPage> {
   void initState() {
     super.initState();
 
-    _events = getAllReportedEvent();
+    _events = getAllReportedEvents();
     _nameControl.text = "";
   }
 
@@ -228,7 +228,7 @@ class _ReportsPageState extends State<ReportsPage> {
                                           onPressed: () {
                                             Future<List<String>>
                                                 reportedComments =
-                                                getReportedComment(
+                                                getReportedComments(
                                                     snapshot.data![index].id);
 
                                             globals.makeSnackbar(
@@ -323,7 +323,7 @@ class _ReportsPageState extends State<ReportsPage> {
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             setState(() {
-              _events = getAllReportedEvent();
+              _events = getAllReportedEvents();
             });
           },
           backgroundColor: globals.friendzoneYellow,
@@ -459,7 +459,7 @@ class _ReportsPageState extends State<ReportsPage> {
                     toPicked = false;
                     toDate = DateTime.now();
                     fromDate = DateTime.now();
-                    _events = getAllReportedEvent();
+                    _events = getAllReportedEvents();
                     _nameControl.text = "";
                     selectCat = null;
                     selectSubCat = null;
@@ -475,7 +475,7 @@ class _ReportsPageState extends State<ReportsPage> {
               onPressed: () {
                 //Filter Events by whatever Here
 
-                _events = getAllReportedEvent();
+                _events = getAllReportedEvents();
                 newEvents = [];
                 List<Event> events = [];
 
