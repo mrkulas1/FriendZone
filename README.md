@@ -4,8 +4,13 @@ Repository for the FriendZone app made for CS3141, Team Software Project, in the
 
 ## Contributors
 Audrey LaCost
+
 Ben Drees
+
 Michael Kulas
+
 Ryan Klemm
+
 Thawng Hmung
+
 Trevor Petrin
