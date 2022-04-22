@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:friendzone_flutter/db_comm/post_request_functions.dart';
 import 'package:friendzone_flutter/models/event.dart';
 import 'package:friendzone_flutter/pages/event_page/event_full_view.dart';
@@ -20,7 +19,6 @@ class ReportsPage extends StatefulWidget {
 
 class _ReportsPageState extends State<ReportsPage> {
   Future<List<Event>>? _events;
-  Future<List<String>>? _reportedComments;
   DateTime selectedDate = DateTime.now();
   DateTime fromDate = DateTime.now();
   DateTime toDate = DateTime.now();
@@ -228,54 +226,56 @@ class _ReportsPageState extends State<ReportsPage> {
                                       children: [
                                         ElevatedButton(
                                           onPressed: () {
-                                            _reportedComments =
+                                            Future<List<String>>
+                                                reportedComments =
                                                 getReportedComment(
                                                     snapshot.data![index].id);
-                                            showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return AlertDialog(
-                                                      title:
-                                                          const Text('Reports'),
-                                                      content: Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: _reportedComments ==
-                                                                  null
-                                                              ? Container()
-                                                              : FutureBuilder<
-                                                                  List<String>>(
-                                                                  future:
-                                                                      _reportedComments,
-                                                                  builder: (context,
-                                                                      snapshot) {
-                                                                    if (snapshot
-                                                                        .hasData) {
-                                                                      return Container(
-                                                                          child:
-                                                                              ListView.builder(
-                                                                        scrollDirection:
-                                                                            Axis.vertical,
-                                                                        itemCount: snapshot
-                                                                            .data!
-                                                                            .length,
-                                                                        itemBuilder:
-                                                                            (context,
-                                                                                int index) {
-                                                                          return ListTile(
-                                                                              title: Text(snapshot.data![index]));
-                                                                        },
-                                                                      ));
-                                                                    } else if (snapshot
-                                                                        .hasError) {
-                                                                      return Text(
-                                                                          "${snapshot.error!}");
-                                                                    }
-                                                                    return const CircularProgressIndicator();
-                                                                  },
-                                                                )));
-                                                });
+
+                                            globals.makeSnackbar(
+                                                context, "Getting Comments");
+
+                                            reportedComments.then((value) {
+                                              ScaffoldMessenger.of(context)
+                                                  .clearSnackBars();
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                        title: const Text(
+                                                            "Reports"),
+                                                        content: SizedBox(
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height /
+                                                              2,
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              2,
+                                                          child:
+                                                              ListView.builder(
+                                                                  scrollDirection:
+                                                                      Axis
+                                                                          .vertical,
+                                                                  shrinkWrap:
+                                                                      true,
+                                                                  itemCount: value
+                                                                      .length,
+                                                                  itemBuilder:
+                                                                      (context,
+                                                                          int index) {
+                                                                    return ListTile(
+                                                                        title: Text(
+                                                                            value[index]));
+                                                                  }),
+                                                        ));
+                                                  });
+                                            }).catchError((error) {
+                                              globals.unifiedErrorCatch(
+                                                  context, error);
+                                            });
                                           },
                                           style: ButtonStyle(
                                             backgroundColor:
@@ -627,17 +627,20 @@ class _ReportsPageState extends State<ReportsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              FlatButton(
+              TextButton(
                   onPressed: () {
                     Future<void> delete = deleteEvent(eventID);
                   },
-                  textColor: const Color.fromARGB(255, 0, 0, 255),
+                  style: TextButton.styleFrom(
+                    primary: const Color.fromARGB(255, 0, 0, 255),
+                  ),
                   child: const Text("Confirm")),
-              FlatButton(
+              TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  textColor: const Color.fromARGB(255, 254, 0, 0),
+                  style: TextButton.styleFrom(
+                      primary: const Color.fromARGB(255, 254, 0, 0)),
                   child: const Text("Cancel")),
             ]));
   }

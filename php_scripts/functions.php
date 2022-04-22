@@ -329,16 +329,13 @@ function Update_Event(int $id, String $title, String $description,
             return errorReturn("No event with this ID");
         }
 
-        $statement = $dbh->prepare("INSERT INTO Notification(type, id, instigator) values(4, :id, :email)");
+        $statement = $dbh->prepare("INSERT INTO Notification(type, id) values(4, :id)");
         $statement->bindParam(":id", $id);
-        $statement->bindParam(":email", $email);
         $statement->execute();
 
         $statement = $dbh->prepare("INSERT into Receives(email, notification_id) 
-                                        SELECT UT.email, last_insert_id() FROM ((Select email FROM Joins WHERE id = :id AND email != :email) UNION
-                                                                                (Select email from Event WHERE id = :id)) as UT");
+                                        SELECT email, last_insert_id() FROM Joins WHERE id = :id");
         $statement->bindParam(":id", $id);
-        $statement->bindParam(":email", $email);
         $statement->execute();
 
         $statement = $dbh->prepare("UPDATE Event SET title = :title, description = :description,
@@ -648,14 +645,14 @@ function Delete_Event(int $id) {
 
     $dbh = connectDB();
 
+    $statement = $dbh->prepare("INSERT INTO Notification(type, id) values(3, :id)");
+    $statement->bindParam(":id", $id);
+    $statement->execute();
+
     $statement = $dbh->prepare("WITH e AS (SELECT title, email FROM Event where id = :id)
                                 UPDATE Notification set deleted_title = (select title from e),
                                                         deleted_email = (select email from e)
                                                     where id = :id");
-    $statement->bindParam(":id", $id);
-    $statement->execute();
-
-    $statement = $dbh->prepare("INSERT INTO Notification(type, id) values(3, :id)");
     $statement->bindParam(":id", $id);
     $statement->execute();
 

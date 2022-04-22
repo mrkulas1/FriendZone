@@ -1,7 +1,4 @@
-/// Class to represent a notification that is pulled off the database. The
-/// message text of the notification is formatted based on the type, with
-/// values based on
-
+/// Enum holding the possible notification types
 enum NotificationType {
   noType,
   userJoinedEvent,
@@ -10,6 +7,9 @@ enum NotificationType {
   eventChanged
 }
 
+/// Class to represent a notification that is pulled off the database. The
+/// message text of the notification is formatted based on the type, with
+/// the specific content based on the response from the PHP page
 class Notification {
   String? text;
 
@@ -35,6 +35,7 @@ class Notification {
     _makeText();
   }
 
+  /// Format the message for this notification based on the fields of the object
   void _makeText() {
     switch (type) {
       case NotificationType.userJoinedEvent:

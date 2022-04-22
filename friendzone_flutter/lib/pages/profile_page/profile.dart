@@ -278,7 +278,7 @@ class _ProfilePageState extends State<ProfilePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              FlatButton(
+              TextButton(
                   onPressed: () {
                     Future<void> delete = deleteEvent(eventID);
                     delete.then((value) {
@@ -290,13 +290,15 @@ class _ProfilePageState extends State<ProfilePage> {
                       });
                     });
                   },
-                  textColor: const Color.fromARGB(255, 0, 0, 255),
+                  style: TextButton.styleFrom(
+                      primary: const Color.fromARGB(255, 0, 0, 255)),
                   child: const Text("Confirm")),
-              FlatButton(
+              TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  textColor: const Color.fromARGB(255, 254, 0, 0),
+                  style: TextButton.styleFrom(
+                      primary: const Color.fromARGB(255, 254, 0, 0)),
                   child: const Text("Cancel")),
             ]));
   }
@@ -306,10 +308,8 @@ class _ProfilePageState extends State<ProfilePage> {
   /// user matches the user described in the profile
 
   Widget _buildX(Event e, int id, String title, bool isAdmin) {
-    if (!isAdmin) {
-      return const Spacer(flex: 1);
-    } else if (globals.activeUser!.email != e.userEmail) {
-      return const Spacer(flex: 1);
+    if (!isAdmin && globals.activeUser!.email != e.userEmail) {
+      return const SizedBox(height: 1, width: 1);
     }
     return IconButton(
       icon: const Icon(
