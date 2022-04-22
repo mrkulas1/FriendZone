@@ -1,5 +1,5 @@
 /// An exception class representing an error returned by PHP that was caught
-/// gracefully, and returned in the ["error"] field of the JSON response. Will
+/// gracefully, and returned in the "error" field of the JSON response. Will
 /// avoid printing 'Exception:' in front of all the error messages in the app
 class PHPException implements Exception {
   String message;

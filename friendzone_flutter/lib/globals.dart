@@ -1,3 +1,4 @@
+/// This file contains global-level functions for the UI code
 library friendzone_flutter.globals;
 
 import 'package:flutter/material.dart';
